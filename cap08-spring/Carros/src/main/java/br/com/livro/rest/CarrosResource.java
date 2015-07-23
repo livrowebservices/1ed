@@ -16,11 +16,17 @@ import br.com.livro.domain.Carro;
 import br.com.livro.domain.CarroService;
 import br.com.livro.domain.Response;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 @Path("/carros")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Component
 public class CarrosResource {
-	private CarroService carroService = new CarroService();
+	@Autowired
+	private CarroService carroService;
+
 	@GET
 	public List<Carro> get() {
 		List<Carro> carros = carroService.getCarros();
