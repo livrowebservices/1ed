@@ -20,49 +20,50 @@ import br.com.livro.domain.Response;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class CarrosResource {
+	private CarroService carroService = new CarroService();
 	@GET
 	public List<Carro> get() {
-		List<Carro> carros = CarroService.getCarros();
+		List<Carro> carros = carroService.getCarros();
 		return carros;
 	}
 
 	@GET
 	@Path("{id}")
 	public Carro get(@PathParam("id") long id) {
-		Carro c = CarroService.getCarro(id);
+		Carro c = carroService.getCarro(id);
 		return c;
 	}
 
 	@GET
 	@Path("/tipo/{tipo}")
 	public List<Carro> getByTipo(@PathParam("tipo") String tipo) {
-		List<Carro> carros = CarroService.findByTipo(tipo);
+		List<Carro> carros = carroService.findByTipo(tipo);
 		return carros;
 	}
 
 	@GET
 	@Path("/nome/{nome}")
 	public Carro getByNome(@PathParam("nome") String nome) {
-		Carro c = CarroService.findByName(nome);
+		Carro c = carroService.findByName(nome);
 		return c;
 	}
 
 	@DELETE
 	@Path("{id}")
 	public Response delete(@PathParam("id") long id) {
-		CarroService.delete(id);
+		carroService.delete(id);
 		return Response.Ok("Carro deletado com sucesso");
 	}
 
 	@POST
 	public Response post(Carro c) {
-		CarroService.save(c);
+		carroService.save(c);
 		return Response.Ok("Carro salvo com sucesso");
 	}
 
 	@PUT
 	public Response put(Carro c) {
-		CarroService.save(c);
+		carroService.save(c);
 		return Response.Ok("Carro atualizado com sucesso");
 	}
 }

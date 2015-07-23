@@ -21,16 +21,16 @@ import com.google.gson.GsonBuilder;
 @WebServlet("/carros/*")
 public class CarrosServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private CarroService carroService = new CarroService();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
 		String requestUri = req.getRequestURI();
 		Long id = RegexUtil.matchId(requestUri);
 		if (id != null) {
 			// Informou o id
-			Carro carro = CarroService.getCarro(id);
+			Carro carro = carroService.getCarro(id);
 			if (carro != null) {
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 				String json = gson.toJson(carro);
@@ -40,7 +40,7 @@ public class CarrosServlet extends HttpServlet {
 			}
 		} else {
 			// Lista de carros
-			List<Carro> carros = CarroService.getCarros();
+			List<Carro> carros = carroService.getCarros();
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String json = gson.toJson(carros);
 			ServletUtil.writeJSON(resp, json);
@@ -53,7 +53,7 @@ public class CarrosServlet extends HttpServlet {
 		// Cria o carro
 		Carro carro = getCarroFromRequest(request);
 		// Salva o carro
-		CarroService.save(carro);
+		carroService.save(carro);
 		// Escreve o JSON do novo carro salvo.
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String json = gson.toJson(carro);
@@ -66,7 +66,7 @@ public class CarrosServlet extends HttpServlet {
 		String id = request.getParameter("id");
 		if (id != null) {
 			// Se informou o id, busca o objeto do banco de dados.
-			c = CarroService.getCarro(Long.parseLong(id));
+			c = carroService.getCarro(Long.parseLong(id));
 		}
 		c.setNome(request.getParameter("nome"));
 		c.setDesc(request.getParameter("descricao"));
@@ -79,11 +79,12 @@ public class CarrosServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		String requestUri = req.getRequestURI();
 		Long id = RegexUtil.matchId(requestUri);
 		if (id != null) {
-			CarroService.delete(id);
+			carroService.delete(id);
 			Response r = Response.Ok("Carro excluído com sucesso");
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String json = gson.toJson(r);
