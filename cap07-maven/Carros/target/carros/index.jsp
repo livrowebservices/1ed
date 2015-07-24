@@ -1,5 +1,5 @@
-<html>
-<body>
-<h2>Hello World!</h2>
-</body>
-</html>
+<pre>
+<a href="<%=request.getContextPath()%>/rest/carros">/carros</a>
+
+<a href="<%=request.getContextPath()%>/rest/carros/1">/carros/1</a>
+</pre>
