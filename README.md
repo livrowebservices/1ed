@@ -2,6 +2,8 @@ Livro Web Services RESTful em Java com Google Cloud Platform
 
 Sumário:
 
+<pre>
+
 1) Introdução
 2) Java Servlets e Web
 3) MySQL
@@ -24,3 +26,5 @@ Sumário:
 20) Segurança em Web Services (autenticação, oauth, etc)
 21) OAuth Client
 22) OAuth Server
+
+</pre>
