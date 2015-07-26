@@ -28,8 +28,9 @@ public class TwitterResourceV2 {
 	private HttpServletRequest request;
 
 	@GET
+	@Produces(MediaType.TEXT_PLAIN+";charset=utf-8")
 	public String get() {
-		return "Hey Twitter";
+		return "Olá Twitter";
 	}
 
 	@GET

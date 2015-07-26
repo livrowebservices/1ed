@@ -30,13 +30,15 @@ public class TwitterResource {
 	String CONSUMER_SECRET = "LrcTj8hPw1CBM9LxwIL4Bx831iVhzT69HUEqiAhXcpizY1JDTU";
 
 	// URL que vai receber o código verificador do OAuth
-	String CALLBACK_URI = "http://localhost:8080/Carros/rest/twitter/verify";
+	String CALLBACK_URI = "http://localhost:8080/HelloTwitter/rest/twitter/verify";
+
 	@Context
 	private HttpServletRequest request;
 
 	@GET
+	@Produces(MediaType.TEXT_PLAIN+";charset=utf-8")
 	public String get() {
-		return "Hey Twitter";
+		return "Olá Twitter";
 	}
 
 	// Cria a classe por controlar o Fluxo de autorização
