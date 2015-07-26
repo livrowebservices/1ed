@@ -35,7 +35,7 @@ public class CarroService {
 	}
 
 	// Busca o carro pelo nome
-	public Carro findByName(String name) {
+	public List<Carro> findByName(String name) {
 		return db.findByName(name);
 	}
 

@@ -1,7 +1,7 @@
 <pre>
-<a href="<%=request.getContextPath()%>/rest/carros">/carros</a>
+<a href="<%=request.getContextPath()%>/rest/carros">/rest/carros</a>
 
-<a href="<%=request.getContextPath()%>/rest/carros/1">/carros/1</a>
+<a href="<%=request.getContextPath()%>/rest/carros/1">/rest/carros/1</a>
 
 <a href="<%=request.getContextPath()%>/upload.jsp">upload.jsp</a>
 

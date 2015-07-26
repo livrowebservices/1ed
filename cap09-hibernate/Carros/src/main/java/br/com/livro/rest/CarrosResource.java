@@ -49,9 +49,9 @@ public class CarrosResource {
 
 	@GET
 	@Path("/nome/{nome}")
-	public Carro getByNome(@PathParam("nome") String nome) {
-		Carro c = carroService.findByName(nome);
-		return c;
+	public List<Carro> getByNome(@PathParam("nome") String nome) {
+		List<Carro> carros = carroService.findByName(nome);
+		return carros;
 	}
 
 	@DELETE
