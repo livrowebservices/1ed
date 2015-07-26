@@ -32,7 +32,11 @@
 		<display-name>Todos os usuários logados</display-name>
 		<web-resource-collection>
 			<web-resource-name>all</web-resource-name>
-			<url-pattern>/rest/*</url-pattern>
+			<url-pattern>/rest/carros/*</url-pattern>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>all</web-resource-name>
+			<url-pattern>/rest/userInfo/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>user</role-name>
