@@ -1,0 +1,47 @@
+<div class="row">
+	<ul class="nav nav-pills" style="margin-bottom: 20px;">
+		<li role="presentation" 
+				ng-class="{active:tab == 0}">
+			<a href="#/"  data-ng-click="changeFilter('', 0)">Todos</a>
+		</li>
+		<li role="presentation" ng-class="{active:tab == 1}">
+			<a href="#/" data-ng-click="changeFilter('classicos', 1)">Clássicos</a>
+		</li>
+		<li role="presentation" ng-class="{active:tab == 2}">
+			<a href="#/" data-ng-click="changeFilter('esportivos', 2)">Esportivos</a>
+		</li>
+		<li role="presentation" ng-class="{active:tab == 3}">
+			<a href="#/" data-ng-click="changeFilter('luxo', 3)"
+			>Luxo</a>
+		</li>
+	</ul>
+	<div class="tab-content" ng-if="carroService.carros.length > 0">
+		<div class="col-sm-6 col-md-4" ng-repeat="carro in carroService.carros">
+			<div class="thumbnail">
+				<div ng-if="carro.urlFoto">
+				</div>
+				<img 
+					class="foto-carros"
+					data-ng-click="openModalEditar(carro)"
+					ng-show="carro.urlFoto" 
+					data-ng-src="{{carro.urlFoto}}" alt="{{carro.nome}}"
+				>
+				<img 
+					class="foto-carros"
+					data-ng-click="openModalEditar(carro)"
+					ng-show="!carro.urlFoto" 
+					data-ng-src="http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png" 
+					alt="{{carro.nome}}"
+				>
+				<div class="caption">
+					<h3>{{carro.nome}}</h3>
+					<p>{{carro.desc}}</p>
+					<p>
+						<button class="btn btn-primary" data-ng-click="openModalEditar(carro)" role="button">Editar</button> 
+						<button data-ng-click="deletarCarro(carro)" class="btn btn-danger" role="button">Deletar</button>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

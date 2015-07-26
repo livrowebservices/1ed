@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Projeto de Carros</title>
+<link rel="stylesheet"
+	href="./resources/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="./resources/bower_components/ngDialog/css/ngDialog.css" />
+<link rel="stylesheet"
+	href="./resources/bower_components/ngDialog/css/ngDialog-theme-default.css" />
+<link rel="stylesheet" href="./resources/css/styles.css" />
+
+<style>
+[ng-cloak] {
+	display: none;
+}
+</style>
+
+</head>
+<body data-ng-app="AppCarro">
+
+	<div ng-include src="'pages/template/navbar.html'"></div>
+	
+	<div data-ng-view class="container" style="margin-top: 100px;"></div>
+
+	<script src="./resources/bower_components/jquery/dist/jquery.js"></script>
+	<script src="./resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="./resources/bower_components/angular/angular.min.js"></script>
+	<script src="./resources/bower_components/angular-route/angular-route.min.js"></script>
+	<script src="./resources/bower_components/ngDialog/js/ngDialog.js"></script>
+	<script src="./resources/bower_components/ng-file-upload/ng-file-upload.js"></script>
+	
+	<script src="./resources/js/app.js"></script>
+	<script src="./resources/js/controllers/CarroControllers.js"></script>
+	<script src="./resources/js/services/carroRestService.js"></script>
+	<script src="./resources/js/services/carroService.js"></script>
+</body>
+</html>
