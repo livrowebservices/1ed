@@ -35,6 +35,7 @@
 			<url-pattern>/rest/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
+			<!-- Deixa todos os perfis -->
 			<role-name>user</role-name>
 			<role-name>admin</role-name>
 		</auth-constraint>
@@ -43,6 +44,7 @@
 		<auth-method>BASIC</auth-method>
 		<realm-name>Web Service Restrito</realm-name>
 	</login-config>
+	
 	
 	
 	<welcome-file-list>
