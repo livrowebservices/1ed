@@ -28,13 +28,13 @@ public class RestTest extends TestCase {
 		client.register(GsonMessageBodyHandler.class);
 		// URL do web service
 		String URL = "http://localhost:8080/Carros/rest/";
-		// Cria a requisição com o "caminho"
+		// Cria a requisiÃ§Ã£o com o "caminho"
 		WebTarget target = client.target(URL).path("/carros/11");
-		// Faz a requisição do tipo GET solicitando um JSON como resposta.
+		// Faz a requisiÃ§Ã£o do tipo GET solicitando um JSON como resposta.
 		Response response = target.request(MediaType.APPLICATION_JSON).get();
 		// Status HTTP de retorno
 		int status = response.getStatus();
-		// Lê um Carro (converte diretamente da string do JSON)
+		// LÃª um Carro (converte diretamente da string do JSON)
 		Carro c = response.readEntity(Carro.class);
 		assertEquals(200, status);
 		assertEquals("Ferrari FF", c.getNome());
@@ -48,26 +48,26 @@ public class RestTest extends TestCase {
 		client.register(GsonMessageBodyHandler.class);
 		// URL do web service
 		String URL = "http://localhost:8080/Carros/rest/";
-		// Cria a requisição com o "caminho"
+		// Cria a requisiÃ§Ã£o com o "caminho"
 		WebTarget target = client .target(URL).path("/carros/12");
 				
-		// O teste de deletar só funciona se o carro existir, então vamos verificar antes.
+		// O teste de deletar sï¿½ funciona se o carro existir, entï¿½o vamos verificar antes.
 		Response responseGet =  
 				target.request(MediaType.APPLICATION_JSON)
 				.get();
 		if(responseGet.getStatus() != 200) {
-			// Não deixa prosseguir no teste se o carro não existe
-			System.err.println("Carro para deletr não existe, abortando teste.");
+			// Nï¿½o deixa prosseguir no teste se o carro nï¿½o existe
+			System.err.println("Carro para deletr nï¿½o existe, abortando teste.");
 			return;
 		}
 		
-		// Faz a requisição do tipo GET solicitando um JSON como resposta.
+		// Faz a requisiÃ§Ã£o do tipo GET solicitando um JSON como resposta.
 		Response response =  
 				target.request(MediaType.APPLICATION_JSON)
 				.delete();
-		// Valida se a requisição foi OK
+		// Valida se a requisiÃ§Ã£o foi OK
 		assertEquals(200, response.getStatus());
-		// Lê a response do pacote domain
+		// LÃª a response do pacote domain
 		br.com.livro.domain.Response s = response.readEntity(br.com.livro.domain.Response.class);
 		assertEquals("OK", s.getStatus());
 		assertEquals("Carro deletado com sucesso", s.getMsg());
@@ -77,13 +77,13 @@ public class RestTest extends TestCase {
 		ClientConfig clientConfig = new ClientConfig();
 		Client client = ClientBuilder.newClient(clientConfig);
 		client.register(GsonMessageBodyHandler.class);
-		// Cria os parâmetros do formulário
+		// Cria os parï¿½metros do formuLÃªrio
 		String base64 = Base64.getEncoder().encodeToString("Ricardo Lecheta".getBytes());
 		Form form = new Form();
 		form.param("fileName", "nome2.xt");
 		form.param("base64", base64);
 		String URL = "http://localhost:8080/Carros/";
-		// Faz a requisição do tipo POST com x-www-form-urlencoded
+		// Faz a requisiÃ§Ã£o do tipo POST com x-www-form-urlencoded
 		WebTarget target = client.target(URL).path("/rest/carros/postFotoBase64");
 		Entity<Form> entity = Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED_TYPE);
 		Response response = target.request(MediaType.APPLICATION_JSON).post(entity);
@@ -104,17 +104,17 @@ public class RestTest extends TestCase {
 		c.setNome("Novo Carro");
 		String URL = "http://localhost:8080/Carros/";
 		WebTarget target = client.target(URL).path("/rest/carros");
-		// Envia o objeto como JSON no corpo da requisição
+		// Envia o objeto como JSON no corpo da requisiÃ§Ã£o
 		Entity<Carro> entity = Entity.entity(c, MediaType.APPLICATION_JSON);
 		Response response = target.request(MediaType.APPLICATION_JSON).post(entity, Response.class);
-		// Valida se a requisição foi OK
+		// Valida se a requisiÃ§Ã£o foi OK
 		assertEquals(200, response.getStatus());
-		// Lê a response do pacote domain
+		// LÃª a response do pacote domain
 		br.com.livro.domain.Response s = response.readEntity(br.com.livro.domain.Response.class);
 		assertEquals("OK", s.getStatus());
 		assertEquals("Carro salvo com sucesso", s.getMsg());
 		
-		// Depois de salvar o carro, vou buscá-lo pelo nome para excluir.
+		// Depois de salvar o carro, vou buscÃ¡-lo pelo nome para excluir.
 		target = client.target(URL).path("/rest/carros/nome/Novo Carro");
 		response = target.request(MediaType.APPLICATION_JSON).get();
 		assertEquals(200, response.getStatus());
@@ -122,7 +122,7 @@ public class RestTest extends TestCase {
 		assertEquals("Novo Carro", c.getNome());
 		Long id = c.getId();
 
-		// Deleta o carro que foi salvo no teste, para não deixar sujeira a base.
+		// Deleta o carro que foi salvo no teste, para nï¿½o deixar sujeira a base.
 		target = client .target(URL).path("/rest/carros/"+id);
 		response =  target.request(MediaType.APPLICATION_JSON).delete();
 		assertEquals(200, response.getStatus());

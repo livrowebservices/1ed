@@ -69,9 +69,9 @@ public class CarrosResource {
 
 	@GET
 	@Path("/nome/{nome}")
-	public Carro getByNome(@PathParam("nome") String nome) {
-		Carro c = carroService.findByName(nome);
-		return c;
+	public List<Carro> getByNome(@PathParam("nome") String nome) {
+		List<Carro> carros = carroService.findByName(nome);
+		return carros;
 	}
 
 	@DELETE
@@ -110,7 +110,7 @@ public class CarrosResource {
 				return ResponseWithURL.Error("Erro ao enviar o arquivo.");
 			}
 		}
-		return ResponseWithURL.Error("Requisição inválida.");
+		return ResponseWithURL.Error("RequisiÃ§Ã£o invÃ¡lida.");
 	}
 
 
@@ -134,31 +134,27 @@ public class CarrosResource {
 				}
 			}
 		}
-		return "Requisição inválida.";
+		return "RequisiÃ§Ã£o invÃ¡lida.";
 	}
 
 	@POST
 	@Path("/postFotoBase64")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response postFotoBase64(@FormParam("fileName") String fileName, @FormParam("base64") String base64) {
+	public ResponseWithURL postFotoBase64(@FormParam("fileName") String fileName, @FormParam("base64") String base64) {
 		if (fileName != null && base64 != null) {
 			try {
 				// Decode: Converte o Base64 para array de bytes
 				byte[] bytes = Base64.getDecoder().decode(base64);
 				InputStream in = new ByteArrayInputStream(bytes);
 				// Faz o upload (salva o arquivo em uma pasta)
-				String path = uploadService.upload(fileName, in);
-				System.out.println("Arquivo: " + path);
+				String url = uploadService.upload(fileName, in);
 				// OK
-				return Response.Ok("Arquivo recebido com sucesso");
+				return ResponseWithURL.Ok("Arquivo recebido com sucesso",url);
 			} catch (Exception e) {
 				e.printStackTrace();
-				return Response.Error("Erro ao enviar o arquivo.");
+				return ResponseWithURL.Error("Erro ao enviar o arquivo.");
 			}
 		}
-		return Response.Error("Requisição inválida.");
+		return ResponseWithURL.Error("Requisiï¿½ï¿½o invï¿½lida.");
 	}
-
-
-
 }

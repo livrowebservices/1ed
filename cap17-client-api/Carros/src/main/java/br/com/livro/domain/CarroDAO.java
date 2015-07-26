@@ -1,6 +1,7 @@
 package br.com.livro.domain;
 
 import java.util.List;
+
 import org.hibernate.Query;
 import org.springframework.stereotype.Component;
 
@@ -19,12 +20,10 @@ public class CarroDAO extends HibernateDAO<Carro> {
 	}
 
 	// Busca um carro pelo nome
-	public Carro findByName(String nome) {
-		Query q = getSession().createQuery("from Carro where nome=?");
-		q.setString(0, nome);
-		List<Carro> list = q.list();
-		Carro c = list.isEmpty() ? null : list.get(0);
-		return c;
+	public List<Carro> findByName(String nome) {
+		Query q = getSession().createQuery("from Carro where lower(nome)  like lower(?)");
+		q.setString(0, "%" + nome +"%");
+		return q.list();
 	}
 
 	// Busca um carro pelo tipo

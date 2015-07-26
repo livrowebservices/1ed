@@ -70,9 +70,9 @@ public class CarrosResource {
 
 	@GET
 	@Path("/nome/{nome}")
-	public Carro getByNome(@PathParam("nome") String nome) {
-		Carro c = carroService.findByName(nome);
-		return c;
+	public List<Carro> getByNome(@PathParam("nome") String nome) {
+		List<Carro> carros = carroService.findByName(nome);
+		return carros;
 	}
 
 	@DELETE
@@ -111,7 +111,7 @@ public class CarrosResource {
 				return ResponseWithURL.Error("Erro ao enviar o arquivo.");
 			}
 		}
-		return ResponseWithURL.Error("Requisição inválida.");
+		return ResponseWithURL.Error("Requisiï¿½ï¿½o invï¿½lida.");
 	}
 
 
@@ -135,7 +135,7 @@ public class CarrosResource {
 				}
 			}
 		}
-		return "Requisição inválida.";
+		return "Requisiï¿½ï¿½o invï¿½lida.";
 	}
 
 	@POST
@@ -157,7 +157,7 @@ public class CarrosResource {
 				return Response.Error("Erro ao enviar o arquivo.");
 			}
 		}
-		return Response.Error("Requisição inválida.");
+		return Response.Error("Requisiï¿½ï¿½o invï¿½lida.");
 	}
 
 

@@ -23,8 +23,7 @@ public class CarroDAO extends HibernateDAO<Carro> {
 	public List<Carro> findByName(String nome) {
 		Query q = getSession().createQuery("from Carro where lower(nome)  like lower(?)");
 		q.setString(0, "%" + nome +"%");
-		List<Carro> list = q.list();
-		return list;
+		return q.list();
 	}
 
 	// Busca um carro pelo tipo
