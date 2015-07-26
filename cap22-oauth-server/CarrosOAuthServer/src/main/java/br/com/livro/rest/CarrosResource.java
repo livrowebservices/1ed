@@ -6,7 +6,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -38,7 +37,7 @@ import br.com.livro.domain.UploadService;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Component
-@PermitAll
+@RolesAllowed({"user","admin"})
 public class CarrosResource {
 	
 	@Context

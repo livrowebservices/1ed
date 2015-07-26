@@ -23,27 +23,21 @@ import br.com.livro.util.ServletUtil;
 
 @WebFilter("/rest/carrosv2/*")
 public class CarrosOAuthFilter implements Filter {
-
 	// Cria o fluxo de autorização
 	public OAuth1AuthorizationFlow getAuthorizationFlow(
 			HttpServletRequest request, String callbackUri) {
 		ConsumerCredentials consumerCredentials = new ConsumerCredentials(
 				MyApplication.CONSUMER_KEY, MyApplication.CONSUMER_SECRET);
-
 		FlowBuilder builder = OAuth1ClientSupport.builder(consumerCredentials)
 				.authorizationFlow(
 						"http://localhost:8080/Carros/rest/requestToken",
 						"http://localhost:8080/Carros/rest/accessToken",
 						"http://localhost:8080/Carros/rest/authorize");
-
 		if (callbackUri != null) {
 			builder.callbackUri(callbackUri);
 		}
-
 		OAuth1AuthorizationFlow authFlow = builder.build();
-
 		request.getSession().setAttribute("authFlow", authFlow);
-
 		return authFlow;
 	}
 
@@ -51,25 +45,20 @@ public class CarrosOAuthFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
-
 		AccessToken accessToken = (AccessToken) req.getSession().getAttribute(
 				"accessToken");
 		if (accessToken == null) {
-
 			String oauth_verifier = req.getParameter("oauth_verifier");
 			String oauth_token = req.getParameter("oauth_token");
-
 			if (oauth_verifier != null && oauth_token != null) {
 				// Voltou do Twitter, verifica o código
 				verify(req, oauth_verifier);
-
 			} else {
 				// Precisa redirecionar para o Twitter
 				auth(req, resp);
 				return;
 			}
 		}
-
 		// Continua a requisição
 		chain.doFilter(req, resp);
 	}
@@ -86,7 +75,7 @@ public class CarrosOAuthFilter implements Filter {
 		AccessToken accessToken;
 		OAuth1AuthorizationFlow authFlow = (OAuth1AuthorizationFlow) req
 				.getSession().getAttribute("authFlow");
-		if(authFlow != null) {
+		if (authFlow != null) {
 			accessToken = authFlow.finish(oauth_verifier);
 			req.getSession().setAttribute("accessToken", accessToken);
 		}
@@ -94,11 +83,9 @@ public class CarrosOAuthFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-
 	}
 
 	@Override
 	public void destroy() {
-
 	}
 }

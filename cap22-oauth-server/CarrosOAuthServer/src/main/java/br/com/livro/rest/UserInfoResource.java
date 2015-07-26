@@ -3,6 +3,7 @@ package br.com.livro.rest;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -18,6 +19,9 @@ public class UserInfoResource {
 
 	@GET
 	public String userInfo() {
+		if(securityContext == null) {
+			throw new NotAuthorizedException("Acesso não autorizado");
+		}
 		String name = securityContext.getUserPrincipal().getName();
 		if (securityContext.isUserInRole("admin")) {
 			return "Você é um administrador: " + name;
