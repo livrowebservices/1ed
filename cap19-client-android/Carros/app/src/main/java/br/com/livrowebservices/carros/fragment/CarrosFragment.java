@@ -3,6 +3,7 @@ package br.com.livrowebservices.carros.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -125,10 +127,10 @@ public class CarrosFragment extends BaseFragment {
         return new CarroAdapter.PlanetaOnClickListener() {
             @Override
             public void onClickCarro(CarroAdapter.CarrosViewHolder holder, int idx) {
-                Carro p = carros.get(idx);
+                Carro c = carros.get(idx);
 
                 ImageView img = holder.img;
-                //intent.putExtra("img", p.img);
+                intent.putExtra("carro", c);
                 String key = getString(R.string.transition_key);
 
                 // Compat

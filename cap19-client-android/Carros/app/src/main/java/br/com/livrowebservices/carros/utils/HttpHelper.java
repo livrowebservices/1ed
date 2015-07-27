@@ -37,7 +37,7 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            //conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(10000);
             conn.setReadTimeout(10000);

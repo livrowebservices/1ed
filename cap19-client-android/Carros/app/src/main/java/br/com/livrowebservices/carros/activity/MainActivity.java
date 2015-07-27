@@ -36,13 +36,35 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // ViewPager
         viewPager = (ViewPager) findViewById(R.id.tabanim_viewpager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
+        // Tabs
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(this);
+
+        // FAB Button
+        findViewById(R.id.btAddCarro).setOnClickListener(onClickAddCarro());
+    }
+
+    private View.OnClickListener onClickAddCarro() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar
+                        .make(coordinatorLayout, "Adicionar carro.", Snackbar.LENGTH_LONG)
+                        .setAction("Ok", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getContext(), "OK!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
+            }
+        };
     }
 
     void showToast(String msg) {

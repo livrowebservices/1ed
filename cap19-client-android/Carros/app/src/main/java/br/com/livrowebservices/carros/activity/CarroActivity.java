@@ -6,7 +6,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Window;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import br.com.livrowebservices.carros.R;
+import br.com.livrowebservices.carros.domain.Carro;
 
 
 public class CarroActivity extends AppCompatActivity {
@@ -23,10 +26,17 @@ public class CarroActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
         }
 
-        int imgPlaneta = getIntent().getIntExtra("img", 0);
-        if (imgPlaneta > 0) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Carro c = (Carro) getIntent().getSerializableExtra("carro");
+        if (c != null) {
             ImageView img = (ImageView) findViewById(R.id.img);
-            img.setImageResource(imgPlaneta);
+
+            if(c.urlFoto != null && c.urlFoto.trim().length() > 0) {
+                Picasso.with(this).load(c.urlFoto).placeholder(R.drawable.placeholder).into(img);
+            } else {
+                img.setImageResource(R.drawable.placeholder);
+            }
         }
     }
 }
