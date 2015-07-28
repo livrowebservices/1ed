@@ -5,13 +5,9 @@
 
     <include layout="@layout/include_toolbar" />
 
-    <ImageView
-        android:id="@+id/img"
-        android:transitionName="@string/transition_key"
-        android:src="@drawable/ferrari_ff"
-        android:layout_width="350dp"
-        android:layout_height="150dp"
-        android:layout_margin="10dp"
-        android:layout_gravity="center" />
+    <FrameLayout
+        android:id="@+id/layoutFrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.domain.Carro;
+import br.com.livrowebservices.carros.fragment.CarroFragment;
 
 
 public class CarroActivity extends AppCompatActivity {
@@ -30,15 +31,15 @@ public class CarroActivity extends AppCompatActivity {
 
         Carro c = (Carro) getIntent().getSerializableExtra("carro");
         if (c != null) {
-            ImageView img = (ImageView) findViewById(R.id.img);
-
             setTitle(c.nome);
-
-            if(c.urlFoto != null && c.urlFoto.trim().length() > 0) {
-                Picasso.with(this).load(c.urlFoto).placeholder(R.drawable.placeholder).into(img);
-            } else {
-                img.setImageResource(R.drawable.placeholder);
-            }
         }
+
+        if(savedInstanceState == null) {
+            CarroFragment frag = new CarroFragment();
+            frag.setArguments(getIntent().getExtras());
+           getSupportFragmentManager().beginTransaction().replace(R.id.layoutFrag,frag).commit();
+        }
+
+
     }
 }

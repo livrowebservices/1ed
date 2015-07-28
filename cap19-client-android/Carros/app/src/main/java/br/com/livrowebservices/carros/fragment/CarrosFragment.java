@@ -11,6 +11,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,6 +28,7 @@ import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.AndroidUtils;
+import livroandroid.lib.utils.IntentUtils;
 
 /**
  * Created by ricardo on 12/06/15.
@@ -33,7 +37,6 @@ public class CarrosFragment extends BaseFragment {
     CarroAdapter adapter;
     private RecyclerView recyclerView;
     private List<Carro> carros;
-    private SwipeRefreshLayout swipeLayout;
     private String tipo;
 
     @Override
@@ -42,6 +45,7 @@ public class CarrosFragment extends BaseFragment {
         if (getArguments() != null) {
             this.tipo = getArguments().getString("tipo");
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -55,40 +59,27 @@ public class CarrosFragment extends BaseFragment {
         adapter = new CarroAdapter(getActivity(), carros, onClickCarro());
         recyclerView.setAdapter(adapter);
 
-        // Swipe to Refresh
-        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
-        swipeLayout.setOnRefreshListener(OnRefreshListener());
-        swipeLayout.setColorSchemeResources(
-                R.color.refresh_progress_1,
-                R.color.refresh_progress_2,
-                R.color.refresh_progress_3);
-
         return view;
     }
 
-    private SwipeRefreshLayout.OnRefreshListener OnRefreshListener() {
-        return new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Atualiza ao fazer o gesto Swipe To Refresh
-                if (AndroidUtils.isNetworkAvailable(getContext())) {
-                    taskCarros(true);
-                } else {
-                    alert(R.string.error_conexao_indisponivel);
-                }
-            }
-        };
+    private void listaCarros() {
+        // Atualiza ao fazer o gesto Swipe To Refresh
+        if (AndroidUtils.isNetworkAvailable(getContext())) {
+            taskCarros();
+        } else {
+            alert(R.string.error_conexao_indisponivel);
+        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        taskCarros(false);
+        listaCarros();
     }
 
-    private void taskCarros(boolean pullToRefresh) {
-        startTask("carros", new GetCarrosTask(), pullToRefresh ? R.id.swipeToRefresh : R.id.progress);
+    private void taskCarros() {
+        startTask("carros", new GetCarrosTask(), R.id.progress);
     }
 
     // Task para buscar os carros
@@ -138,5 +129,23 @@ public class CarrosFragment extends BaseFragment {
                 ActivityCompat.startActivity(getActivity(), intent, opts.toBundle());
             }
         };
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_frag_carros, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            listaCarros();
+            return true;
+        } else if (id == R.id.action_search) {
+            toast("Faça a busca");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

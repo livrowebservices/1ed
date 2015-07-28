@@ -1,9 +1,12 @@
 package br.com.livrowebservices.carros.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -54,15 +57,20 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar
-                        .make(coordinatorLayout, "Adicionar carro.", Snackbar.LENGTH_LONG)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(getContext(), "OK!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .show();
+//                Snackbar
+//                        .make(coordinatorLayout, "Adicionar carro.", Snackbar.LENGTH_LONG)
+//                        .setAction("Ok", new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                Toast.makeText(getContext(), "OK!", Toast.LENGTH_SHORT).show();
+//                            }
+//                        })
+//                        .show();
+
+                // Compat
+                Intent intent = new Intent(getActivity(),CarroActivity.class);
+                //ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), img, key);
+                ActivityCompat.startActivity(getActivity(), intent, null);
             }
         };
     }
