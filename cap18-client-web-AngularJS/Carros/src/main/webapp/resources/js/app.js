@@ -1,3 +1,9 @@
+/**
+ * Arquivo que registra o módulo "main" do AngularJS.
+ * Registra as dependências, exemplo: ngRoute, ngDialog, ngFileUpload
+ * 
+ * Define URL base para os web services.
+ */
 (function() {
 
 	angular.module('AppCarro', [ 'ngRoute', 'ngDialog', 'ngFileUpload',

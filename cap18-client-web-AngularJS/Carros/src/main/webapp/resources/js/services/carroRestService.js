@@ -1,3 +1,6 @@
+/**
+ * API para acessar os web services REST dos carros
+ */
 (function() {
 	angular
 		.module('carroRestService', []);

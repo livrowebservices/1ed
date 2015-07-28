@@ -1,10 +1,14 @@
+/**
+ * Arquivo que mantém a lista o estado da lista de carros. 
+ */
 (function() {
 
-	angular
-		.module('carroService', []);
+	angular.module('carroService', []);
 	
 	function carro() {
+		// lista de carros
 		var carros = [];
+
 		function setCarros(carros) {
 			this.carros = carros;
 		}
@@ -20,7 +24,5 @@
 		}
 	}
 	
-	angular
-		.module('carroService')
-		.factory('carroService', carro);
+	angular.module('carroService').factory('carroService', carro);
 }());

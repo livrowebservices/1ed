@@ -1,3 +1,6 @@
+/**
+ * Controller responsável pelo distribuição das funcionalidades do sistema.
+ */
 (function() {
 	angular
 		.module('CarroControllers', ['carroRestService', 'carroService']);
