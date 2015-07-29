@@ -131,7 +131,6 @@ public class CarroFragment extends BaseLibFragment {
             public void updateView(Response response) {
                 super.updateView(response);
                 if(response != null && "OK".equals(response.getStatus())) {
-                    toast("Carro " + c.nome + " excluído com sucesso");
                     getActivity().finish();
                     BroadcastUtil.broadcast(getContext(),BroadcastUtil.ACTION_CARRO_EXCLUIDO);
                 } else {

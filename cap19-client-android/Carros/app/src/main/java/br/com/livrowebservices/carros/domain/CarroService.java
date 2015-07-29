@@ -29,6 +29,13 @@ public class CarroService {
         return carros;
     }
 
+    public static List<Carro> buscaCarros(Context context, String nome) throws IOException {
+        String url = URL_BASE + "/nome/" + nome;
+        String json = HttpHelper.doGet(url);
+        List<Carro> carros = parserJSON(context, json);
+        return carros;
+    }
+
     private static List<Carro> parserJSON(Context context, String json) throws IOException {
         List<Carro> carros = new ArrayList<Carro>();
         try {
@@ -77,4 +84,6 @@ public class CarroService {
         Response response = gson.fromJson(json,Response.class);
         return response;
     }
+
+
 }

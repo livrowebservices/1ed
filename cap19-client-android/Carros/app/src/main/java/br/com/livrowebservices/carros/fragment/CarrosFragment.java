@@ -10,10 +10,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,8 +49,8 @@ public class CarrosFragment extends BaseLibFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(intent.getAction())) {
-                taskCarros();
-                snack(recyclerView, "OH EXCLUIDO");
+                listaCarros();
+                snack(recyclerView, "Carro excluído.");
             }
         }
     };
@@ -62,7 +64,7 @@ public class CarrosFragment extends BaseLibFragment {
         setHasOptionsMenu(true);
 
         // Registra receiver para receber broadcasts
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver,new IntentFilter(BroadcastUtil.ACTION_CARRO_EXCLUIDO));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_EXCLUIDO));
     }
 
     @Override
@@ -79,15 +81,6 @@ public class CarrosFragment extends BaseLibFragment {
         return view;
     }
 
-    private void listaCarros() {
-        // Atualiza ao fazer o gesto Swipe To Refresh
-        if (AndroidUtils.isNetworkAvailable(getContext())) {
-            taskCarros();
-        } else {
-            alert(R.string.error_conexao_indisponivel);
-        }
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -95,17 +88,23 @@ public class CarrosFragment extends BaseLibFragment {
         listaCarros();
     }
 
-    private void taskCarros() {
-        startTask("carros", new GetCarrosTask(), R.id.progress);
-    }
-
     // Task para buscar os carros
     private class GetCarrosTask implements TaskListener<List<Carro>> {
+        private String nome;
+        public GetCarrosTask(String nome) {
+            this.nome = nome;
+        }
+
         @Override
         public List<Carro> execute() throws Exception {
-            Thread.sleep(200);
-            // Busca os carros em background (Thread)
-            return CarroService.getCarros(getContext(), tipo);
+            // Busca os carros em background
+            if(nome != null) {
+                // É uma busca por nome
+                return CarroService.buscaCarros(getContext(), nome);
+            } else {
+                // É para listar por tipo
+                return CarroService.getCarros(getContext(), tipo);
+            }
         }
 
         @Override
@@ -151,6 +150,26 @@ public class CarrosFragment extends BaseLibFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_frag_carros, menu);
+
+        // SearchView
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(onSearch());
+    }
+
+    private SearchView.OnQueryTextListener onSearch() {
+        return new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                buscaCarros(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        };
     }
 
     @Override
@@ -164,6 +183,24 @@ public class CarrosFragment extends BaseLibFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void listaCarros() {
+        // Atualiza ao fazer o gesto Swipe To Refresh
+        if (AndroidUtils.isNetworkAvailable(getContext())) {
+            startTask("carros", new GetCarrosTask(null), R.id.progress);
+        } else {
+            alert(R.string.error_conexao_indisponivel);
+        }
+    }
+
+    private void buscaCarros(String nome) {
+        // Atualiza ao fazer o gesto Swipe To Refresh
+        if (AndroidUtils.isNetworkAvailable(getContext())) {
+            startTask("carros", new GetCarrosTask(nome), R.id.progress);
+        } else {
+            alert(R.string.error_conexao_indisponivel);
+        }
     }
 
     @Override
