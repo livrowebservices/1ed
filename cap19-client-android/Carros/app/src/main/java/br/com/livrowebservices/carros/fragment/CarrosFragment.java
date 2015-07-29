@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -23,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -33,9 +31,7 @@ import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
-import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.AndroidUtils;
-import livroandroid.lib.utils.IntentUtils;
 
 /**
  * Created by ricardo on 12/06/15.
@@ -45,11 +41,13 @@ public class CarrosFragment extends BaseLibFragment {
     private RecyclerView recyclerView;
     private List<Carro> carros;
     private String tipo;
+    private SwipeRefreshLayout swipeLayout;
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(intent.getAction())) {
-                listaCarros();
+            if (BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(intent.getAction())) {
+                listaCarros(false);
                 snack(recyclerView, "Carro excluído.");
             }
         }
@@ -78,6 +76,14 @@ public class CarrosFragment extends BaseLibFragment {
         adapter = new CarroAdapter(getActivity(), carros, onClickCarro());
         recyclerView.setAdapter(adapter);
 
+        // Swipe to Refresh
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
+        swipeLayout.setOnRefreshListener(OnRefreshListener());
+        swipeLayout.setColorSchemeResources(
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3);
+
         return view;
     }
 
@@ -85,12 +91,13 @@ public class CarrosFragment extends BaseLibFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        listaCarros();
+        listaCarros(false);
     }
 
     // Task para buscar os carros
     private class GetCarrosTask implements TaskListener<List<Carro>> {
         private String nome;
+
         public GetCarrosTask(String nome) {
             this.nome = nome;
         }
@@ -98,7 +105,7 @@ public class CarrosFragment extends BaseLibFragment {
         @Override
         public List<Carro> execute() throws Exception {
             // Busca os carros em background
-            if(nome != null) {
+            if (nome != null) {
                 // É uma busca por nome
                 return CarroService.buscaCarros(getContext(), nome);
             } else {
@@ -175,20 +182,26 @@ public class CarrosFragment extends BaseLibFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            listaCarros();
-            return true;
-        } else if (id == R.id.action_search) {
+        if (id == R.id.action_search) {
             toast("Faça a busca");
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void listaCarros() {
+    private SwipeRefreshLayout.OnRefreshListener OnRefreshListener() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                listaCarros(true);
+            }
+        };
+    }
+
+    private void listaCarros(boolean pullToRefresh) {
         // Atualiza ao fazer o gesto Swipe To Refresh
         if (AndroidUtils.isNetworkAvailable(getContext())) {
-            startTask("carros", new GetCarrosTask(null), R.id.progress);
+            startTask("carros", new GetCarrosTask(null), pullToRefresh ? R.id.swipeToRefresh : R.id.progress);
         } else {
             alert(R.string.error_conexao_indisponivel);
         }
