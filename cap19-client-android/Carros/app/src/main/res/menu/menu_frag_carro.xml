@@ -2,9 +2,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
-    <item
+    <!--<item
         android:id="@+id/action_done"
         android:icon="@drawable/ic_done_white"
         app:showAsAction="always"
-        android:title="@string/action_done" />
+        android:title="@string/action_done" />-->
+
+    <item
+        android:id="@+id/action_video"
+        android:icon="@drawable/ic_action_video"
+        android:title="Video"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Editar"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_remove"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Remover"
+        app:showAsAction="ifRoom" />
 </menu>

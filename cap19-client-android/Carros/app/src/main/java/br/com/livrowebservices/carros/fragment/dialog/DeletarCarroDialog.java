@@ -17,9 +17,8 @@ import br.com.livrowebservices.carros.domain.Carro;
 public class DeletarCarroDialog extends DialogFragment {
 
     private Callback callback;
-    private Carro carro;
 
-    public static void show(FragmentManager fm, Carro carro, Callback callback) {
+    public static void show(FragmentManager fm, Callback callback) {
         FragmentTransaction ft = fm.beginTransaction();
         Fragment prev = fm.findFragmentByTag("deletar_carro");
         if (prev != null) {
@@ -28,16 +27,7 @@ public class DeletarCarroDialog extends DialogFragment {
         ft.addToBackStack(null);
         DeletarCarroDialog frag = new DeletarCarroDialog();
         frag.callback = callback;
-        Bundle args = new Bundle();
-        args.putSerializable("carro", carro);
-        frag.setArguments(args);
         frag.show(ft, "deletar_carro");
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.carro = (Carro) getArguments().getSerializable("carro");
     }
 
     @Override
@@ -49,7 +39,7 @@ public class DeletarCarroDialog extends DialogFragment {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         if (callback != null) {
-                            callback.deleteCarro(carro);
+                            callback.deleteCarro();
                         }
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -65,6 +55,6 @@ public class DeletarCarroDialog extends DialogFragment {
     }
 
     public static interface Callback {
-        public void deleteCarro(Carro carro);
+        public void deleteCarro();
     }
 }

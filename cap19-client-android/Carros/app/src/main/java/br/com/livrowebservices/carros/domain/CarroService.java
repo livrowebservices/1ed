@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,11 @@ import br.com.livrowebservices.carros.utils.HttpHelper;
 
 
 public class CarroService {
-    private static final String URL = "http://livrowebservices.com.br/rest/carros/tipo/{tipo}";
+    private static final String URL_BASE = "http://livrowebservices.com.br/rest/carros";
     private static final boolean LOG_ON = false;
     private static final String TAG = "CarroService";
     public static List<Carro> getCarros(Context context, String tipo) throws IOException {
-        String url = URL.replace("{tipo}", tipo);
+        String url = URL_BASE + "/tipo/" + tipo;
         String json = HttpHelper.doGet(url);
         List<Carro> carros = parserJSON(context, json);
         return carros;
@@ -38,6 +39,7 @@ public class CarroService {
                 JSONObject jsonCarro = jsonCarros.getJSONObject(i);
                 Carro c = new Carro();
                 // Lê as informações de cada carro
+                c.id = jsonCarro.optLong("id");
                 c.nome = jsonCarro.optString("nome");
                 c.desc = jsonCarro.optString("desc");
                 c.urlFoto = jsonCarro.optString("urlFoto");
@@ -45,7 +47,7 @@ public class CarroService {
                 c.latitude = jsonCarro.optString("latitude");
                 c.longitude = jsonCarro.optString("longitude");
                 if (LOG_ON) {
-                    Log.d(TAG, "Carro " + c.nome + " > " + c.urlFoto);
+                    Log.d(TAG, "Carro ("+c.id+") " + c.nome + " > " + c.urlFoto);
                 }
                 carros.add(c);
             }
@@ -60,5 +62,12 @@ public class CarroService {
             throw new IOException("Erro ao ler os dados: " + e.getMessage(), e);
         }
         return carros;
+    }
+
+    public static void delete(Context context, Carro c) throws IOException {
+        String url = URL_BASE + "/"+c.id;
+        String json = HttpHelper.doDelete(url);
+        Log.d(TAG,"Delete json: " + json);
+
     }
 }

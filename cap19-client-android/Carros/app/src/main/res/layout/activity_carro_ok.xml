@@ -34,12 +34,58 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- Aqui é a parte com scroll -->
             <FrameLayout
-                android:id="@+id/layoutFrag"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="350dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ferrari_ff"
+                    android:transitionName="@string/transition_key" />
+
+                <include layout="@layout/include_progress" />
+            </FrameLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:layout_marginTop="6dp"
+                android:background="#cccccc" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tNome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nome" />
+
+                <TextView
+                    android:id="@+id/tDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="A\nB\nC\nD\nE" />
+
+                <TextView
+                    android:id="@+id/tLat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Latitude" />
+
+                <TextView
+                    android:id="@+id/tLng"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Longitude" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
@@ -66,8 +112,7 @@
                 android:background="@drawable/header_intel"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                android:transitionName="@string/transition_key"/>
+                app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

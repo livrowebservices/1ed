@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.domain.Carro;
+import br.com.livrowebservices.carros.fragment.CarroFragment;
 import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
 import livroandroid.lib.activity.BaseActivity;
 
@@ -72,14 +73,14 @@ public class CarroActivity extends BaseActivity {
         if (c != null) {
             setTitle(c.nome);
             collapsingToolbar.setTitle(c.nome);
-            setCarro(c);
+            //setCarro(c);
         }
 
-        /*if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             CarroFragment frag = new CarroFragment();
             frag.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction().replace(R.id.layoutFrag, frag).commit();
-        }*/
+        }
     }
 
     private void setCarro(Carro c) {
@@ -113,21 +114,16 @@ public class CarroActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_edit) {
-            toast("Editar: " + c.nome);
-            return true;
-        } else if (id == R.id.action_remove) {
-            DeletarCarroDialog.show(getSupportFragmentManager(), c, new DeletarCarroDialog.Callback() {
-                @Override
-                public void deleteCarro(Carro carro) {
-                    toast("Carro [" + carro.nome + "] deletado.");
 
-                }
-            });
-
-            return true;
-        }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setAppBarHeaderImage(String url) {
+        ImageView img = this.header;
+        if(url != null && url.trim().length() > 0) {
+            Picasso.with(this).load(c.urlFoto).placeholder(R.drawable.placeholder).into(img);
+        } else {
+            img.setImageResource(R.drawable.placeholder);
+        }
     }
 }

@@ -16,6 +16,7 @@ import livroandroid.lib.utils.IOUtils;
 
 public class HttpHelper {
     private static final String TAG = "Http";
+    public static final int TIMEOUT_MILLIS = 10000;
     public static boolean LOG_ON = false;
 
     public static String doGet(String url) throws IOException {
@@ -39,8 +40,51 @@ public class HttpHelper {
             conn = (HttpURLConnection) u.openConnection();
             //conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             conn.setRequestMethod("GET");
-            conn.setConnectTimeout(10000);
-            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(TIMEOUT_MILLIS);
+            conn.setReadTimeout(TIMEOUT_MILLIS);
+            //conn.setDoOutput(true);
+            //conn.setDoInput(true);
+            conn.connect();
+            InputStream in = conn.getInputStream();
+            s = IOUtils.toString(in, charset);
+            if (LOG_ON) {
+                Log.d(TAG, "<< Http.doGet: " + s);
+            }
+            in.close();
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        return s;
+    }
+
+    public static String doDelete(String url) throws IOException {
+        return doDelete(url, null, "UTF-8");
+    }
+
+    public static String doDelete(String url, Map<String, String> params, String charset) throws IOException {
+        String queryString = HttpHelper.getQueryString(params, null);
+        if (queryString != null && queryString.trim().length() > 0) {
+            url += "?" + queryString;
+        }
+
+        if (LOG_ON) {
+            Log.d(TAG, ">> Http.doDelete: " + url);
+        }
+
+        URL u = new URL(url);
+        HttpURLConnection conn = null;
+        String s = null;
+        try {
+            conn = (HttpURLConnection) u.openConnection();
+            //conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            conn.setRequestMethod("DELETE");
+            conn.setConnectTimeout(TIMEOUT_MILLIS);
+            conn.setReadTimeout(TIMEOUT_MILLIS);
             //conn.setDoOutput(true);
             //conn.setDoInput(true);
             conn.connect();

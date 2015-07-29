@@ -9,12 +9,12 @@
 
         <ImageView
             android:id="@+id/img"
-            android:transitionName="@string/transition_key"
-            android:src="@drawable/ferrari_ff"
             android:layout_width="350dp"
             android:layout_height="150dp"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:layout_gravity="center" />
+            android:src="@drawable/ferrari_ff"
+             />
 
         <include layout="@layout/include_progress" />
     </FrameLayout>
@@ -25,64 +25,34 @@
         android:layout_marginTop="6dp"
         android:background="#cccccc" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:hint="Nome" />
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tDesc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="A\nB\nC\nD\nE" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Nome"
-                    android:id="@+id/tNome" />
+        <TextView
+            android:id="@+id/tLat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Latitude" />
 
-            </android.support.design.widget.TextInputLayout>
+        <TextView
+            android:id="@+id/tLng"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Longitude" />
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Desc"
-                    android:id="@+id/tDesc" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Latitude"
-                    android:id="@+id/tLat" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Longitude"
-                    android:id="@+id/tLng" />
-
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 </LinearLayout>
