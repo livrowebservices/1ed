@@ -25,13 +25,8 @@ import livroandroid.lib.activity.BaseActivity;
 public class CarroActivity extends BaseActivity {
     CollapsingToolbarLayout collapsingToolbar;
 
-    private TextView tNome;
-    private TextView tDesc;
-    private TextView tLat;
-    private TextView tLng;
-    private ImageView img;
-    private ImageView header;
     private Carro c;
+    private ImageView header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +41,15 @@ public class CarroActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toast("Você pode favoritar esse carro...");
+            }
+        });
+
         // Título da CollapsingToolbarLayout
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
-        img = (ImageView) findViewById(R.id.img);
-        tNome = (TextView) findViewById(R.id.tNome);
-        tDesc = (TextView) findViewById(R.id.tDesc);
-        tLat = (TextView) findViewById(R.id.tLat);
-        tLng = (TextView) findViewById(R.id.tLng);
 
         // Header
         header = (ImageView) findViewById(R.id.header);
@@ -73,7 +69,6 @@ public class CarroActivity extends BaseActivity {
         if (c != null) {
             setTitle(c.nome);
             collapsingToolbar.setTitle(c.nome);
-            //setCarro(c);
         }
 
         if (savedInstanceState == null) {
@@ -83,44 +78,10 @@ public class CarroActivity extends BaseActivity {
         }
     }
 
-    private void setCarro(Carro c) {
-        if (c != null) {
-            this.img.setVisibility(View.GONE);
-            ImageView img = this.header;
-            if(c.urlFoto != null && c.urlFoto.trim().length() > 0) {
-                Picasso.with(this).load(c.urlFoto).placeholder(R.drawable.placeholder).into(img);
-            } else {
-                img.setImageResource(R.drawable.placeholder);
-            }
-        }
-
-        tNome.setText(c.nome);
-
-        c.desc = "AHA"+c.desc;
-        for (int i=0;i<10;i++){
-            c.desc += "\n"+c.desc;
-        }
-
-        tDesc.setText(c.desc);
-        tLat.setText(c.latitude);
-        tLng.setText(c.longitude);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_carro, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void setAppBarHeaderImage(String url) {
         ImageView img = this.header;
         if(url != null && url.trim().length() > 0) {
+            //Picasso.with(this).load(c.urlFoto).resizeDimen(R.dimen.img_carro_width, R.dimen.img_carro_height).centerCrop().placeholder(R.drawable.placeholder).into(img);
             Picasso.with(this).load(c.urlFoto).placeholder(R.drawable.placeholder).into(img);
         } else {
             img.setImageResource(R.drawable.placeholder);
