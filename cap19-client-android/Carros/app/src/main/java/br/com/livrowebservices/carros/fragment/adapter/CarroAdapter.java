@@ -21,7 +21,7 @@ import br.com.livrowebservices.carros.domain.Carro;
 // Herda de RecyclerView.Adapter e declara o tipo genérico <CarroAdapter.CarrosViewHolder>
 public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHolder> {
     protected static final String TAG = "livroandroid";
-    private final List<Carro> planetas;
+    private final List<Carro> carros;
     private final Context context;
     private final PlanetaOnClickListener onClickListener;
 
@@ -29,9 +29,9 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
         public void onClickCarro(CarrosViewHolder holder, int idx);
     }
 
-    public CarroAdapter(Context context, List<Carro> planetas, PlanetaOnClickListener onClickListener) {
+    public CarroAdapter(Context context, List<Carro> carros, PlanetaOnClickListener onClickListener) {
         this.context = context;
-        this.planetas = planetas;
+        this.carros = carros;
         this.onClickListener = onClickListener;
     }
 
@@ -47,10 +47,14 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
 
     @Override
     public void onBindViewHolder(final CarrosViewHolder holder, final int position) {
-        // Este método recebe o índice do elemento, e atualiza as views que estão dentro do ViewHolder
-        Carro c = planetas.get(position);
+        // Carro da linha
+        Carro c = carros.get(position);
+
         // Atualizada os valores nas views
         holder.tNome.setText(c.nome);
+        holder.tDesc.setText(c.desc);
+
+        // Foto do carro
         if(c.urlFoto != null && c.urlFoto.trim().length() > 0) {
             Picasso.with(context).load(c.urlFoto).placeholder(R.drawable.placeholder).into(holder.img);
         } else {
@@ -71,12 +75,13 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
 
     @Override
     public int getItemCount() {
-        return this.planetas != null ? this.planetas.size() : 0;
+        return this.carros != null ? this.carros.size() : 0;
     }
 
     // Subclasse de RecyclerView.ViewHolder. Contém todas as views.
     public static class CarrosViewHolder extends RecyclerView.ViewHolder {
         public TextView tNome;
+        public TextView tDesc;
         public ImageView img;
         private ProgressBar progress;
         private View view;
@@ -86,6 +91,7 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
             this.view = view;
             // Cria as views para salvar no ViewHolder
             tNome = (TextView) view.findViewById(R.id.tNome);
+            tDesc = (TextView) view.findViewById(R.id.tDesc);
             img = (ImageView) view.findViewById(R.id.img);
             progress = (ProgressBar) view.findViewById(R.id.progress);
         }
