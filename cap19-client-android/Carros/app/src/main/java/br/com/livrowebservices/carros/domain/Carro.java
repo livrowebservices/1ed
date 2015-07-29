@@ -19,4 +19,39 @@ public class Carro implements Serializable {
     public String toString() {
         return "Carro{" + "nome='" + nome + '\'' + ", desc='" + desc + '\'' + '}';
     }
+
+    /*
+    // PARCELABLE
+        public Car(Parcel parcel){
+            setModel(parcel.readString());
+            setBrand(parcel.readString());
+            setDescription(parcel.readString());
+            setCategory(parcel.readInt());
+            setTel(parcel.readString());
+            setPhoto(parcel.readInt());
+        }
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString( getModel() );
+            dest.writeString( getBrand() );
+            dest.writeString( getDescription() );
+            dest.writeInt( getCategory() );
+            dest.writeString( getTel() );
+            dest.writeInt( getPhoto() );
+        }
+        public static final Parcelable.Creator<Car> CREATOR = new Parcelable.Creator<Car>(){
+            @Override
+            public Car createFromParcel(Parcel source) {
+                return new Car(source);
+            }
+            @Override
+            public Car[] newArray(int size) {
+                return new Car[size];
+            }
+        };
+     */
 }
