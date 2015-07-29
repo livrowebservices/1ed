@@ -4,9 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -16,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.domain.Carro;
-import br.com.livrowebservices.carros.fragment.CarroFragment;
+import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
 import livroandroid.lib.activity.BaseActivity;
 
 
@@ -29,6 +30,7 @@ public class CarroActivity extends BaseActivity {
     private TextView tLng;
     private ImageView img;
     private ImageView header;
+    private Carro c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class CarroActivity extends BaseActivity {
             }
         });
 
-        Carro c = (Carro) getIntent().getSerializableExtra("carro");
+        c = (Carro) getIntent().getSerializableExtra("carro");
         if (c != null) {
             setTitle(c.nome);
             collapsingToolbar.setTitle(c.nome);
@@ -101,5 +103,31 @@ public class CarroActivity extends BaseActivity {
         tDesc.setText(c.desc);
         tLat.setText(c.latitude);
         tLng.setText(c.longitude);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_carro, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_edit) {
+            toast("Editar: " + c.nome);
+            return true;
+        } else if (id == R.id.action_remove) {
+            DeletarCarroDialog.show(getSupportFragmentManager(), c, new DeletarCarroDialog.Callback() {
+                @Override
+                public void deleteCarro(Carro carro) {
+                    toast("Carro [" + carro.nome + "] deletado.");
+
+                }
+            });
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
