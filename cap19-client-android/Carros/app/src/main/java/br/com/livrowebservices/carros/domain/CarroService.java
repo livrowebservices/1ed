@@ -3,9 +3,12 @@ package br.com.livrowebservices.carros.domain;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.DOMException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,17 +17,18 @@ import java.util.List;
 
 import br.com.livrowebservices.carros.utils.HttpHelper;
 
-
 public class CarroService {
     private static final String URL_BASE = "http://livrowebservices.com.br/rest/carros";
-    private static final boolean LOG_ON = false;
+    private static final boolean LOG_ON = true;
     private static final String TAG = "CarroService";
+
     public static List<Carro> getCarros(Context context, String tipo) throws IOException {
         String url = URL_BASE + "/tipo/" + tipo;
         String json = HttpHelper.doGet(url);
         List<Carro> carros = parserJSON(context, json);
         return carros;
     }
+
     private static List<Carro> parserJSON(Context context, String json) throws IOException {
         List<Carro> carros = new ArrayList<Carro>();
         try {
@@ -64,10 +68,13 @@ public class CarroService {
         return carros;
     }
 
-    public static void delete(Context context, Carro c) throws IOException {
+    public static Response delete(Context context, Carro c) throws IOException {
         String url = URL_BASE + "/"+c.id;
         String json = HttpHelper.doDelete(url);
         Log.d(TAG,"Delete json: " + json);
 
+        Gson gson = new Gson();
+        Response response = gson.fromJson(json,Response.class);
+        return response;
     }
 }

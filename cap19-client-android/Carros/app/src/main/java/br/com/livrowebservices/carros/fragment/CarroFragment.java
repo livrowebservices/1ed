@@ -22,6 +22,7 @@ import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
+import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.IntentUtils;
@@ -119,18 +120,22 @@ public class CarroFragment extends BaseFragment {
     }
 
     private BaseTask taskDeleteCarro() {
-        return new BaseTask(){
+        return new BaseTask<Response>(){
             @Override
-            public Object execute() throws Exception {
+            public Response execute() throws Exception {
                 CarroService.delete(getContext(),c);
                 return null;
             }
 
             @Override
-            public void updateView(Object response) {
+            public void updateView(Response response) {
                 super.updateView(response);
-                toast("Carro " + c.nome + " excluído com sucesso");
-                getActivity().finish();
+                if("OK".equals(response.getStatus())) {
+                    toast("Carro " + c.nome + " excluído com sucesso");
+                    getActivity().finish();
+                } else {
+                    toast("Erro ao excluir o carro " + c.nome);
+                }
             }
         };
     }

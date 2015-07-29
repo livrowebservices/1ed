@@ -81,11 +81,11 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
-            //conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             conn.setRequestMethod("DELETE");
             conn.setConnectTimeout(TIMEOUT_MILLIS);
             conn.setReadTimeout(TIMEOUT_MILLIS);
-            //conn.setDoOutput(true);
+            conn.setDoOutput(true);
             //conn.setDoInput(true);
             conn.connect();
             InputStream in = conn.getInputStream();
