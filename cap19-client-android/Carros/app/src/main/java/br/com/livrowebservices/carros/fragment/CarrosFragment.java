@@ -1,11 +1,15 @@
 package br.com.livrowebservices.carros.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +30,7 @@ import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
+import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.AndroidUtils;
 import livroandroid.lib.utils.IntentUtils;
@@ -33,11 +38,20 @@ import livroandroid.lib.utils.IntentUtils;
 /**
  * Created by ricardo on 12/06/15.
  */
-public class CarrosFragment extends BaseFragment {
+public class CarrosFragment extends BaseLibFragment {
     CarroAdapter adapter;
     private RecyclerView recyclerView;
     private List<Carro> carros;
     private String tipo;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(intent.getAction())) {
+                taskCarros();
+                snack(recyclerView, "OH EXCLUIDO");
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +60,9 @@ public class CarrosFragment extends BaseFragment {
             this.tipo = getArguments().getString("tipo");
         }
         setHasOptionsMenu(true);
+
+        // Registra receiver para receber broadcasts
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver,new IntentFilter(BroadcastUtil.ACTION_CARRO_EXCLUIDO));
     }
 
     @Override
@@ -147,5 +164,11 @@ public class CarrosFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
     }
 }

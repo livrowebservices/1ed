@@ -24,13 +24,14 @@ import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
+import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.IntentUtils;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CarroFragment extends BaseFragment {
+public class CarroFragment extends BaseLibFragment {
 
     private TextView tNome;
     private TextView tDesc;
@@ -123,16 +124,16 @@ public class CarroFragment extends BaseFragment {
         return new BaseTask<Response>(){
             @Override
             public Response execute() throws Exception {
-                CarroService.delete(getContext(),c);
-                return null;
+                return CarroService.delete(getContext(),c);
             }
 
             @Override
             public void updateView(Response response) {
                 super.updateView(response);
-                if("OK".equals(response.getStatus())) {
+                if(response != null && "OK".equals(response.getStatus())) {
                     toast("Carro " + c.nome + " excluído com sucesso");
                     getActivity().finish();
+                    BroadcastUtil.broadcast(getContext(),BroadcastUtil.ACTION_CARRO_EXCLUIDO);
                 } else {
                     toast("Erro ao excluir o carro " + c.nome);
                 }
