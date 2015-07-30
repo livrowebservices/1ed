@@ -51,11 +51,11 @@ public class CarroFragment extends BaseLibFragment {
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            toast("OH> " + intent.getAction());
             if (BroadcastUtil.ACTION_CARRO_SALVO.equals(intent.getAction())) {
                 // Atualiza o carro
-                c = (Carro) getArguments().getParcelable("carro");
+                c = (Carro) intent.getParcelableExtra("carro");
                 setCarro(c);
+                toast("UPDATE> " + c.nome);
                 // Persiste nos arguments
                 getArguments().putParcelable("carro",c);
             }
@@ -107,7 +107,7 @@ public class CarroFragment extends BaseLibFragment {
             tLng.setText(c.longitude);
 
             CarroActivity activity = (CarroActivity) getActivity();
-            activity.setAppBarHeaderImage(c.urlFoto);
+            activity.setAppBarInfo(c);
         }
     }
 

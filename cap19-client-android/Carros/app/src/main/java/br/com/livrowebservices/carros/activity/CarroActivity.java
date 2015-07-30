@@ -66,10 +66,7 @@ public class CarroActivity extends BaseActivity {
         });
 
         c = getIntent().getParcelableExtra("carro");
-        if (c != null) {
-            setTitle(c.nome);
-            collapsingToolbar.setTitle(c.nome);
-        }
+        setAppBarInfo(c);
 
         if (savedInstanceState == null) {
             CarroFragment frag = new CarroFragment();
@@ -78,13 +75,20 @@ public class CarroActivity extends BaseActivity {
         }
     }
 
-    public void setAppBarHeaderImage(String url) {
-        ImageView img = this.header;
-        if(url != null && url.trim().length() > 0) {
-            //Picasso.with(this).load(c.urlFoto).resizeDimen(R.dimen.img_carro_width, R.dimen.img_carro_height).centerCrop().placeholder(R.drawable.placeholder).into(img);
-            Picasso.with(this).load(c.urlFoto).placeholder(R.drawable.placeholder).into(img);
-        } else {
-            img.setImageResource(R.drawable.placeholder);
+    public void setAppBarInfo(Carro c) {
+        if(c != null) {
+            String nome = c.nome;
+            String url = c.nome;
+
+            collapsingToolbar.setTitle(nome);
+
+            ImageView img = this.header;
+            if(url != null && url.trim().length() > 0) {
+                //Picasso.with(this).load(c.urlFoto).resizeDimen(R.dimen.img_carro_width, R.dimen.img_carro_height).centerCrop().placeholder(R.drawable.placeholder).into(img);
+                Picasso.with(this).load(c.urlFoto).placeholder(R.drawable.placeholder).into(img);
+            } else {
+                img.setImageResource(R.drawable.placeholder);
+            }
         }
     }
 }

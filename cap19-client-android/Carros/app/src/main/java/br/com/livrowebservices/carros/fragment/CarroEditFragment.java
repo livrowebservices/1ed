@@ -103,6 +103,7 @@ public class CarroEditFragment extends BaseLibFragment {
             public void updateView(Response response) {
                 super.updateView(response);
                 if(response != null && "OK".equals(response.getStatus())) {
+                    toast("Foi " + c.nome);
                     // Retorna resultado para o frag do carro
                     Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_SALVO);
                     intent.putExtra("carro", c);
