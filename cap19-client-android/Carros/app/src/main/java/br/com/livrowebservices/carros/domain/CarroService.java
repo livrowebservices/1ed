@@ -64,6 +64,7 @@ public class CarroService {
                 Carro c = new Carro();
                 // Lê as informações de cada carro
                 c.id = jsonCarro.optLong("id");
+                c.tipo = jsonCarro.optString("tipo");
                 c.nome = jsonCarro.optString("nome");
                 c.desc = jsonCarro.optString("desc");
                 c.urlFoto = jsonCarro.optString("urlFoto");

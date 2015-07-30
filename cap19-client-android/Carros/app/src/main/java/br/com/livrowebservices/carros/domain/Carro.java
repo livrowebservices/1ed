@@ -1,9 +1,9 @@
 package br.com.livrowebservices.carros.domain;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Carro implements Serializable {
-    private static final long serialVersionUID = 6601006766832473959L;
+public class Carro implements Parcelable {
 
     public long id;
     public String tipo;
@@ -20,38 +20,48 @@ public class Carro implements Serializable {
         return "Carro{" + "nome='" + nome + '\'' + ", desc='" + desc + '\'' + '}';
     }
 
-    /*
-    // PARCELABLE
-        public Car(Parcel parcel){
-            setModel(parcel.readString());
-            setBrand(parcel.readString());
-            setDescription(parcel.readString());
-            setCategory(parcel.readInt());
-            setTel(parcel.readString());
-            setPhoto(parcel.readInt());
-        }
+    public Carro() {
+
+    }
+
+    public Carro(Parcel parcel) {
+        this.id = parcel.readLong();
+        this.tipo = parcel.readString();
+        this.nome = parcel.readString();
+        this.desc = parcel.readString();
+        this.urlFoto = parcel.readString();
+        this.urlInfo = parcel.readString();
+        this.latitude = parcel.readString();
+        this.longitude = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(this.tipo);
+        dest.writeString(this.nome);
+        dest.writeString(this.desc);
+        dest.writeString(this.urlFoto);
+        dest.writeString(this.urlInfo);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+    }
+
+    public static final Parcelable.Creator<Carro> CREATOR = new Parcelable.Creator<Carro>() {
         @Override
-        public int describeContents() {
-            return 0;
+        public Carro createFromParcel(Parcel source) {
+            return new Carro(source);
         }
+
         @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString( getModel() );
-            dest.writeString( getBrand() );
-            dest.writeString( getDescription() );
-            dest.writeInt( getCategory() );
-            dest.writeString( getTel() );
-            dest.writeInt( getPhoto() );
+        public Carro[] newArray(int size) {
+            return new Carro[size];
         }
-        public static final Parcelable.Creator<Car> CREATOR = new Parcelable.Creator<Car>(){
-            @Override
-            public Car createFromParcel(Parcel source) {
-                return new Car(source);
-            }
-            @Override
-            public Car[] newArray(int size) {
-                return new Car[size];
-            }
-        };
-     */
+    };
+
 }
