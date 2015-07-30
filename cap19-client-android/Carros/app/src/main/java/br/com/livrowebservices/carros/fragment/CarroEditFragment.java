@@ -177,9 +177,14 @@ public class CarroEditFragment extends BaseLibFragment {
 
             Log.d("foto", file.getAbsolutePath());
 
-            int w = imgView.getWidth();
-            int h = imgView.getHeight();
+            int w = imgView.getWidth() / 4;
+            int h = imgView.getHeight() / 4;
+
+            w = 100;
+            h = 100;
+
             Bitmap bitmap = ImageResizeUtils.getResizedImage(Uri.fromFile(file), w, h, false);
+            Log.d("foto", "w/h: " + bitmap.getWidth()+"/"+bitmap.getHeight());
 
             imgView.setImageBitmap(bitmap);
         }
