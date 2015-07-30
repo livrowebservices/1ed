@@ -124,6 +124,7 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(TIMEOUT_MILLIS);
             conn.setReadTimeout(TIMEOUT_MILLIS);

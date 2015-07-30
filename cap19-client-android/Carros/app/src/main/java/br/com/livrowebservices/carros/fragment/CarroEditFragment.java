@@ -82,6 +82,9 @@ public class CarroEditFragment extends BaseLibFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_salvar) {
+
+            c.nome = tNome.getText().toString();
+
             startTask("salvar",taskSaveCarro());
             return true;
         } else if (id == R.id.action_foto) {
