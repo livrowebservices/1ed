@@ -1,6 +1,7 @@
 package br.com.livrowebservices.carros.fragment;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -54,7 +55,7 @@ public class CarroEditFragment extends BaseLibFragment {
         tLng = (TextView) view.findViewById(R.id.tLng);
 
         if(getArguments() != null) {
-            c = (Carro) getArguments().getSerializable("carro");
+            c =  getArguments().getParcelable("carro");
             setCarro(c);
         }
 
@@ -87,10 +88,6 @@ public class CarroEditFragment extends BaseLibFragment {
 
             startTask("salvar",taskSaveCarro());
             return true;
-        } else if (id == R.id.action_foto) {
-            toast("Foto");
-
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -106,8 +103,11 @@ public class CarroEditFragment extends BaseLibFragment {
             public void updateView(Response response) {
                 super.updateView(response);
                 if(response != null && "OK".equals(response.getStatus())) {
+                    // Retorna resultado para o frag do carro
+                    Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_SALVO);
+                    intent.putExtra("carro", c);
+                    BroadcastUtil.broadcast(getContext(), intent);
                     getActivity().finish();
-                    BroadcastUtil.broadcast(getContext(), BroadcastUtil.ACTION_CARRO_SALVO);
                 } else {
                     toast("Erro ao salvar o carro " + c.nome);
                 }

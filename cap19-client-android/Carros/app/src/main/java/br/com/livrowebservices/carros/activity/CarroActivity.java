@@ -65,7 +65,7 @@ public class CarroActivity extends BaseActivity {
             }
         });
 
-        c = (Carro) getIntent().getSerializableExtra("carro");
+        c = getIntent().getParcelableExtra("carro");
         if (c != null) {
             setTitle(c.nome);
             collapsingToolbar.setTitle(c.nome);

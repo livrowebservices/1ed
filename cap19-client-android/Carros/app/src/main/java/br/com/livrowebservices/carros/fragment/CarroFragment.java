@@ -1,11 +1,16 @@
 package br.com.livrowebservices.carros.fragment;
 
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,12 +40,34 @@ import livroandroid.lib.utils.IntentUtils;
  */
 public class CarroFragment extends BaseLibFragment {
 
+    private static final int REQUEST_CODE_SALVAR = 1;
     private TextView tNome;
     private TextView tDesc;
     private TextView tLat;
     private TextView tLng;
 //    private ImageView img;
     private Carro c;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            toast("OH> " + intent.getAction());
+            if (BroadcastUtil.ACTION_CARRO_SALVO.equals(intent.getAction())) {
+                // Atualiza o carro
+                c = (Carro) getArguments().getParcelable("carro");
+                setCarro(c);
+                // Persiste nos arguments
+                getArguments().putParcelable("carro",c);
+            }
+        }
+    };
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Registra receiver para receber broadcasts
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,7 +83,7 @@ public class CarroFragment extends BaseLibFragment {
         tLng = (TextView) view.findViewById(R.id.tLng);
 
         if(getArguments() != null) {
-            c = (Carro) getArguments().getSerializable("carro");
+            c = (Carro) getArguments().getParcelable("carro");
             setCarro(c);
         }
         return view;
@@ -96,7 +123,7 @@ public class CarroFragment extends BaseLibFragment {
             Intent intent = new Intent(getActivity(), CarroEditActivity.class);
             intent.putExtra("carro", c);
             ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
-            ActivityCompat.startActivity(getActivity(), intent, opts.toBundle());
+            ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_SALVAR,opts.toBundle());
             return true;
         } else if (id == R.id.action_remove) {
             DeletarCarroDialog.show(getFragmentManager(), new DeletarCarroDialog.Callback() {
@@ -136,8 +163,10 @@ public class CarroFragment extends BaseLibFragment {
             public void updateView(Response response) {
                 super.updateView(response);
                 if(response != null && "OK".equals(response.getStatus())) {
+                    Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_EXCLUIDO);
+                    intent.putExtra("carro", c);
+                    BroadcastUtil.broadcast(getContext(), intent);
                     getActivity().finish();
-                    BroadcastUtil.broadcast(getContext(),BroadcastUtil.ACTION_CARRO_EXCLUIDO);
                 } else {
                     toast("Erro ao excluir o carro " + c.nome);
                 }
@@ -145,4 +174,9 @@ public class CarroFragment extends BaseLibFragment {
         };
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+    }
 }

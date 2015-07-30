@@ -46,9 +46,15 @@ public class CarrosFragment extends BaseLibFragment {
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            // Atualiza o carro
+            Carro c = (Carro) getArguments().getParcelable("carro");
+
+            listaCarros(false);
+
             if (BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(intent.getAction())) {
-                listaCarros(false);
-                snack(recyclerView, "Carro excluído.");
+                snack(recyclerView, String.format("Carro %s excluído.",c.nome));
+            } else if (BroadcastUtil.ACTION_CARRO_SALVO.equals(intent.getAction())) {
+                snack(recyclerView, String.format("Carro %s salvo.",c.nome));
             }
         }
     };

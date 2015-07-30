@@ -8,9 +8,9 @@
         app:showAsAction="always"
         android:title="@string/action_save" />
 
-    <item
+    <!--<item
         android:id="@+id/action_foto"
         android:icon="@drawable/ic_action_camera"
         android:title="@string/Foto"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
 </menu>

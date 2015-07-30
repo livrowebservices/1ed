@@ -23,7 +23,7 @@ public class CarroEditActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carro_edit);
 
-        carro = (Carro) getIntent().getSerializableExtra("carro");
+        carro = (Carro) getIntent().getParcelableExtra("carro");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {

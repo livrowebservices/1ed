@@ -14,4 +14,8 @@ public class BroadcastUtil {
     public static void broadcast(Context context, String action) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(action));
     }
+
+    public static void broadcast(Context context, Intent intent) {
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
 }
