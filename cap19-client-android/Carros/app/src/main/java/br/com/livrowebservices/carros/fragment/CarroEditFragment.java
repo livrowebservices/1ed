@@ -134,12 +134,10 @@ public class CarroEditFragment extends BaseLibFragment {
             public Response execute() throws Exception {
                 if(file != null) {
                     // Faz upload da foto
-                    toast("foto!");
                     ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
                     if(response != null && response.isOk()) {
                         // Atualiza a foto do carro
                         c.urlFoto = response.getUrl();
-                        toast("foto " + c.urlFoto);
                     }
                 }
                 // Salva o carro

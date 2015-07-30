@@ -15,16 +15,17 @@ import java.util.Map;
 import livroandroid.lib.utils.IOUtils;
 
 public class HttpHelper {
-    private static final String TAG = "Http";
-    public static final int TIMEOUT_MILLIS = 15000;
-    public static boolean LOG_ON = false;
+    private final String TAG = "Http";
+    public final int TIMEOUT_MILLIS = 15000;
+    public boolean LOG_ON = false;
+    private String contentType;
 
-    public static String doGet(String url) throws IOException {
+    public String doGet(String url) throws IOException {
         return doGet(url, null, "UTF-8");
     }
 
-    public static String doGet(String url, Map<String, String> params, String charset) throws IOException {
-        String queryString = HttpHelper.getQueryString(params, null);
+    public String doGet(String url, Map<String, String> params, String charset) throws IOException {
+        String queryString = getQueryString(params, null);
         if (queryString != null && queryString.trim().length() > 0) {
             url += "?" + queryString;
         }
@@ -38,7 +39,9 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
-            //conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            if(contentType != null) {
+                conn.setRequestProperty("Content-Type", contentType);
+            }
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(TIMEOUT_MILLIS);
             conn.setReadTimeout(TIMEOUT_MILLIS);
@@ -62,12 +65,12 @@ public class HttpHelper {
         return s;
     }
 
-    public static String doDelete(String url) throws IOException {
+    public String doDelete(String url) throws IOException {
         return doDelete(url, null, "UTF-8");
     }
 
-    public static String doDelete(String url, Map<String, String> params, String charset) throws IOException {
-        String queryString = HttpHelper.getQueryString(params, null);
+    public String doDelete(String url, Map<String, String> params, String charset) throws IOException {
+        String queryString = getQueryString(params, null);
         if (queryString != null && queryString.trim().length() > 0) {
             url += "?" + queryString;
         }
@@ -81,7 +84,9 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            if(contentType != null) {
+                conn.setRequestProperty("Content-Type", contentType);
+            }
             conn.setRequestMethod("DELETE");
             conn.setConnectTimeout(TIMEOUT_MILLIS);
             conn.setReadTimeout(TIMEOUT_MILLIS);
@@ -105,8 +110,8 @@ public class HttpHelper {
         return s;
     }
 
-    public static String doPost(String url, Map<String, String> params, String charset) throws IOException {
-        String queryString = HttpHelper.getQueryString(params, charset);
+    public String doPost(String url, Map<String, String> params, String charset) throws IOException {
+        String queryString = getQueryString(params, charset);
         byte[] bytes = params != null ? queryString.getBytes(charset) : null;
         if (LOG_ON) {
             Log.d(TAG, "Http.doPost: " + url + "?" + params);
@@ -114,7 +119,7 @@ public class HttpHelper {
         return doPost(url, bytes, charset);
     }
 
-    public static String doPost(String url, byte[] params, String charset) throws IOException {
+    public String doPost(String url, byte[] params, String charset) throws IOException {
         if (LOG_ON) {
             Log.d(TAG, ">> Http.doPost: " + url);
         }
@@ -124,7 +129,9 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            if (contentType != null) {
+                conn.setRequestProperty("Content-Type", contentType);
+            }
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(TIMEOUT_MILLIS);
             conn.setReadTimeout(TIMEOUT_MILLIS);
@@ -155,7 +162,7 @@ public class HttpHelper {
         return s;
     }
 
-    public static Bitmap doGetBitmap(String url) throws IOException {
+    public Bitmap doGetBitmap(String url) throws IOException {
         if (LOG_ON) {
             Log.d(TAG, ">> Http.doGet: " + url);
         }
@@ -184,7 +191,7 @@ public class HttpHelper {
     /**
      * Retorna a QueryString para 'GET'
      */
-    public static String getQueryString(Map<String, String> params, String charsetToEncode) throws IOException {
+    public String getQueryString(Map<String, String> params, String charsetToEncode) throws IOException {
         if (params == null || params.size() == 0) {
             return null;
         }
@@ -202,5 +209,9 @@ public class HttpHelper {
         }
         return urlParams;
 
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

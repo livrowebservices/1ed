@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,24 +31,32 @@ public class CarroService {
 
     public static List<Carro> getCarros(Context context, String tipo) throws IOException {
         String url = URL_BASE + "/tipo/" + tipo;
-        String json = HttpHelper.doGet(url);
+        HttpHelper http = new HttpHelper();
+        String json = http.doGet(url);
         List<Carro> carros = parserJSON(context, json);
         return carros;
     }
 
     public static ResponseWithURL postFotoBase64(Context context,File file) throws IOException {
-        String url = URL_BASE;
+        String url = URL_BASE + "/postFotoBase64";
+
+        Log.d(TAG,"postFotoBase64: " + url);
 
         // Converte para Base64
         byte[] bytes = IOUtils.toBytes(new FileInputStream(file));
         String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+        base64 = URLEncoder.encode(base64, "UTF-8");
+
+        Log.d(TAG, "base64: " + base64);
 
         Map<String,String> params = new HashMap<String,String>();
-        params.put("fileName",file.getName());
+        params.put("fileName", file.getName());
         params.put("base64",base64);
 
         Log.d(TAG,">> postFotoBase64: " + params);
-        String json = HttpHelper.doPost(url, params, "UTF-8");
+        HttpHelper http = new HttpHelper();
+        //http.setContentType("");
+        String json = http.doPost(url, params, "UTF-8");
         Log.d(TAG,"<< postFotoBase64: " + json);
 
         ResponseWithURL response = new Gson().fromJson(json, ResponseWithURL.class);
@@ -61,8 +70,10 @@ public class CarroService {
         String url = URL_BASE;
 
         String jsonCarro = new Gson().toJson(carro);
-        Log.d(TAG,">> saveCarro: " + jsonCarro);
-        String json = HttpHelper.doPost(url,jsonCarro.getBytes(),"UTF-8");
+        Log.d(TAG, ">> saveCarro: " + jsonCarro);
+        HttpHelper http = new HttpHelper();
+        http.setContentType("application/json; charset=utf-8");
+        String json = http.doPost(url,jsonCarro.getBytes(),"UTF-8");
         Log.d(TAG,"<< saveCarro: " + json);
 
         Response response = new Gson().fromJson(json, Response.class);
@@ -72,7 +83,8 @@ public class CarroService {
 
     public static List<Carro> buscaCarros(Context context, String nome) throws IOException {
         String url = URL_BASE + "/nome/" + nome;
-        String json = HttpHelper.doGet(url);
+        HttpHelper http = new HttpHelper();
+        String json = http.doGet(url);
         List<Carro> carros = parserJSON(context, json);
         return carros;
     }
@@ -100,7 +112,7 @@ public class CarroService {
                 c.latitude = jsonCarro.optString("latitude");
                 c.longitude = jsonCarro.optString("longitude");
                 if (LOG_ON) {
-                    Log.d(TAG, "Carro ("+c.id+") " + c.nome + " > " + c.urlFoto);
+                    //Log.d(TAG, "Carro ("+c.id+") " + c.nome + " > " + c.urlFoto);
                 }
                 carros.add(c);
             }
@@ -119,7 +131,8 @@ public class CarroService {
 
     public static Response delete(Context context, Carro c) throws IOException {
         String url = URL_BASE + "/"+c.id;
-        String json = HttpHelper.doDelete(url);
+        HttpHelper http = new HttpHelper();
+        String json = http.doDelete(url);
         Log.d(TAG,"Delete json: " + json);
 
         Gson gson = new Gson();
