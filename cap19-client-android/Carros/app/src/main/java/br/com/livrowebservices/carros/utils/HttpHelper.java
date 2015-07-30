@@ -19,13 +19,14 @@ public class HttpHelper {
     public final int TIMEOUT_MILLIS = 15000;
     public boolean LOG_ON = false;
     private String contentType;
+    private String charsetToEncode;
 
     public String doGet(String url) throws IOException {
         return doGet(url, null, "UTF-8");
     }
 
     public String doGet(String url, Map<String, String> params, String charset) throws IOException {
-        String queryString = getQueryString(params, null);
+        String queryString = getQueryString(params);
         if (queryString != null && queryString.trim().length() > 0) {
             url += "?" + queryString;
         }
@@ -70,7 +71,7 @@ public class HttpHelper {
     }
 
     public String doDelete(String url, Map<String, String> params, String charset) throws IOException {
-        String queryString = getQueryString(params, null);
+        String queryString = getQueryString(params);
         if (queryString != null && queryString.trim().length() > 0) {
             url += "?" + queryString;
         }
@@ -111,7 +112,7 @@ public class HttpHelper {
     }
 
     public String doPost(String url, Map<String, String> params, String charset) throws IOException {
-        String queryString = getQueryString(params, charset);
+        String queryString = getQueryString(params);
         byte[] bytes = params != null ? queryString.getBytes(charset) : null;
         if (LOG_ON) {
             Log.d(TAG, "Http.doPost: " + url + "?" + params);
@@ -191,7 +192,7 @@ public class HttpHelper {
     /**
      * Retorna a QueryString para 'GET'
      */
-    public String getQueryString(Map<String, String> params, String charsetToEncode) throws IOException {
+    public String getQueryString(Map<String, String> params) throws IOException {
         if (params == null || params.size() == 0) {
             return null;
         }
@@ -213,5 +214,9 @@ public class HttpHelper {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public void setCharsetToEncode(String encode) {
+        this.charsetToEncode = encode;
     }
 }
