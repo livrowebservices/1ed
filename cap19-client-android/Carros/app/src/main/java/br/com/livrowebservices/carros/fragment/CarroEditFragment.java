@@ -24,6 +24,7 @@ import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
+import br.com.livrowebservices.carros.domain.ResponseWithURL;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
 import livroandroid.lib.utils.ImageResizeUtils;
@@ -43,6 +44,7 @@ public class CarroEditFragment extends BaseLibFragment {
 
     // Camera Foto
     private File file;
+    private boolean updateFoto;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,6 @@ public class CarroEditFragment extends BaseLibFragment {
         View view = inflater.inflate(R.layout.fragment_carro_edit, container, false);
         setHasOptionsMenu(true);
 
-        imgView = (ImageView) view.findViewById(R.id.CameraFragment);
         imgView = (ImageView) view.findViewById(R.id.img);
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +83,7 @@ public class CarroEditFragment extends BaseLibFragment {
         if (savedInstanceState != null) {
             // Se girou a tela recupera o estado
             file = (File) savedInstanceState.getSerializable("file");
+            updateFoto = savedInstanceState.getBoolean("updateFoto");
             setImage(file);
         }
 
@@ -93,6 +95,7 @@ public class CarroEditFragment extends BaseLibFragment {
         super.onSaveInstanceState(outState);
         if(file != null) {
             outState.putSerializable("file",file);
+            outState.putBoolean("updateFoto", updateFoto);
         }
     }
 
@@ -129,6 +132,17 @@ public class CarroEditFragment extends BaseLibFragment {
         return new BaseTask<Response>(){
             @Override
             public Response execute() throws Exception {
+                if(file != null) {
+                    // Faz upload da foto
+                    toast("foto!");
+                    ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
+                    if(response != null && response.isOk()) {
+                        // Atualiza a foto do carro
+                        c.urlFoto = response.getUrl();
+                        toast("foto " + c.urlFoto);
+                    }
+                }
+                // Salva o carro
                 return CarroService.saveCarro(getContext(), c);
             }
 
@@ -136,7 +150,6 @@ public class CarroEditFragment extends BaseLibFragment {
             public void updateView(Response response) {
                 super.updateView(response);
                 if(response != null && "OK".equals(response.getStatus())) {
-                    toast("Foi " + c.nome);
                     // Retorna resultado para o frag do carro
                     Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_SALVO);
                     intent.putExtra("carro", c);
@@ -154,6 +167,7 @@ public class CarroEditFragment extends BaseLibFragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && file != null) {
+            updateFoto = true;
             showImage(file);
         }
     }
@@ -161,6 +175,8 @@ public class CarroEditFragment extends BaseLibFragment {
     // Atualiza a imagem na tela
     private void showImage(File file) {
         if (file != null && file.exists()) {
+            this.file = file;
+
             Log.d("foto", file.getAbsolutePath());
 
             int w = imgView.getWidth();

@@ -5,21 +5,6 @@ public class ResponseWithURL {
     private String msg;
     private String url;
 
-    public static ResponseWithURL Ok(String string, String url) {
-        ResponseWithURL r = new ResponseWithURL();
-        r.setStatus("OK");
-        r.setMsg(string);
-        r.setUrl(url);
-        return r;
-    }
-
-    public static ResponseWithURL Error(String string) {
-        ResponseWithURL r = new ResponseWithURL();
-        r.setStatus("ERROR");
-        r.setMsg(string);
-        return r;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -42,5 +27,18 @@ public class ResponseWithURL {
 
     public void setUrl(String result) {
         this.url = result;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseWithURL{" +
+                "status='" + status + '\'' +
+                ", msg='" + msg + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
+
+    public boolean isOk() {
+        return "OK".equalsIgnoreCase(status);
     }
 }

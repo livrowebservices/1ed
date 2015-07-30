@@ -1,6 +1,7 @@
 package br.com.livrowebservices.carros.domain;
 
 import android.content.Context;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -10,12 +11,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.DOMException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.livrowebservices.carros.utils.HttpHelper;
+import livroandroid.lib.utils.IOUtils;
 
 public class CarroService {
     private static final String URL_BASE = "http://livrowebservices.com.br/rest/carros";
@@ -27,6 +33,28 @@ public class CarroService {
         String json = HttpHelper.doGet(url);
         List<Carro> carros = parserJSON(context, json);
         return carros;
+    }
+
+    public static ResponseWithURL postFotoBase64(Context context,File file) throws IOException {
+        String url = URL_BASE;
+
+        // Converte para Base64
+        byte[] bytes = IOUtils.toBytes(new FileInputStream(file));
+        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+
+        Map<String,String> params = new HashMap<String,String>();
+        params.put("fileName",file.getName());
+        params.put("base64",base64);
+
+        Log.d(TAG,">> postFotoBase64: " + params);
+        String json = HttpHelper.doPost(url, params, "UTF-8");
+        Log.d(TAG,"<< postFotoBase64: " + json);
+
+        ResponseWithURL response = new Gson().fromJson(json, ResponseWithURL.class);
+
+        Log.d(TAG,"ResponseWithURL: " + response);
+
+        return response;
     }
 
     public static Response saveCarro(Context context,Carro carro) throws IOException {

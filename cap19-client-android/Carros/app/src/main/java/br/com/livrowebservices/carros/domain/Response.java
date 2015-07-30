@@ -7,20 +7,6 @@ public class Response {
     public Response() {
     }
 
-    public static Response Ok(String string) {
-        Response r = new Response();
-        r.setStatus("OK");
-        r.setMsg(string);
-        return r;
-    }
-
-    public static Response Error(String string) {
-        Response r = new Response();
-        r.setStatus("ERROR");
-        r.setMsg(string);
-        return r;
-    }
-
     public String getMsg() {
         return msg;
     }
@@ -35,5 +21,13 @@ public class Response {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "status='" + status + '\'' +
+                ", msg='" + msg + '\'' +
+                '}';
     }
 }

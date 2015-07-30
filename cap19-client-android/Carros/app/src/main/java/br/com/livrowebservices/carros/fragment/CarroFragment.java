@@ -55,7 +55,6 @@ public class CarroFragment extends BaseLibFragment {
                 // Atualiza o carro
                 c = (Carro) intent.getParcelableExtra("carro");
                 setCarro(c);
-                toast("UPDATE> " + c.nome);
                 // Persiste nos arguments
                 getArguments().putParcelable("carro",c);
             }
