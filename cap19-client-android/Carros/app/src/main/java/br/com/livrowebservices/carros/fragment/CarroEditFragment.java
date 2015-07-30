@@ -3,51 +3,71 @@ package br.com.livrowebservices.carros.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import java.io.File;
 
 import br.com.livrowebservices.carros.R;
-import br.com.livrowebservices.carros.activity.CarroActivity;
-import br.com.livrowebservices.carros.activity.CarroEditActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
-import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
-import livroandroid.lib.fragment.BaseFragment;
-import livroandroid.lib.utils.IntentUtils;
+import livroandroid.lib.utils.ImageResizeUtils;
+import livroandroid.lib.utils.SDCardUtils;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Fragment com form para editar o carro
  */
 public class CarroEditFragment extends BaseLibFragment {
+    private ImageView imgView;
     private TextView tNome;
     private TextView tDesc;
     private TextView tLat;
     private TextView tLng;
-    private CameraFragment img;
+
     private Carro c;
+
+    // Camera Foto
+    private File file;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_carro_edit, container, false);
         setHasOptionsMenu(true);
 
-        img = (CameraFragment) getChildFragmentManager().findFragmentById(R.id.CameraFragment);
+        imgView = (ImageView) view.findViewById(R.id.CameraFragment);
+        imgView = (ImageView) view.findViewById(R.id.img);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Cria o o arquivo no sdcard
+                file = SDCardUtils.getPublicFile("foto_carro.jpg");
+                // Chama a intent informando o arquivo para salvar a foto
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                startActivityForResult(i, 0);
+            }
+        });
 
         tNome = (TextView) view.findViewById(R.id.tNome);
         tDesc = (TextView) view.findViewById(R.id.tDesc);
@@ -59,13 +79,26 @@ public class CarroEditFragment extends BaseLibFragment {
             setCarro(c);
         }
 
-        setHasOptionsMenu(true);
+        if (savedInstanceState != null) {
+            // Se girou a tela recupera o estado
+            file = (File) savedInstanceState.getSerializable("file");
+            setImage(file);
+        }
+
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(file != null) {
+            outState.putSerializable("file",file);
+        }
     }
 
     private void setCarro(Carro c) {
         if (c != null) {
-            img.setImage(c.urlFoto);
+            setImage(c.urlFoto);
 
             tNome.setText(c.nome);
             tDesc.setText(c.desc);
@@ -86,7 +119,7 @@ public class CarroEditFragment extends BaseLibFragment {
 
             c.nome = tNome.getText().toString();
 
-            startTask("salvar",taskSaveCarro());
+            startTask("salvar", taskSaveCarro());
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -114,5 +147,35 @@ public class CarroEditFragment extends BaseLibFragment {
                 }
             }
         };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK && file != null) {
+            showImage(file);
+        }
+    }
+
+    // Atualiza a imagem na tela
+    private void showImage(File file) {
+        if (file != null && file.exists()) {
+            Log.d("foto", file.getAbsolutePath());
+
+            int w = imgView.getWidth();
+            int h = imgView.getHeight();
+            Bitmap bitmap = ImageResizeUtils.getResizedImage(Uri.fromFile(file), w, h, false);
+
+            imgView.setImageBitmap(bitmap);
+        }
+    }
+
+    private void setImage(File file) {
+        ImageUtils.setImage(getContext(), file.getAbsolutePath().toString(), imgView);
+    }
+
+    public void setImage(String url) {
+        ImageUtils.setImage(getContext(),url, imgView);
     }
 }

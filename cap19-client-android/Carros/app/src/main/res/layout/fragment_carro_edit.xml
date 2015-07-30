@@ -3,19 +3,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <fragment
-        class="br.com.livrowebservices.carros.fragment.CameraFragment"
-        android:id="@+id/CameraFragment"
+    <ImageView
+        android:id="@+id/img"
         android:layout_width="@dimen/img_carro_width"
         android:layout_height="@dimen/img_carro_height"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        />
+        android:src="@android:drawable/ic_menu_camera" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/tNome"
@@ -27,6 +25,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
             android:id="@+id/tDesc"
             android:layout_width="match_parent"
