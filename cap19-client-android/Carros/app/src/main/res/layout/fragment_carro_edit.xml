@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <fragment
+        class="br.com.livrowebservices.carros.fragment.CameraFragment"
+        android:id="@+id/CameraFragment"
+        android:layout_width="@dimen/img_carro_width"
+        android:layout_height="@dimen/img_carro_height"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <EditText
+            android:id="@+id/tNome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/nome" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/tDesc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/descricao" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/tLat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/latitude" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/tLng"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/longitude" />
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>

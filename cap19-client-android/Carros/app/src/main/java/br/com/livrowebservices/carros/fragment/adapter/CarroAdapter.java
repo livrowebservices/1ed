@@ -16,6 +16,7 @@ import java.util.List;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.domain.Carro;
+import br.com.livrowebservices.carros.utils.ImageUtils;
 
 
 // Herda de RecyclerView.Adapter e declara o tipo genérico <CarroAdapter.CarrosViewHolder>
@@ -55,11 +56,7 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
         holder.tDesc.setText(c.desc);
 
         // Foto do carro
-        if(c.urlFoto != null && c.urlFoto.trim().length() > 0) {
-            Picasso.with(context).load(c.urlFoto).placeholder(R.drawable.placeholder).into(holder.img);
-        } else {
-            holder.img.setImageResource(R.drawable.placeholder);
-        }
+        ImageUtils.setImage(context, c.urlFoto, holder.img);
 
         // Click
         if (onClickListener != null) {

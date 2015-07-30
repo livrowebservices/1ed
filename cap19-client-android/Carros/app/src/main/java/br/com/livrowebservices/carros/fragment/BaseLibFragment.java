@@ -7,7 +7,11 @@ import android.widget.Toast;
 import livroandroid.lib.fragment.BaseFragment;
 
 /**
- * Created by ricardo on 29/07/15.
+ * Fragment base do projeto.
+ *
+ * Fiz para adicionar os métodos de "snack" da Design Support Library
+ *
+ * Herda da BaseFragment da lib android-utils demonstrado no Livro Android.
  */
 public class BaseLibFragment extends BaseFragment {
 

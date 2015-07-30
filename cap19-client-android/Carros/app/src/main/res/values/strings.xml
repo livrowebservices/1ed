@@ -40,5 +40,12 @@
     <string name="action_done">Done</string>
     <string name="msg_carro_sem_video">Carro sem vídeo cadastrado</string>
     <string name="msg_url_invalida">URL de vídeo inválida</string>
+    <string name="title_activity_carro_edit">CarroEditActivity</string>
+    <string name="descricao">Descrição</string>
+    <string name="nome">Nome</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="action_save">Salvar</string>
+    <string name="Foto">Foto</string>
 
 </resources>

@@ -16,13 +16,8 @@
 
     <item
         android:id="@+id/action_edit"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_action_edit"
         android:title="Editar"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_remove"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:title="Remover"
-        app:showAsAction="ifRoom" />
 </menu>

@@ -7,11 +7,11 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:largeHeap="true"
-        android:hardwareAccelerated="true">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name" >
@@ -28,6 +28,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.CarroEditActivity"
+            android:label="@string/title_activity_carro_edit"
+            android:parentActivityName=".activity.CarroActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.livrowebservices.carros.activity.CarroActivity" />
         </activity>
     </application>
 

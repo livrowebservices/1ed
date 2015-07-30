@@ -54,7 +54,7 @@ public class CarroActivity extends BaseActivity {
         // Header
         header = (ImageView) findViewById(R.id.header);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.header_intel);
+                R.drawable.header_appbar);
 
         // Palleta cores
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {

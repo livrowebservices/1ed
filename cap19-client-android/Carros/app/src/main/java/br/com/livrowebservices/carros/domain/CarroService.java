@@ -29,6 +29,19 @@ public class CarroService {
         return carros;
     }
 
+    public static Response saveCarro(Context context,Carro carro) throws IOException {
+        String url = URL_BASE;
+
+        String jsonCarro = new Gson().toJson(carro);
+        Log.d(TAG,">> saveCarro: " + jsonCarro);
+        String json = HttpHelper.doPost(url,jsonCarro.getBytes(),"UTF-8");
+        Log.d(TAG,"<< saveCarro: " + json);
+
+        Response response = new Gson().fromJson(json, Response.class);
+
+        return response;
+    }
+
     public static List<Carro> buscaCarros(Context context, String nome) throws IOException {
         String url = URL_BASE + "/nome/" + nome;
         String json = HttpHelper.doGet(url);

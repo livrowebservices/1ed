@@ -136,14 +136,14 @@ public class CarrosFragment extends BaseLibFragment {
     }
 
     protected CarroAdapter.PlanetaOnClickListener onClickCarro() {
-        final Intent intent = new Intent(getActivity(), CarroActivity.class);
-
         return new CarroAdapter.PlanetaOnClickListener() {
             @Override
             public void onClickCarro(CarroAdapter.CarrosViewHolder holder, int idx) {
                 Carro c = carros.get(idx);
 
                 ImageView img = holder.img;
+
+                Intent intent = new Intent(getActivity(), CarroActivity.class);
                 intent.putExtra("carro", c);
                 String key = getString(R.string.transition_key);
 

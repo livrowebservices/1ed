@@ -1,0 +1,7 @@
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/img_carro_width"
+    android:layout_height="@dimen/img_carro_height"
+    android:id="@+id/img"
+    android:src="@android:drawable/ic_menu_camera">
+
+</ImageView>

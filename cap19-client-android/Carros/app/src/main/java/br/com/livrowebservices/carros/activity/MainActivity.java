@@ -68,7 +68,7 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 //                        .show();
 
                 // Compat
-                Intent intent = new Intent(getActivity(),CarroActivity.class);
+                Intent intent = new Intent(getActivity(),CarroEditActivity.class);
                 //ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), img, key);
                 ActivityCompat.startActivity(getActivity(), intent, null);
             }
