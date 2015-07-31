@@ -20,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
@@ -29,6 +32,7 @@ import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.domain.ResponseWithURL;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
+import livroandroid.lib.utils.FileUtils;
 import livroandroid.lib.utils.ImageResizeUtils;
 import livroandroid.lib.utils.SDCardUtils;
 
@@ -148,16 +152,25 @@ public class CarroEditFragment extends CarroFragment {
 
             Log.d("foto", file.getAbsolutePath());
 
-            /*int w = imgView.getWidth() / 4;
-            int h = imgView.getHeight() / 4;
-
-            w = 100;
-            h = 100;
+            int w = 600;
+            int  h = 600;
 
             Bitmap bitmap = ImageResizeUtils.getResizedImage(Uri.fromFile(file), w, h, false);
             Log.d("foto", "w/h: " + bitmap.getWidth()+"/"+bitmap.getHeight());
 
-            imgView.setImageBitmap(bitmap);*/
+            OutputStream out = null;
+            try {
+                out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.close();
+
+                Log.d("foto", "file compress ok: " + file.getAbsolutePath());
+
+                setImage(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -173,7 +186,7 @@ public class CarroEditFragment extends CarroFragment {
 
     public void onClickCamera(Carro c) {
         // Cria o o arquivo no sdcard
-        file = SDCardUtils.getPublicFile(String.format("foto_carro_%s.jpg",c!=null?c.nome:"novo"));
+        file = SDCardUtils.getPublicFile(String.format("foto_carro_%d.jpg",c!=null?c.id:System.currentTimeMillis()));
         Log.d(TAG,"onClickCamera: file: " + file);
         // Chama a intent informando o arquivo para salvar a foto
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
