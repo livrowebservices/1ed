@@ -9,15 +9,21 @@
         android:title="@string/action_done" />-->
 
     <item
-        android:id="@+id/action_video"
-        android:icon="@drawable/ic_action_video"
-        android:title="Video"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/action_edit"
         android:icon="@drawable/ic_action_edit"
         android:title="Editar"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_video"
+        android:icon="@drawable/ic_action_video"
+        android:title="Video"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_remove"
+        android:icon="@drawable/ic_action_remove"
+        android:title="Deletar"
+        app:showAsAction="never" />
 
 </menu>

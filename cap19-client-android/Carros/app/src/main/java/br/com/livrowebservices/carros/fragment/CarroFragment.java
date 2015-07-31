@@ -41,12 +41,12 @@ import livroandroid.lib.utils.IntentUtils;
 public class CarroFragment extends BaseLibFragment {
 
     private static final int REQUEST_CODE_SALVAR = 1;
-    private TextView tNome;
-    private TextView tDesc;
-    private TextView tLat;
-    private TextView tLng;
-//    private ImageView img;
-    private Carro c;
+    protected TextView tNome;
+    protected TextView tDesc;
+    protected TextView tLat;
+    protected TextView tLng;
+
+    protected Carro c;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -66,6 +66,8 @@ public class CarroFragment extends BaseLibFragment {
         super.onCreate(savedInstanceState);
         // Registra receiver para receber broadcasts
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -73,9 +75,13 @@ public class CarroFragment extends BaseLibFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_carro, container, false);
-        setHasOptionsMenu(true);
 
-//        img = (ImageView) view.findViewById(R.id.img);
+        initViews(view);
+
+        return view;
+    }
+
+    protected void initViews(View view) {
         tNome = (TextView) view.findViewById(R.id.tNome);
         tDesc = (TextView) view.findViewById(R.id.tDesc);
         tLat = (TextView) view.findViewById(R.id.tLat);
@@ -85,7 +91,6 @@ public class CarroFragment extends BaseLibFragment {
             c = (Carro) getArguments().getParcelable("carro");
             setCarro(c);
         }
-        return view;
     }
 
     private void setCarro(Carro c) {
@@ -96,7 +101,7 @@ public class CarroFragment extends BaseLibFragment {
              * Aumenta a descriçao, para fazer scroll :-)
              */
             String desc = c.desc;
-            for (int i=0;i<10;i++){
+            for (int i=0;i<20;i++){
                 desc += "\n"+c.desc;
             }
 
@@ -119,8 +124,9 @@ public class CarroFragment extends BaseLibFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_edit) {
-            Intent intent = new Intent(getActivity(), CarroEditActivity.class);
+            Intent intent = new Intent(getActivity(), CarroActivity.class);
             intent.putExtra("carro", c);
+            intent.putExtra("editMode",true);
             ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
             ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_SALVAR,opts.toBundle());
             return true;
