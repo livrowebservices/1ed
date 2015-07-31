@@ -10,7 +10,8 @@
 			'CarroControllers' ]);
 
 	angular.module('AppCarro').constant("APP_CONFIG", {
-		"API_REST" : "http://localhost:8080/Carros/rest"
+		//"API_REST" : "http://localhost:8080/Carros/rest"
+		"API_REST" : "http://livrowebservices.com.br/rest"
 	});
 
 	function Config($routeProvider) {

@@ -1,0 +1,10 @@
+<p>Deseja mesmo deletar o carro <b>{{carro.nome}}</b>?</p>
+<div class="ngdialog-buttons">
+	<button 
+		type="button" class="ngdialog-button ngdialog-button-secondary"
+		ng-click="closeThisDialog()" ng-disabled="progress">Não</button>
+	<button 
+		type="button" class="ngdialog-button ngdialog-button-primary"
+		ng-click="confirmDeletar(); progress = !progress" ng-disabled="progress">
+		<span data-ng-show="progress" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>Sim</button>
+</div>

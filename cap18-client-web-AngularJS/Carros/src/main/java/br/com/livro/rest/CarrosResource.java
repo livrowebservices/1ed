@@ -77,8 +77,16 @@ public class CarrosResource {
 	@DELETE
 	@Path("{id}")
 	public Response delete(@PathParam("id") long id) {
-		carroService.delete(id);
-		return Response.Ok("Carro deletado com sucesso");
+		if(id != 0) {
+			
+			if(id >= 1 && id <= 30) {
+				return Response.Error("Este carro foi cadastrado pelo admin, não é possível excluí-lo.");
+			}
+			
+			carroService.delete(id);
+			return Response.Ok("Carro deletado com sucesso");
+		}
+		return Response.Error("Chamada incorreta");
 	}
 
 	@POST

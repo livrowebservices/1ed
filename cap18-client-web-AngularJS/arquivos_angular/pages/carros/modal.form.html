@@ -1,0 +1,46 @@
+<form>
+	<div class="form-group">
+		<label for="nome">Nome</label> 
+		<input type="text" class="form-control input-sm" id="nome" placeholder="Nome do carro..." ng-model="carro.nome">
+	</div>
+	<div class="form-group">
+		<label for="nome">Tipo:</label> 
+			<label class="radio-inline" data-ng-repeat="tipo in tipos"> 
+				<input type="radio" name="tipo" ng-model="carro.tipo" 
+				id="{{tipo.tipo}}" value="{{tipo.id}}"> {{tipo.tipo}}
+			</label>
+	</div>
+	<div class="form-group">
+		<div class="col-xs-12 col-md-12">
+			<img class="col-xs-12 col-md-12" 
+				ngf-select ng-model="files" class="upload-button"
+                ngf-multiple="false" class="thumbnail"
+                ngf-change="upload($files[0])"
+                ngf-src="files[0]" 
+                ngf-default-src="{{carro.urlFoto || 'http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png'}}"
+				alt="Click aqui para adicionar uma imagem para o carro">
+			<p data-ng-show="carro.urlFoto" 
+				class="help-block text-center" 
+				style="font-size:12px;">Click sobre a imagem para adicionar ou alterar a foto do carro</p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="latitude">Latitude</label> 
+		<input type="text" class="form-control input-sm" id="latitude" placeholder="Latitude" 
+			ng-model="carro.latitude">
+	</div>
+	<div class="form-group">
+		<label for="lontitude">Lontitude</label> 
+		<input type="text" class="form-control input-sm" id="lontitude" placeholder="Longitude" 
+			ng-model="carro.longitude">
+	</div>
+	<button type="submit" class="btn btn-primary" 
+		data-ng-click="salvar(carro, files[0]); progress = !progress" 
+		show = !show" ng-disabled="progress">
+		<span data-ng-show="progress"  
+		class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+		<span ng-show="!progressFoto">Confirmar</span>
+		<span ng-show="progressFoto">Fazendo upload da foto aguarde...</span>
+	</button>
+	<button type="submit" class="btn btn-danger" data-ng-click="closeThisDialog()" ng-disabled="progress">Cancelar</button>
+</form>

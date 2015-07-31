@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class UploadService {
 	private static final String BUCKET_NAME = "livrolecheta";
 
 	public String upload(String fileName, InputStream in) throws Exception {
-		// 1) Salva o arquivo na pasta temporária da JVM
+		// 1) Salva o arquivo na pasta temporï¿½ria da JVM
 		File file = saveToTmpDir(fileName, in);
 		// 2) Faz upload para o Cloud Storage
 		String url = uploadToCloudStorage(file);
@@ -52,13 +53,13 @@ public class UploadService {
 		if (obj == null) {
 			throw new IOException("Erro ao fazer upload.");
 		}
-		// Retorna a URL pública
+		// Retorna a URL pï¿½blica
 		String url = String.format("https://storage.googleapis.com/%s/%s",
 				BUCKET_NAME, obj.getName());
 		return url;
 	}
 
-	// Retorna o content-type para a extensão fornecida
+	// Retorna o content-type para a extensï¿½o fornecida
 	private String getContentType(String fileName) {
 		String ext = Files.getFileExtension(fileName);
 		if ("png".equals(ext)) {
@@ -74,16 +75,20 @@ public class UploadService {
 	private File saveToTmpDir(String fileName, InputStream in)
 			throws FileNotFoundException, IOException {
 		if (fileName == null || in == null) {
-			throw new IllegalArgumentException("Parâmetros inválidos");
+			throw new IllegalArgumentException("Parï¿½metros invï¿½lidos");
 		}
-		// Pasta temporária da JVM
+		// Pasta temporÃ¡ria da JVM
 		File tmpDir = new File(System.getProperty("java.io.tmpdir"), "carros");
 		if (!tmpDir.exists()) {
-			// Cria a pasta carros se não existe
+			// Cria a pasta carros se nï¿½o existe
 			tmpDir.mkdir();
 		}
 		// Cria o arquivo
 		File file = new File(tmpDir, fileName);
+		if(file.exists()) {
+			file.delete();
+		}
+		
 		// Abre a OutputStream para escrever no arquivo
 		FileOutputStream out = new FileOutputStream(file);
 		// Escreve os dados no arquivo
