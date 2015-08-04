@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import org.apache.http.HttpStatus;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,7 +17,7 @@ import livroandroid.lib.utils.IOUtils;
 public class HttpHelper {
     private final String TAG = "Http";
     public final int TIMEOUT_MILLIS = 15000;
-    public boolean LOG_ON = false;
+    public boolean LOG_ON = true;
     private String contentType;
     private String charsetToEncode;
 
@@ -42,7 +40,7 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
-            if(contentType != null) {
+            if (contentType != null) {
                 conn.setRequestProperty("Content-Type", contentType);
             }
             conn.setRequestMethod("GET");
@@ -53,13 +51,10 @@ public class HttpHelper {
             conn.connect();
             InputStream in = null;
             int status = conn.getResponseCode();
-            if(status >= HttpURLConnection.HTTP_BAD_REQUEST)
-            {
-                Log.d(TAG,"Error code: " + status);
+            if (status >= HttpURLConnection.HTTP_BAD_REQUEST) {
+                Log.d(TAG, "Error code: " + status);
                 in = conn.getErrorStream();
-            }
-            else
-            {
+            } else {
                 in = conn.getInputStream();
             }
             s = IOUtils.toString(in, charset);
@@ -97,7 +92,7 @@ public class HttpHelper {
         String s = null;
         try {
             conn = (HttpURLConnection) u.openConnection();
-            if(contentType != null) {
+            if (contentType != null) {
                 conn.setRequestProperty("Content-Type", contentType);
             }
             conn.setRequestMethod("DELETE");
@@ -158,8 +153,14 @@ public class HttpHelper {
                 out.flush();
                 out.close();
             }
-
-            InputStream in = conn.getInputStream();
+            InputStream in = null;
+            int status = conn.getResponseCode();
+            if (status >= HttpURLConnection.HTTP_BAD_REQUEST) {
+                Log.d(TAG, "Error code: " + status);
+                in = conn.getErrorStream();
+            } else {
+                in = conn.getInputStream();
+            }
             s = IOUtils.toString(in, charset);
             if (LOG_ON) {
                 Log.d(TAG, "<< Http.doPost: " + s);

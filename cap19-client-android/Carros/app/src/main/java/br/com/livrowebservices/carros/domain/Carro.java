@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class Carro implements Parcelable {
 
-    public long id;
+    public Long id;
     public String tipo;
     public String nome;
     public String desc;
@@ -30,6 +30,7 @@ public class Carro implements Parcelable {
         this.nome = parcel.readString();
         this.desc = parcel.readString();
         this.urlFoto = parcel.readString();
+        this.urlVideo = parcel.readString();
         this.urlInfo = parcel.readString();
         this.latitude = parcel.readString();
         this.longitude = parcel.readString();
@@ -47,6 +48,7 @@ public class Carro implements Parcelable {
         dest.writeString(this.nome);
         dest.writeString(this.desc);
         dest.writeString(this.urlFoto);
+        dest.writeString(this.urlVideo);
         dest.writeString(this.urlInfo);
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);

@@ -29,6 +29,15 @@ public class CarroActivity extends BaseActivity {
     private Carro carro;
     private ImageView header;
     private FloatingActionButton fabButton;
+    private ClickHeaderListener clickHeaderListener;
+
+    public interface ClickHeaderListener{
+        void onHeaderClicked();
+    }
+
+    public void setClickHeaderListener(ClickHeaderListener clickHeaderListener) {
+        this.clickHeaderListener = clickHeaderListener;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,7 @@ public class CarroActivity extends BaseActivity {
 
         // Header
         header = (ImageView) findViewById(R.id.header);
+        header.setOnClickListener(onClickImgHeader());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.header_appbar);
 
@@ -72,7 +82,7 @@ public class CarroActivity extends BaseActivity {
             public void onClick(View v) {
                 if(editMode) {
                     CarroEditFragment frag = (CarroEditFragment) getSupportFragmentManager().findFragmentByTag("frag");
-                    frag.onClickCamera(carro);
+                    frag.onClickCamera();
                 } else {
                     toast("Você pode favoritar esse carro...");
                 }
@@ -92,6 +102,18 @@ public class CarroActivity extends BaseActivity {
         }
     }
 
+    private View.OnClickListener onClickImgHeader() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(clickHeaderListener != null) {
+                    // Delegate para notificar o fragment que teve clique.
+                    clickHeaderListener.onHeaderClicked();
+                }
+            }
+        };
+    }
+
     public void setAppBarInfo(Carro c) {
         if(c != null) {
             String nome = c.nome;
@@ -100,6 +122,11 @@ public class CarroActivity extends BaseActivity {
             collapsingToolbar.setTitle(nome);
 
             setImage(url);
+        } else {
+            // Novo Carro
+            collapsingToolbar.setTitle(getString(R.string.novo_carro));
+
+//            setImage("http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png");
         }
     }
 

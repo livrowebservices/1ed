@@ -53,5 +53,6 @@
     <string name="url_video">URL Vídeo</string>
     <string name="msg_error_io">Ocorreu algum erro ao buscar os dados.</string>
     <string name="msg_erro_io_timeout">Erro de timeout na consulta.</string>
+    <string name="novo_carro">Novo Carro</string>
 
 </resources>

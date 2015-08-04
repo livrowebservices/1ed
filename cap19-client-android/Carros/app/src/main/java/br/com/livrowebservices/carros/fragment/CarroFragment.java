@@ -1,7 +1,6 @@
 package br.com.livrowebservices.carros.fragment;
 
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,18 +27,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
-import br.com.livrowebservices.carros.activity.CarroEditActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
-import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.IntentUtils;
 
 /**
@@ -57,17 +52,17 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
     protected TextView tLat;
     protected TextView tLng;
     private GoogleMap map;
-    protected Carro c;
+    protected Carro carro;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (BroadcastUtil.ACTION_CARRO_SALVO.equals(intent.getAction())) {
                 // Atualiza o carro
-                c = (Carro) intent.getParcelableExtra("carro");
-                setCarro(c);
+                carro = (Carro) intent.getParcelableExtra("carro");
+                setCarro(carro);
                 // Persiste nos arguments
-                getArguments().putParcelable("carro",c);
+                getArguments().putParcelable("carro", carro);
             }
         }
     };
@@ -107,8 +102,8 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
         tLng = (TextView) view.findViewById(R.id.tLng);
 
         if(getArguments() != null) {
-            c = (Carro) getArguments().getParcelable("carro");
-            setCarro(c);
+            carro = (Carro) getArguments().getParcelable("carro");
+            setCarro(carro);
         }
     }
 
@@ -116,13 +111,13 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
 
-        if(c != null && map != null) {
+        if(carro != null && map != null) {
 
             // Ativa o botão para mostrar minha localização
             map.setMyLocationEnabled(true);
 
             // Cria o objeto LatLng com a coordenada da fábrica
-            LatLng location = new LatLng(Double.parseDouble(c.latitude), Double.parseDouble(c.longitude));
+            LatLng location = new LatLng(Double.parseDouble(carro.latitude), Double.parseDouble(carro.longitude));
             // Posiciona o mapa na coordenada da fábrica (zoom = 13)
 
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(location, 13);
@@ -132,8 +127,8 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
 
             // Marcador no local da fábrica
             map.addMarker(new MarkerOptions()
-                    .title(c.nome)
-                    .snippet(c.desc)
+                    .title(carro.nome)
+                    .snippet(carro.desc)
                     .position(location));
 
 //            map.setOnMyLocationChangeListener(this);
@@ -161,7 +156,7 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
              */
             String desc = c.desc;
 //            for (int i=0;i<20;i++){
-//                desc += "\n"+c.desc;
+//                desc += "\n"+carro.desc;
 //            }
 
             tNome.setText(c.nome);
@@ -175,10 +170,11 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
                 tLat.setText(c.latitude);
                 tLng.setText(c.longitude);
             }
-
-            CarroActivity activity = (CarroActivity) getActivity();
-            activity.setAppBarInfo(c);
         }
+
+        // Imagem do Header na Toolbar
+        CarroActivity activity = (CarroActivity) getActivity();
+        activity.setAppBarInfo(c);
     }
 
     @Override
@@ -191,7 +187,7 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
         int id = item.getItemId();
         if (id == R.id.action_edit) {
             Intent intent = new Intent(getActivity(), CarroActivity.class);
-            intent.putExtra("carro", c);
+            intent.putExtra("carro", carro);
             intent.putExtra("editMode",true);
             ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
             ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_SALVAR,opts.toBundle());
@@ -215,9 +211,9 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
 
     protected void showVideo() {
         // Abre o vídeo no Player de Vídeo Nativo
-        if(c.urlVideo != null && c.urlVideo.trim().length() > 0) {
-            if(URLUtil.isValidUrl(c.urlVideo)) {
-                IntentUtils.showVideo(getContext(), c.urlVideo);
+        if(carro.urlVideo != null && carro.urlVideo.trim().length() > 0) {
+            if(URLUtil.isValidUrl(carro.urlVideo)) {
+                IntentUtils.showVideo(getContext(), carro.urlVideo);
             } else {
                 toast(getString(R.string.msg_url_invalida));
             }
@@ -231,7 +227,7 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
         return new BaseTask<Response>(){
             @Override
             public Response execute() throws Exception {
-                return CarroService.delete(getContext(),c);
+                return CarroService.delete(getContext(), carro);
             }
 
             @Override
@@ -239,11 +235,11 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
                 super.updateView(response);
                 if(response != null && "OK".equals(response.getStatus())) {
                     Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_EXCLUIDO);
-                    intent.putExtra("carro", c);
+                    intent.putExtra("carro", carro);
                     BroadcastUtil.broadcast(getContext(), intent);
                     getActivity().finish();
                 } else {
-                    toast("Erro ao excluir o carro " + c.nome);
+                    toast("Erro ao excluir o carro " + carro.nome);
                 }
             }
         };

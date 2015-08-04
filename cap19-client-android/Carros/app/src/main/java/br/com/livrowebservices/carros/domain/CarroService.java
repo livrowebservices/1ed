@@ -134,11 +134,12 @@ public class CarroService {
                 c.nome = jsonCarro.optString("nome");
                 c.desc = jsonCarro.optString("desc");
                 c.urlFoto = jsonCarro.optString("urlFoto");
+                c.urlVideo = jsonCarro.optString("urlVideo");
                 c.urlInfo = jsonCarro.optString("urlInfo");
                 c.latitude = jsonCarro.optString("latitude");
                 c.longitude = jsonCarro.optString("longitude");
                 if (LOG_ON) {
-                    //Log.d(TAG, "Carro ("+c.id+") " + c.nome + " > " + c.urlFoto);
+                    //Log.d(TAG, "Carro ("+carro.id+") " + carro.nome + " > " + carro.urlFoto);
                 }
                 carros.add(c);
             }
@@ -146,6 +147,7 @@ public class CarroService {
                 Log.d(TAG, carros.size() + " encontrados.");
             }
         } catch (JSONException e) {
+            Log.e(TAG,"Erro json: " + json,e);
             Log.e(TAG,e.getMessage(),e);
             throw new IOException(e.getMessage(), e);
         } catch (Exception e) {
