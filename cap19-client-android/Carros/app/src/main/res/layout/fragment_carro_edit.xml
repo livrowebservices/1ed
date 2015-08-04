@@ -19,7 +19,8 @@
             android:id="@+id/tNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/nome" />
+            android:hint="@string/nome"
+            android:singleLine="true"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -38,10 +39,25 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/tUrlVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/url_video"
+            android:singleLine="true"
+            android:inputType="text"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
             android:id="@+id/tLat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/latitude" />
+            android:hint="@string/latitude"
+            android:singleLine="true"
+            android:inputType="numberDecimal"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -52,6 +68,8 @@
             android:id="@+id/tLng"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/longitude" />
+            android:hint="@string/longitude"
+            android:singleLine="true"
+            android:inputType="numberDecimal"/>
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>

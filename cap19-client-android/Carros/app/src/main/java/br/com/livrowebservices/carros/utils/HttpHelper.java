@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import org.apache.http.HttpStatus;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,7 +51,17 @@ public class HttpHelper {
             //conn.setDoOutput(true);
             //conn.setDoInput(true);
             conn.connect();
-            InputStream in = conn.getInputStream();
+            InputStream in = null;
+            int status = conn.getResponseCode();
+            if(status >= HttpURLConnection.HTTP_BAD_REQUEST)
+            {
+                Log.d(TAG,"Error code: " + status);
+                in = conn.getErrorStream();
+            }
+            else
+            {
+                in = conn.getInputStream();
+            }
             s = IOUtils.toString(in, charset);
             if (LOG_ON) {
                 Log.d(TAG, "<< Http.doGet: " + s);

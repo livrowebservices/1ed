@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+    https://console.developers.google.com/
+    > APIs & auth > credentials > create new Key > android key
+    -->
+    <string name="MAPS_API_KEI">AIzaSyDZ5eOh2ieRNt-_3mbIzZBaQgkkdOL2LTc</string>
+
+</resources>

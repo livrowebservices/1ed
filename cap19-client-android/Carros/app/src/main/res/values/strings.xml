@@ -47,5 +47,11 @@
     <string name="longitude">Longitude</string>
     <string name="action_save">Salvar</string>
     <string name="Foto">Foto</string>
+    <string name="video">Vídeo</string>
+    <string name="mapa">Mapa</string>
+    <string name="latitudeLongitude">Latitude / Longitude</string>
+    <string name="url_video">URL Vídeo</string>
+    <string name="msg_error_io">Ocorreu algum erro ao buscar os dados.</string>
+    <string name="msg_erro_io_timeout">Erro de timeout na consulta.</string>
 
 </resources>

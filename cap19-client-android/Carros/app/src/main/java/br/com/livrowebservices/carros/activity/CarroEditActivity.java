@@ -28,7 +28,6 @@ public class CarroEditActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             if(carro != null) {
                 getSupportActionBar().setTitle(carro.nome);
             }

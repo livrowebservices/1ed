@@ -20,7 +20,15 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import br.com.livrowebservices.carros.R;
@@ -38,14 +46,17 @@ import livroandroid.lib.utils.IntentUtils;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CarroFragment extends BaseLibFragment {
+public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback {
 
     private static final int REQUEST_CODE_SALVAR = 1;
+    protected ImageView img;
     protected TextView tNome;
     protected TextView tDesc;
+    protected TextView tUrlVideo;
+    protected TextView tLatLng;
     protected TextView tLat;
     protected TextView tLng;
-
+    private GoogleMap map;
     protected Carro c;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -78,12 +89,20 @@ public class CarroFragment extends BaseLibFragment {
 
         initViews(view);
 
+        // Mapa
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        // Inicia o Google Maps dentro do fragment
+        mapFragment.getMapAsync(this);
+
         return view;
     }
 
     protected void initViews(View view) {
+        img = (ImageView) view.findViewById(R.id.img);
         tNome = (TextView) view.findViewById(R.id.tNome);
         tDesc = (TextView) view.findViewById(R.id.tDesc);
+        tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
+        tLatLng = (TextView) view.findViewById(R.id.tLatLng);
         tLat = (TextView) view.findViewById(R.id.tLat);
         tLng = (TextView) view.findViewById(R.id.tLng);
 
@@ -93,22 +112,69 @@ public class CarroFragment extends BaseLibFragment {
         }
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.map = googleMap;
+
+        if(c != null && map != null) {
+
+            // Ativa o botão para mostrar minha localização
+            map.setMyLocationEnabled(true);
+
+            // Cria o objeto LatLng com a coordenada da fábrica
+            LatLng location = new LatLng(Double.parseDouble(c.latitude), Double.parseDouble(c.longitude));
+            // Posiciona o mapa na coordenada da fábrica (zoom = 13)
+
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(location, 13);
+            //map.moveCamera(update);
+
+            map.animateCamera(update, 2000, null);
+
+            // Marcador no local da fábrica
+            map.addMarker(new MarkerOptions()
+                    .title(c.nome)
+                    .snippet(c.desc)
+                    .position(location));
+
+//            map.setOnMyLocationChangeListener(this);
+
+            // Tipo do mapa: MAP_TYPE_NORMAL,
+            // MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID and MAP_TYPE_NONE
+            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
+    }
+
     private void setCarro(Carro c) {
         if (c != null) {
-//            ImageUtils.setImage(getContext(), c.urlFoto, img);
+            if(img != null) {
+                ImageUtils.setImage(getContext(), c.urlFoto, img);
+                img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showVideo();
+                    }
+                });
+            }
 
             /**
              * Aumenta a descriçao, para fazer scroll :-)
              */
             String desc = c.desc;
-            for (int i=0;i<20;i++){
-                desc += "\n"+c.desc;
-            }
+//            for (int i=0;i<20;i++){
+//                desc += "\n"+c.desc;
+//            }
 
             tNome.setText(c.nome);
             tDesc.setText(desc);
-            tLat.setText(c.latitude);
-            tLng.setText(c.longitude);
+            if(tUrlVideo != null) {
+                tUrlVideo.setText(c.urlVideo);
+            }
+            if(tLatLng != null) {
+                tLatLng.setText(String.format("%s/%s",c.latitude,c.longitude));
+            } else {
+                tLat.setText(c.latitude);
+                tLng.setText(c.longitude);
+            }
 
             CarroActivity activity = (CarroActivity) getActivity();
             activity.setAppBarInfo(c);
@@ -140,21 +206,25 @@ public class CarroFragment extends BaseLibFragment {
 
             return true;
         } else if (id == R.id.action_video) {
-            // Abre o vídeo no Player de Vídeo Nativo
-            if(c.urlVideo != null && c.urlVideo.trim().length() > 0) {
-                if(URLUtil.isValidUrl(c.urlVideo)) {
-                    IntentUtils.showVideo(getContext(), c.urlVideo);
-                } else {
-                    toast(getString(R.string.msg_url_invalida));
-                }
-
-            } else {
-                toast(getString(R.string.msg_carro_sem_video));
-            }
+            showVideo();
 
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void showVideo() {
+        // Abre o vídeo no Player de Vídeo Nativo
+        if(c.urlVideo != null && c.urlVideo.trim().length() > 0) {
+            if(URLUtil.isValidUrl(c.urlVideo)) {
+                IntentUtils.showVideo(getContext(), c.urlVideo);
+            } else {
+                toast(getString(R.string.msg_url_invalida));
+            }
+
+        } else {
+            toast(getString(R.string.msg_carro_sem_video));
+        }
     }
 
     private BaseTask taskDeleteCarro() {
@@ -184,4 +254,5 @@ public class CarroFragment extends BaseLibFragment {
         super.onDestroy();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
     }
+
 }

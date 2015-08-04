@@ -51,19 +51,6 @@ public class CarroEditFragment extends CarroFragment {
         View view = inflater.inflate(R.layout.fragment_carro_edit, container, false);
         setHasOptionsMenu(true);
 
-        /*imgView = (ImageView) view.findViewById(R.id.img);
-        imgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Cria o o arquivo no sdcard
-                file = SDCardUtils.getPublicFile("foto_carro.jpg");
-                // Chama a intent informando o arquivo para salvar a foto
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-                startActivityForResult(i, 0);
-            }
-        });*/
-
         initViews(view);
 
         if (savedInstanceState != null) {
@@ -176,7 +163,8 @@ public class CarroEditFragment extends CarroFragment {
 
     private void setImage(File file) {
         //ImageUtils.setImage(getContext(), file.getAbsolutePath().toString(), imgView);
-        setImage(file.getAbsolutePath().toString());
+        Log.d(TAG,"setImage: " + file);
+        ((CarroActivity)getActivity()).setImage(file);
     }
 
     public void setImage(String url) {
@@ -186,7 +174,8 @@ public class CarroEditFragment extends CarroFragment {
 
     public void onClickCamera(Carro c) {
         // Cria o o arquivo no sdcard
-        file = SDCardUtils.getPublicFile(String.format("foto_carro_%d.jpg",c!=null?c.id:System.currentTimeMillis()));
+        long ms = System.currentTimeMillis();
+        file = SDCardUtils.getPublicFile(String.format("foto_carro_%s_%s.jpg",c!=null?c.id:ms,ms));
         Log.d(TAG,"onClickCamera: file: " + file);
         // Chama a intent informando o arquivo para salvar a foto
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

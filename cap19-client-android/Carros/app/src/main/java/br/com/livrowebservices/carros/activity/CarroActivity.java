@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.fragment.CarroEditFragment;
@@ -103,5 +105,9 @@ public class CarroActivity extends BaseActivity {
 
     public void setImage(String url) {
         ImageUtils.setImage(this,url,header);
+    }
+
+    public void setImage(File file) {
+        ImageUtils.setImage(this,file,header);
     }
 }

@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import br.com.livrowebservices.carros.R;
@@ -139,9 +140,16 @@ public class CarrosFragment extends BaseLibFragment {
             }
         }
 
+
+
         @Override
         public void onError(Exception e) {
-            alert("Ocorreu algum erro ao buscar os dados.");
+            if(e instanceof SocketTimeoutException) {
+                alert(getString(R.string.msg_erro_io_timeout));
+            } else {
+                alert(getString(R.string.msg_error_io));
+            }
+
         }
 
         @Override
