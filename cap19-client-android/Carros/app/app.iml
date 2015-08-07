@@ -104,5 +104,6 @@
     <orderEntry type="library" exported="" name="parceler-api-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-wearable-7.0.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-location-7.5.0" level="project" />
   </component>
 </module>

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -51,6 +52,7 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
     protected TextView tLatLng;
     protected TextView tLat;
     protected TextView tLng;
+    protected RadioGroup tTipo;
     private GoogleMap map;
     protected Carro carro;
 
@@ -70,9 +72,12 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Lê os argumentos
+        carro = (Carro) getArguments().getParcelable("carro");
+
         // Registra receiver para receber broadcasts
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
-
         setHasOptionsMenu(true);
     }
 
@@ -94,6 +99,7 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
 
     protected void initViews(View view) {
         img = (ImageView) view.findViewById(R.id.img);
+        tTipo = (RadioGroup) view.findViewById(R.id.radioTipo);
         tNome = (TextView) view.findViewById(R.id.tNome);
         tDesc = (TextView) view.findViewById(R.id.tDesc);
         tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
@@ -102,7 +108,6 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
         tLng = (TextView) view.findViewById(R.id.tLng);
 
         if(getArguments() != null) {
-            carro = (Carro) getArguments().getParcelable("carro");
             setCarro(carro);
         }
     }
@@ -159,6 +164,7 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
 //                desc += "\n"+carro.desc;
 //            }
 
+            setTipo(c.tipo);
             tNome.setText(c.nome);
             tDesc.setText(desc);
             if(tUrlVideo != null) {
@@ -175,6 +181,35 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
         // Imagem do Header na Toolbar
         CarroActivity activity = (CarroActivity) getActivity();
         activity.setAppBarInfo(c);
+    }
+
+    // Retorna o tipo em string conforme marcado no RadioGroup
+    protected String getTipo() {
+        if(tTipo != null) {
+            int id = tTipo.getCheckedRadioButtonId();
+            switch (id) {
+                case R.id.tipoClassico:
+                    return "classicos";
+                case R.id.tipoEsportivo:
+                    return "esportivos";
+                case R.id.tipoLuxo:
+                    return "luxo";
+            }
+        }
+        return "classicos";
+    }
+
+    // Seta o tipo no RadioGroup
+    protected void setTipo(String tipo) {
+        if(tTipo != null) {
+            if("classicos".equals(tipo)) {
+                tTipo.check(R.id.tipoClassico);
+            } else if("esportivos".equals(tipo)) {
+                tTipo.check(R.id.tipoEsportivo);
+            } else if("luxo".equals(tipo)) {
+                tTipo.check(R.id.tipoLuxo);
+            }
+        }
     }
 
     @Override

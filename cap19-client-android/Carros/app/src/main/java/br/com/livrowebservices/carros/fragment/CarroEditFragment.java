@@ -4,6 +4,7 @@ package br.com.livrowebservices.carros.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +30,7 @@ import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.domain.ResponseWithURL;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
+import br.com.livrowebservices.carros.utils.GooglePlayServicesHelper;
 import livroandroid.lib.utils.ImageResizeUtils;
 import livroandroid.lib.utils.SDCardUtils;
 
@@ -34,10 +39,11 @@ import livroandroid.lib.utils.SDCardUtils;
  *
  * Herda do CarroFragment para aproveitar a lógica de visualização.
  */
-public class CarroEditFragment extends CarroFragment implements CarroActivity.ClickHeaderListener {
+public class CarroEditFragment extends CarroFragment implements CarroActivity.ClickHeaderListener, LocationListener {
     // Camera Foto
     private File file;
     private boolean updateFoto;
+    private GooglePlayServicesHelper gps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +62,31 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
         CarroActivity activity = (CarroActivity) getActivity();
         activity.setClickHeaderListener(this);
 
+        // Ligar o Google Play Services
+        if(carro == null) {
+            // Se não existe carro, liga GPS
+            gps = new GooglePlayServicesHelper(getContext(), true);
+        }
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Conecta no Google Play Services
+        if(gps != null) {
+            gps.onResume(this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Desconecta no Google Play Services
+        if(gps != null) {
+            gps.onPause();
+        }
     }
 
     @Override
@@ -89,6 +119,9 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
             carro.latitude = tLat.getText().toString();
             carro.longitude = tLng.getText().toString();
             carro.urlVideo = tUrlVideo.getText().toString();
+            carro.tipo = getTipo();
+
+            Log.d(TAG,"Salvar carro tipo: " + carro.tipo);
 
             startTask("salvar", taskSaveCarro());
             return true;
@@ -193,5 +226,14 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
     public void onHeaderClicked() {
         // Se clicar na imagem de header, é mesma coisa que clicar no carro
         onClickCamera();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if(gps != null) {
+            // Atualiza GPS quando abre o formulário vazio.
+            tLat.setText(String.valueOf(location.getLatitude()));
+            tLng.setText(String.valueOf(location.getLongitude()));
+        }
     }
 }

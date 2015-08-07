@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.File;
 
 import br.com.livrowebservices.carros.R;
@@ -27,7 +25,7 @@ public class CarroActivity extends BaseActivity {
     CollapsingToolbarLayout collapsingToolbar;
 
     private Carro carro;
-    private ImageView header;
+    private ImageView appBarImg;
     private FloatingActionButton fabButton;
     private ClickHeaderListener clickHeaderListener;
 
@@ -56,8 +54,8 @@ public class CarroActivity extends BaseActivity {
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         // Header
-        header = (ImageView) findViewById(R.id.header);
-        header.setOnClickListener(onClickImgHeader());
+        appBarImg = (ImageView) findViewById(R.id.appBarImg);
+        appBarImg.setOnClickListener(onClickImgHeader());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.header_appbar);
 
@@ -131,10 +129,10 @@ public class CarroActivity extends BaseActivity {
     }
 
     public void setImage(String url) {
-        ImageUtils.setImage(this,url,header);
+        ImageUtils.setImage(this,url, appBarImg);
     }
 
     public void setImage(File file) {
-        ImageUtils.setImage(this,file,header);
+        ImageUtils.setImage(this,file, appBarImg);
     }
 }
