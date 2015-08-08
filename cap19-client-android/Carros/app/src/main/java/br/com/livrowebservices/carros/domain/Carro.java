@@ -15,6 +15,9 @@ public class Carro implements Parcelable {
     public String latitude;
     public String longitude;
 
+    // Flag para a action bar de contexto
+    public boolean selected;
+
     @Override
     public String toString() {
         return "Carro{" + "nome='" + nome + '\'' + ", desc='" + desc + '\'' + '}';
@@ -66,4 +69,19 @@ public class Carro implements Parcelable {
         }
     };
 
+    public double getLatitude() {
+        try {
+            return Double.parseDouble(latitude);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public double getLongitude() {
+        try {
+            return Double.parseDouble(longitude);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 }

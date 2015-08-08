@@ -9,19 +9,16 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.DOMException;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.livrowebservices.carros.utils.HttpHelper;
+import livroandroid.lib.utils.HttpHelper;
 import livroandroid.lib.utils.IOUtils;
 
 public class CarroService {

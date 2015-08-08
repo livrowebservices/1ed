@@ -37,12 +37,13 @@ import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
+import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.IntentUtils;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback {
+public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
 
     private static final int REQUEST_CODE_SALVAR = 1;
     protected ImageView img;
@@ -122,21 +123,24 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
             map.setMyLocationEnabled(true);
 
             // Cria o objeto LatLng com a coordenada da fábrica
-            LatLng location = new LatLng(Double.parseDouble(carro.latitude), Double.parseDouble(carro.longitude));
-            // Posiciona o mapa na coordenada da fábrica (zoom = 13)
+            double lat = carro.getLatitude();
+            double lng = carro.getLongitude();
 
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(location, 13);
-            //map.moveCamera(update);
+            if(lat > 0 && lng > 0) {
+                LatLng location = new LatLng(lat, lng);
+                // Posiciona o mapa na coordenada da fábrica (zoom = 13)
 
-            map.animateCamera(update, 2000, null);
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(location, 13);
+                //map.moveCamera(update);
 
-            // Marcador no local da fábrica
-            map.addMarker(new MarkerOptions()
-                    .title(carro.nome)
-                    .snippet(carro.desc)
-                    .position(location));
+                map.animateCamera(update, 2000, null);
 
-//            map.setOnMyLocationChangeListener(this);
+                // Marcador no local da fábrica
+                map.addMarker(new MarkerOptions()
+                        .title(carro.nome)
+                        .snippet(carro.desc)
+                        .position(location));
+            }
 
             // Tipo do mapa: MAP_TYPE_NORMAL,
             // MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID and MAP_TYPE_NONE
@@ -268,7 +272,7 @@ public class CarroFragment extends BaseLibFragment implements OnMapReadyCallback
             @Override
             public void updateView(Response response) {
                 super.updateView(response);
-                if(response != null && "OK".equals(response.getStatus())) {
+                if(response != null && response.isOk()) {
                     Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_EXCLUIDO);
                     intent.putExtra("carro", carro);
                     BroadcastUtil.broadcast(getContext(), intent);

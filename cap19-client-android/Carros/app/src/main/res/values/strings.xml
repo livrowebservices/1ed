@@ -57,5 +57,6 @@
     <string name="tipo">Tipo</string>
     <string name="esportivo">Esportivo</string>
     <string name="classico">Clássico</string>
+    <string name="msg_error_campo_obrigatorio">Campo obrigatório.</string>
 
 </resources>

@@ -15,9 +15,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,7 +31,7 @@ import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.domain.ResponseWithURL;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
-import br.com.livrowebservices.carros.utils.GooglePlayServicesHelper;
+import livroandroid.lib.utils.GooglePlayServicesHelper;
 import livroandroid.lib.utils.ImageResizeUtils;
 import livroandroid.lib.utils.SDCardUtils;
 
@@ -114,19 +115,35 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
                 carro.tipo="esportivos";
             }
 
-            carro.nome = tNome.getText().toString();
-            carro.desc = tDesc.getText().toString();
-            carro.latitude = tLat.getText().toString();
-            carro.longitude = tLng.getText().toString();
-            carro.urlVideo = tUrlVideo.getText().toString();
-            carro.tipo = getTipo();
+            boolean formOk = validate(tNome,tDesc);
+            if(formOk) {
+                // Validação de campos preenchidos
+                carro.nome = tNome.getText().toString();
+                carro.desc = tDesc.getText().toString();
+                carro.latitude = tLat.getText().toString();
+                carro.longitude = tLng.getText().toString();
+                carro.urlVideo = tUrlVideo.getText().toString();
+                carro.tipo = getTipo();
 
-            Log.d(TAG,"Salvar carro tipo: " + carro.tipo);
+                Log.d(TAG,"Salvar carro tipo: " + carro.tipo);
 
-            startTask("salvar", taskSaveCarro());
+                startTask("salvar", taskSaveCarro());
+            }
+
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean validate(TextView... array) {
+        for (TextView t: array) {
+            String s = t.getText().toString();
+            if(s == null || s.trim().length() == 0) {
+                t.setError(getString(R.string.msg_error_campo_obrigatorio));
+                return false;
+            }
+        }
+        return true;
     }
 
     private BaseTask taskSaveCarro() {

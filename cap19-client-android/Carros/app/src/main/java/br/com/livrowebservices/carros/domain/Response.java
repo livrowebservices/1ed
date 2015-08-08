@@ -30,4 +30,8 @@ public class Response {
                 ", msg='" + msg + '\'' +
                 '}';
     }
+
+    public boolean isOk() {
+        return "OK".equalsIgnoreCase(status);
+    }
 }

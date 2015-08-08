@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,50 +25,42 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
+import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
+import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.AndroidUtils;
 
 /**
  * Created by ricardo on 12/06/15.
  */
-public class CarrosFragment extends BaseLibFragment {
-    CarroAdapter adapter;
+public class CarrosFragment extends BaseFragment {
+
     private RecyclerView recyclerView;
     private List<Carro> carros;
     private String tipo;
     private SwipeRefreshLayout swipeLayout;
 
+    // Action Bar de Contexto
+    private ActionMode actionMode;
+
+    // Broadcast
+    private Intent broadcastIntent;
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
-            // Atualiza o carro
-            final Carro c = (Carro) intent.getParcelableExtra("carro");
-
-            listaCarros(false);
-
-            if(getView() != null) {
-                getView().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(c != null) {
-                            if (BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(intent.getAction())) {
-                                snack(recyclerView, String.format("Carro %s excluído.",c.nome));
-                            } else if (BroadcastUtil.ACTION_CARRO_SALVO.equals(intent.getAction())) {
-                                snack(recyclerView, String.format("Carro %s salvo.",c.nome));
-                            }
-                        }
-                    }
-                },1500);
-            }
+            broadcastIntent = intent;
         }
     };
+    private View rootLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,18 +72,18 @@ public class CarrosFragment extends BaseLibFragment {
 
         // Registra receiver para receber broadcasts
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_EXCLUIDO));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_carros, container, false);
 
+        rootLayout = view.findViewById(R.id.rootLayout);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        adapter = new CarroAdapter(getActivity(), carros, onClickCarro());
-        recyclerView.setAdapter(adapter);
 
         // Swipe to Refresh
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
@@ -108,6 +101,44 @@ public class CarrosFragment extends BaseLibFragment {
         super.onActivityCreated(savedInstanceState);
 
         listaCarros(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(broadcastIntent != null) {
+            // Atualiza o carro
+            final Carro c = (Carro) broadcastIntent.getParcelableExtra("carro");
+
+            if(getView() != null) {
+                //listaCarros(false);
+
+                if(c != null) {
+                    if (BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(broadcastIntent.getAction())) {
+                        toast("aqui X2 ["+c+"]: " + broadcastIntent.getAction());
+                        snack(recyclerView, String.format("Carro %s excluído.",c.nome));
+                    } else if (BroadcastUtil.ACTION_CARRO_SALVO.equals(broadcastIntent.getAction())) {
+                        toast("aqui ADD3 ["+c+"]: " + broadcastIntent.getAction());
+                        snack(recyclerView, String.format("Carro %s salvo.",c.nome));
+                    }
+                }
+
+                /*getView().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(c != null) {
+                            if (BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(broadcastIntent.getAction())) {
+                                toast("aqui X ["+c+"]: " + broadcastIntent.getAction());
+                                snack(recyclerView, String.format("Carro %s excluído.",c.nome));
+                            } else if (BroadcastUtil.ACTION_CARRO_SALVO.equals(broadcastIntent.getAction())) {
+                                toast("aqui ADD ["+c+"]: " + broadcastIntent.getAction());
+                                snack(recyclerView, String.format("Carro %s salvo.",c.nome));
+                            }
+                        }
+                    }
+                },1500);*/
+            }
+        }
     }
 
     // Task para buscar os carros
@@ -136,11 +167,8 @@ public class CarrosFragment extends BaseLibFragment {
                 CarrosFragment.this.carros = carros;
                 // Atualiza a view na UI Thread
                 recyclerView.setAdapter(new CarroAdapter(getContext(), carros, onClickCarro()));
-                //toast("update ("+carros.size()+"): " + carros);
             }
         }
-
-
 
         @Override
         public void onError(Exception e) {
@@ -164,15 +192,38 @@ public class CarrosFragment extends BaseLibFragment {
             public void onClickCarro(CarroAdapter.CarrosViewHolder holder, int idx) {
                 Carro c = carros.get(idx);
 
-                ImageView img = holder.img;
+                if (actionMode == null) {
+                    ImageView img = holder.img;
 
-                Intent intent = new Intent(getActivity(), CarroActivity.class);
-                intent.putExtra("carro", c);
-                String key = getString(R.string.transition_key);
+                    Intent intent = new Intent(getActivity(), CarroActivity.class);
+                    intent.putExtra("carro", c);
+                    String key = getString(R.string.transition_key);
 
-                // Compat
-                ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), img, key);
-                ActivityCompat.startActivity(getActivity(), intent, opts.toBundle());
+                    // Compat
+                    ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), img, key);
+                    ActivityCompat.startActivity(getActivity(), intent, opts.toBundle());
+                } else {
+                    // Seleciona o carro e atualiza a lista
+                    c.selected = !c.selected;
+                    updateActionModeTitle();
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onLongClickCarro(CarroAdapter.CarrosViewHolder holder, int idx) {
+                if (actionMode != null) {
+                    return;
+                }
+
+                //Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+                actionMode = getAppCompatActivity().startSupportActionMode(getActionModeCallback());
+
+                Carro c = carros.get(idx);
+                c.selected = true;
+                recyclerView.getAdapter().notifyDataSetChanged();
+
+                updateActionModeTitle();
             }
         };
     }
@@ -236,6 +287,103 @@ public class CarrosFragment extends BaseLibFragment {
             startTask("carros", new GetCarrosTask(nome), R.id.progress);
         } else {
             alert(R.string.error_conexao_indisponivel);
+        }
+    }
+
+    private ActionMode.Callback getActionModeCallback() {
+        return new ActionMode.Callback() {
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // Inflate a menu resource providing context menu items
+                MenuInflater inflater = getActivity().getMenuInflater();
+                inflater.inflate(R.menu.menu_frag_carros_context, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                List<Carro> selectedCarros = getSelectedCarros();
+                if (item.getItemId() == R.id.action_remove) {
+                    startTask("deletarCarros",taskDeleteCarros(selectedCarros));
+                } else if (item.getItemId() == R.id.action_share) {
+                    toast("Compartilhar: " + selectedCarros);
+                }
+                // Encerra o action mode
+                mode.finish();
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                // Limpa o ActionMode e carros selecionados
+                actionMode = null;
+                for (Carro c : carros) {
+                    c.selected = false;
+                }
+                // Atualiza a lista
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        };
+    }
+
+    private BaseTask taskDeleteCarros(final List<Carro> selectedCarros) {
+        return new BaseTask<List<Carro>>(){
+            @Override
+            public List<Carro> execute() throws Exception {
+                Response r = null;
+                // Deleta os carros do banco
+                for (Carro c : selectedCarros) {
+                    Response response = CarroService.delete(getContext(), c);
+                    if(response == null || !response.isOk()) {
+                        throw new Exception("Não foi possível excluir o carro: " + response.getMsg());
+                    }
+                }
+                // Busca os carros novamente
+                return CarroService.getCarros(getContext(),tipo);
+            }
+
+            @Override
+            public void updateView(List<Carro> carros) {
+                super.updateView(carros);
+                // Atualiza a lista
+                if (carros != null) {
+                    CarrosFragment.this.carros = carros;
+                    // Atualiza a view na UI Thread
+                    recyclerView.setAdapter(new CarroAdapter(getContext(), carros, onClickCarro()));
+                }
+                // Snack
+                snack(recyclerView, selectedCarros.size() + " carros excluídos.");
+
+            }
+        };
+    }
+
+    private List<Carro> getSelectedCarros() {
+        List<Carro> list = new ArrayList<Carro>();
+        for (Carro c : carros) {
+            if (c.selected) {
+                list.add(c);
+            }
+        }
+        return list;
+    }
+
+    private void updateActionModeTitle() {
+        if (actionMode != null) {
+            actionMode.setTitle("Selecione os carros.");
+            actionMode.setSubtitle(null);
+            List<Carro> selectedCarros = getSelectedCarros();
+            if (selectedCarros.size() == 1) {
+                actionMode.setSubtitle("1 carro selecionado");
+            } else if (selectedCarros.size() > 1) {
+                actionMode.setSubtitle(selectedCarros.size() + " carros selecionados");
+            }
         }
     }
 

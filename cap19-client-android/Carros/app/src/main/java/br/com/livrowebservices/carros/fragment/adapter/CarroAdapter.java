@@ -2,6 +2,7 @@ package br.com.livrowebservices.carros.fragment.adapter;
 
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
 
     public interface PlanetaOnClickListener {
         public void onClickCarro(CarrosViewHolder holder, int idx);
+        public void onLongClickCarro(CarrosViewHolder holder, int idx);
     }
 
     public CarroAdapter(Context context, List<Carro> carros, PlanetaOnClickListener onClickListener) {
@@ -67,7 +69,22 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
                     onClickListener.onClickCarro(holder, position);
                 }
             });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // Chama o listener para informar que clicou no Carro
+                    onClickListener.onLongClickCarro(holder, position);
+                    return true;
+                }
+            });
         }
+
+        // Pinta o fundo de azul se a linha estiver selecionada
+        int corFundo = context.getResources().getColor(c.selected ? R.color.primary : R.color.white);
+        holder.cardView.setCardBackgroundColor(corFundo);
+        // A cor do texto é branca ou azul, depende da cor do fundo.
+        int corFonte = context.getResources().getColor(c.selected ? R.color.white : R.color.primary);
+        holder.tNome.setTextColor(corFonte);
     }
 
     @Override
@@ -82,6 +99,7 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
         public ImageView img;
         private ProgressBar progress;
         private View view;
+        public CardView cardView;
 
         public CarrosViewHolder(View view) {
             super(view);
@@ -91,6 +109,7 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
             tDesc = (TextView) view.findViewById(R.id.tDesc);
             img = (ImageView) view.findViewById(R.id.img);
             progress = (ProgressBar) view.findViewById(R.id.progress);
+            cardView = (CardView) view.findViewById(R.id.card_view);
         }
     }
 
