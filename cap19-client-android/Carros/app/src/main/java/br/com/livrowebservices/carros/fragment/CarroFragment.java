@@ -35,6 +35,7 @@ import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
+import br.com.livrowebservices.carros.rest.Retrofit;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
 import livroandroid.lib.fragment.BaseFragment;
@@ -266,7 +267,8 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
         return new BaseTask<Response>(){
             @Override
             public Response execute() throws Exception {
-                return CarroService.delete(getContext(), carro);
+                return Retrofit.getCarroService().delete(carro.id);
+//                return CarroService.delete(getContext(), carro);
             }
 
             @Override

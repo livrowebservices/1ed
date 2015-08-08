@@ -30,6 +30,7 @@ import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.domain.ResponseWithURL;
+import br.com.livrowebservices.carros.rest.Retrofit;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import livroandroid.lib.utils.GooglePlayServicesHelper;
 import livroandroid.lib.utils.ImageResizeUtils;
@@ -152,6 +153,7 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
             public Response execute() throws Exception {
                 if(file != null) {
                     // Faz upload da foto
+                    //ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
                     ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
                     if(response != null && response.isOk()) {
                         // Atualiza a foto do carro
@@ -159,7 +161,9 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
                     }
                 }
                 // Salva o carro
-                return CarroService.saveCarro(getContext(), carro);
+//                Response response = CarroService.saveCarro(getContext(), carro);
+                Response response = Retrofit.getCarroService().saveCarro(carro);
+                return response;
             }
 
             @Override

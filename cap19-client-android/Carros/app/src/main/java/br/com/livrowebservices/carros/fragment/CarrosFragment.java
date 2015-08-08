@@ -34,6 +34,7 @@ import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.Response;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
+import br.com.livrowebservices.carros.rest.Retrofit;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.AndroidUtils;
@@ -157,7 +158,8 @@ public class CarrosFragment extends BaseFragment {
                 return CarroService.buscaCarros(getContext(), nome);
             } else {
                 // É para listar por tipo
-                return CarroService.getCarros(getContext(), tipo);
+                return Retrofit.getCarroService().getCarros(tipo);
+                //return CarroService.getCarros(getContext(), tipo);
             }
         }
 
@@ -338,8 +340,9 @@ public class CarrosFragment extends BaseFragment {
             public List<Carro> execute() throws Exception {
                 Response r = null;
                 // Deleta os carros do banco
-                for (Carro c : selectedCarros) {
-                    Response response = CarroService.delete(getContext(), c);
+                for (Carro carro : selectedCarros) {
+                    Response response = Retrofit.getCarroService().delete(carro.id);
+//                    Response response = CarroService.delete(getContext(), carro);
                     if(response == null || !response.isOk()) {
                         throw new Exception("Não foi possível excluir o carro: " + response.getMsg());
                     }
