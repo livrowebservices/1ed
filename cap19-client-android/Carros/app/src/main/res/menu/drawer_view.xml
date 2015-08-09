@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_item_settings"
+            android:icon="@drawable/ic_drawer_carro"
+            android:title="@string/carros" />
+        <item
+            android:id="@+id/nav_item_config"
+            android:icon="@drawable/ic_drawer_settings"
+            android:title="@string/configuracoes" />
+        <item
+            android:id="@+id/nav_item_sobre"
+            android:icon="@drawable/ic_drawer_site_livro"
+            android:title="@string/sobre" />
+    </group>
+
+</menu>

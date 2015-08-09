@@ -58,5 +58,8 @@
     <string name="esportivo">Esportivo</string>
     <string name="classico">Clássico</string>
     <string name="msg_error_campo_obrigatorio">Campo obrigatório.</string>
+    <string name="carros">Carros</string>
+    <string name="configuracoes">Configurações</string>
+    <string name="sobre">Sobre</string>
 
 </resources>

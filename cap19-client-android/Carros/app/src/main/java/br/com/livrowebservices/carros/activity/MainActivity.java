@@ -3,6 +3,7 @@ package br.com.livrowebservices.carros.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -10,7 +11,10 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +31,7 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
     private CoordinatorLayout coordinatorLayout;
     private ViewPager viewPager;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +40,21 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
+        // Toolbar
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Drawer Layout
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setDisplayHomeAsUpEnabled(true);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
 
         // ViewPager
         viewPager = (ViewPager) findViewById(R.id.tabanim_viewpager);
@@ -51,6 +68,18 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
         // FAB Button
         findViewById(R.id.btAddCarro).setOnClickListener(onClickAddCarro());
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        drawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
     }
 
     private View.OnClickListener onClickAddCarro() {
@@ -154,14 +183,24 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_about) {
-            AboutDialog.showAbout(getSupportFragmentManager());
-            return true;
-        } else if (id == R.id.action_site) {
-            IntentUtils.openBrowser(this,getString(R.string.site_livro_webservice));
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case  R.id.action_about:
+                AboutDialog.showAbout(getSupportFragmentManager());
+                return true;
+            case R.id.action_site:
+                IntentUtils.openBrowser(this, getString(R.string.site_livro_webservice));
+                return true;
+            case R.id.nav_item_sobre:
+                IntentUtils.openBrowser(this,getString(R.string.site_livro_webservice));
+                return true;
+            case R.id.nav_item_config:
+                snack(drawerLayout,"Clicou em config");
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
