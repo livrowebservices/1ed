@@ -62,4 +62,8 @@
     <string name="configuracoes">Configurações</string>
     <string name="sobre">Sobre</string>
 
+    <!-- Menu Lateral -->
+    <string name="nav_drawer_username">Ricardo Lecheta</string>
+    <string name="nav_drawer_email">rlecheta@gmail.com</string>
+
 </resources>

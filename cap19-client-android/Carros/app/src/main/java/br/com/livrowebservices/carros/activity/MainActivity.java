@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,13 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.fragment.AboutDialog;
 import br.com.livrowebservices.carros.fragment.CarrosFragment;
-import br.com.livrowebservices.carros.R;
-import livroandroid.lib.activity.BaseActivity;
+import br.com.livrowebservices.carros.utils.NavDrawerUtil;
 import livroandroid.lib.utils.IntentUtils;
 
-public class MainActivity extends BaseActivity implements TabLayout.OnTabSelectedListener {
+public class MainActivity extends BaseActivity implements TabLayout.OnTabSelectedListener, NavigationView.OnNavigationItemSelectedListener {
 
     private CoordinatorLayout coordinatorLayout;
     private ViewPager viewPager;
@@ -41,20 +39,9 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
         // Toolbar
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setupToolbar();
 
-        // Drawer Layout
-        final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        ab.setDisplayHomeAsUpEnabled(true);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        if (navigationView != null) {
-            setupDrawerContent(navigationView);
-        }
+        setupNavDrawer(this);
 
         // ViewPager
         viewPager = (ViewPager) findViewById(R.id.tabanim_viewpager);
@@ -70,35 +57,13 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
         findViewById(R.id.btAddCarro).setOnClickListener(onClickAddCarro());
     }
 
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        menuItem.setChecked(true);
-                        drawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
-    }
-
     private View.OnClickListener onClickAddCarro() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Snackbar
-//                        .make(coordinatorLayout, "Adicionar carro.", Snackbar.LENGTH_LONG)
-//                        .setAction("Ok", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Toast.makeText(getContext(), "OK!", Toast.LENGTH_SHORT).show();
-//                            }
-//                        })
-//                        .show();
-
                 // Compat
-                Intent intent = new Intent(getActivity(),CarroActivity.class);
-                intent.putExtra("editMode",true);
+                Intent intent = new Intent(getActivity(), CarroActivity.class);
+                intent.putExtra("editMode", true);
                 //ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), img, key);
                 ActivityCompat.startActivity(getActivity(), intent, null);
             }
@@ -107,6 +72,12 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
     void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        snack(coordinatorLayout,"Clicou em: " + menuItem);
+        return true;
     }
 
     /**
@@ -187,17 +158,17 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            case  R.id.action_about:
+            case R.id.action_about:
                 AboutDialog.showAbout(getSupportFragmentManager());
                 return true;
             case R.id.action_site:
                 IntentUtils.openBrowser(this, getString(R.string.site_livro_webservice));
                 return true;
             case R.id.nav_item_sobre:
-                IntentUtils.openBrowser(this,getString(R.string.site_livro_webservice));
+                IntentUtils.openBrowser(this, getString(R.string.site_livro_webservice));
                 return true;
             case R.id.nav_item_config:
-                snack(drawerLayout,"Clicou em config");
+                snack(drawerLayout, "Clicou em config");
                 return true;
         }
 
