@@ -96,8 +96,6 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
                 args.putString("tipo", "esportivos");
             } else if (position == 2) {
                 args.putString("tipo", "luxo");
-            } else {
-                args.putString("tipo", "luxo");
             }
             Fragment f = new CarrosFragment();
             f.setArguments(args);
@@ -106,7 +104,7 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
 
 
@@ -120,7 +118,7 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
                 case 2:
                     return getString(R.string.luxo);
                 default:
-                    return getString(R.string.favoritos);
+                    return getString(R.string.luxo);
             }
         }
     }
