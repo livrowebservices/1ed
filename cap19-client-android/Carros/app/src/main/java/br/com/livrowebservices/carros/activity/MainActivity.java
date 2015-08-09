@@ -29,7 +29,6 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
     private CoordinatorLayout coordinatorLayout;
     private ViewPager viewPager;
-    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +75,7 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        snack(coordinatorLayout,"Clicou em: " + menuItem);
+        snack(coordinatorLayout, "Clicou em: " + menuItem);
         return true;
     }
 
@@ -95,6 +94,8 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
                 args.putString("tipo", "classicos");
             } else if (position == 1) {
                 args.putString("tipo", "esportivos");
+            } else if (position == 2) {
+                args.putString("tipo", "luxo");
             } else {
                 args.putString("tipo", "luxo");
             }
@@ -105,7 +106,7 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
 
@@ -116,8 +117,10 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
                     return getString(R.string.classicos);
                 case 1:
                     return getString(R.string.esportivos);
-                default:
+                case 2:
                     return getString(R.string.luxo);
+                default:
+                    return getString(R.string.favoritos);
             }
         }
     }
@@ -125,15 +128,6 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
-//        Snackbar
-//                .make(coordinatorLayout, "Tab: " + tab.getText(), Snackbar.LENGTH_LONG)
-//                .setAction("Ok", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Toast.makeText(getBaseContext(), "OK!", Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .show();
     }
 
     @Override
@@ -156,7 +150,7 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                openDrawer();
                 return true;
             case R.id.action_about:
                 AboutDialog.showAbout(getSupportFragmentManager());

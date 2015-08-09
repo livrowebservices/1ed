@@ -1,6 +1,7 @@
 package br.com.livrowebservices.carros.activity;
 
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +39,9 @@ public class BaseActivity extends livroandroid.lib.activity.BaseActivity {
                         @Override
                         public boolean onNavigationItemSelected(MenuItem menuItem) {
                             menuItem.setChecked(true);
-                            drawerLayout.closeDrawers();
+
+
+   drawerLayout.closeDrawers();
                             if(navListener != null) {
                                 navListener.onNavigationItemSelected(menuItem);
                             }
@@ -46,5 +49,15 @@ public class BaseActivity extends livroandroid.lib.activity.BaseActivity {
                         }
                     });
         }
+    }
+
+    // Abre o menu lateral
+    protected void openDrawer() {
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    // Fecha o menu lateral
+    protected void closeDrawer() {
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 }
