@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import org.parceler.Parcels;
+
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +55,11 @@ public class CarrosFragment extends BaseFragment {
     // Action Bar de Contexto
     private ActionMode actionMode;
 
-    // Broadcast
-    private Intent broadcastIntent;
-
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
-            broadcastIntent = intent;
+            // Ao receber o broadcast, recarrega a lista.
+            listaCarros(false);
         }
     };
     private View rootLayout;
@@ -105,44 +105,6 @@ public class CarrosFragment extends BaseFragment {
         listaCarros(false);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(broadcastIntent != null) {
-            // Atualiza o carro
-            final Carro c = (Carro) broadcastIntent.getParcelableExtra("carro");
-
-            if(getView() != null) {
-                //listaCarros(false);
-
-                if(c != null) {
-                    if (BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(broadcastIntent.getAction())) {
-                        toast("aqui X2 ["+c+"]: " + broadcastIntent.getAction());
-                        snack(recyclerView, String.format("Carro %s excluído.",c.nome));
-                    } else if (BroadcastUtil.ACTION_CARRO_SALVO.equals(broadcastIntent.getAction())) {
-                        toast("aqui ADD3 ["+c+"]: " + broadcastIntent.getAction());
-                        snack(recyclerView, String.format("Carro %s salvo.",c.nome));
-                    }
-                }
-
-                /*getView().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(c != null) {
-                            if (BroadcastUtil.ACTION_CARRO_EXCLUIDO.equals(broadcastIntent.getAction())) {
-                                toast("aqui X ["+c+"]: " + broadcastIntent.getAction());
-                                snack(recyclerView, String.format("Carro %s excluído.",c.nome));
-                            } else if (BroadcastUtil.ACTION_CARRO_SALVO.equals(broadcastIntent.getAction())) {
-                                toast("aqui ADD ["+c+"]: " + broadcastIntent.getAction());
-                                snack(recyclerView, String.format("Carro %s salvo.",c.nome));
-                            }
-                        }
-                    }
-                },1500);*/
-            }
-        }
-    }
-
     // Task para buscar os carros
     private class GetCarrosTask implements TaskListener<List<Carro>> {
         private String nome;
@@ -184,7 +146,6 @@ public class CarrosFragment extends BaseFragment {
             } else {
                 alert(getString(R.string.msg_error_io));
             }
-
         }
 
         @Override
@@ -203,7 +164,7 @@ public class CarrosFragment extends BaseFragment {
                     ImageView img = holder.img;
 
                     Intent intent = new Intent(getActivity(), CarroActivity.class);
-                    intent.putExtra("carro", c);
+                    intent.putExtra("carro", Parcels.wrap(c));
                     String key = getString(R.string.transition_key);
 
                     // Compat

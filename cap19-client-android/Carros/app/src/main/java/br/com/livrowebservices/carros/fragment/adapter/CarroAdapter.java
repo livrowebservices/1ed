@@ -2,6 +2,7 @@ package br.com.livrowebservices.carros.fragment.adapter;
 
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -78,10 +79,10 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
         }
 
         // Pinta o fundo de azul se a linha estiver selecionada
-        int corFundo = context.getResources().getColor(c.selected ? R.color.primary : R.color.white);
+        int corFundo = ContextCompat.getColor(context,c.selected ? R.color.primary : R.color.white);
         holder.cardView.setCardBackgroundColor(corFundo);
         // A cor do texto é branca ou azul, depende da cor do fundo.
-        int corFonte = context.getResources().getColor(c.selected ? R.color.white : R.color.primary);
+        int corFonte = ContextCompat.getColor(context,c.selected ? R.color.white : R.color.primary);
         holder.tNome.setTextColor(corFonte);
     }
 

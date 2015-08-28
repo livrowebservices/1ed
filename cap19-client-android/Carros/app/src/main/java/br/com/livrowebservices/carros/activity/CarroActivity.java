@@ -5,11 +5,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+
+import org.parceler.Parcels;
 
 import java.io.File;
 
@@ -63,13 +66,14 @@ public class CarroActivity extends BaseActivity {
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                int mutedColor = palette.getMutedColor(R.attr.colorPrimary);
+                int color = ContextCompat.getColor(getContext(), R.color.primary);
+                int mutedColor = palette.getMutedColor(color);
                 collapsingToolbar.setContentScrimColor(mutedColor);
             }
         });
 
         // Args
-        carro = getIntent().getParcelableExtra("carro");
+        this.carro = Parcels.unwrap(getIntent().getExtras().getParcelable("carro"));
         final boolean editMode = getIntent().getBooleanExtra("editMode", false);
         setAppBarInfo(carro);
 

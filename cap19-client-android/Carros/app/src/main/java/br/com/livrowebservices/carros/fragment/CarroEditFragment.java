@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
 
+import org.parceler.Parcels;
+
 import java.io.File;
 
 import br.com.livrowebservices.carros.R;
@@ -160,7 +162,7 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
                 if (response != null && "OK".equals(response.getStatus())) {
                     // Retorna resultado para o frag do carro
                     Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_SALVO);
-                    intent.putExtra("carro", carro);
+                    //intent.putExtra("carro", Parcels.wrap(carro));
                     BroadcastUtil.broadcast(getContext(), intent);
                     getActivity().finish();
                 } else {

@@ -1,15 +1,11 @@
 package br.com.livrowebservices.carros.fragment;
 
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,13 +25,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.parceler.Parcels;
+
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
-import br.com.livrowebservices.carros.rest.Response;
-import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
-import br.com.livrowebservices.carros.rest.Retrofit;
-import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.IntentUtils;
@@ -55,34 +49,15 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
     protected TextView tLng;
     protected RadioGroup tTipo;
     protected TextView tUrlVideo;
-
-
     private GoogleMap map;
     protected Carro carro;
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (BroadcastUtil.ACTION_CARRO_SALVO.equals(intent.getAction())) {
-                // Atualiza o carro
-                carro = (Carro) intent.getParcelableExtra("carro");
-                setCarro(carro);
-                // Persiste nos arguments
-                getArguments().putParcelable("carro", carro);
-            }
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Lê os argumentos
-        carro = (Carro) getArguments().getParcelable("carro");
-
-        // Registra receiver para receber broadcasts
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
-        setHasOptionsMenu(true);
+        carro = Parcels.unwrap(getArguments().getParcelable("carro"));
 
         setHasOptionsMenu(true);
     }
@@ -114,7 +89,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
         tLat = (TextView) view.findViewById(R.id.tLat);
         tLng = (TextView) view.findViewById(R.id.tLng);
 
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             setCarro(carro);
         }
     }
@@ -123,7 +98,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
 
-        if(carro != null && map != null) {
+        if (carro != null && map != null) {
 
             // Ativa o botão para mostrar minha localização
             map.setMyLocationEnabled(true);
@@ -132,7 +107,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
             double lat = carro.getLatitude();
             double lng = carro.getLongitude();
 
-            if(lat > 0 && lng > 0) {
+            if (lat > 0 && lng > 0) {
                 LatLng location = new LatLng(lat, lng);
                 // Posiciona o mapa na coordenada da fábrica (zoom = 13)
 
@@ -156,7 +131,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
 
     private void setCarro(Carro c) {
         if (c != null) {
-            if(img != null) {
+            if (img != null) {
                 ImageUtils.setImage(getContext(), c.urlFoto, img);
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -169,11 +144,11 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
             setTipo(c.tipo);
             tNome.setText(c.nome);
             tDesc.setText(c.desc);
-            if(tUrlVideo != null) {
+            if (tUrlVideo != null) {
                 tUrlVideo.setText(c.urlVideo);
             }
-            if(tLatLng != null) {
-                tLatLng.setText(String.format("%s/%s",c.latitude,c.longitude));
+            if (tLatLng != null) {
+                tLatLng.setText(String.format("%s/%s", c.latitude, c.longitude));
             } else {
                 tLat.setText(c.latitude);
                 tLng.setText(c.longitude);
@@ -187,7 +162,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
 
     // Retorna o tipo em string conforme marcado no RadioGroup
     protected String getTipo() {
-        if(tTipo != null) {
+        if (tTipo != null) {
             int id = tTipo.getCheckedRadioButtonId();
             switch (id) {
                 case R.id.tipoClassico:
@@ -203,12 +178,12 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
 
     // Seta o tipo no RadioGroup
     protected void setTipo(String tipo) {
-        if(tTipo != null) {
-            if("classicos".equals(tipo)) {
+        if (tTipo != null) {
+            if ("classicos".equals(tipo)) {
                 tTipo.check(R.id.tipoClassico);
-            } else if("esportivos".equals(tipo)) {
+            } else if ("esportivos".equals(tipo)) {
                 tTipo.check(R.id.tipoEsportivo);
-            } else if("luxo".equals(tipo)) {
+            } else if ("luxo".equals(tipo)) {
                 tTipo.check(R.id.tipoLuxo);
             }
         }
@@ -224,10 +199,12 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
         int id = item.getItemId();
         if (id == R.id.action_edit) {
             Intent intent = new Intent(getActivity(), CarroActivity.class);
-            intent.putExtra("carro", carro);
-            intent.putExtra("editMode",true);
+            intent.putExtra("carro", Parcels.wrap(carro));
+            intent.putExtra("editMode", true);
             ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
-            ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_SALVAR,opts.toBundle());
+            ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_SALVAR, opts.toBundle());
+            // Por definição, vamos fechar esta tela para ficar somente a de editar.
+            getActivity().finish();
             return true;
         } else if (id == R.id.action_video) {
             showVideo();
@@ -239,8 +216,8 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
 
     protected void showVideo() {
         // Abre o vídeo no Player de Vídeo Nativo
-        if(carro.urlVideo != null && carro.urlVideo.trim().length() > 0) {
-            if(URLUtil.isValidUrl(carro.urlVideo)) {
+        if (carro.urlVideo != null && carro.urlVideo.trim().length() > 0) {
+            if (URLUtil.isValidUrl(carro.urlVideo)) {
                 IntentUtils.showVideo(getContext(), carro.urlVideo);
             } else {
                 toast(getString(R.string.msg_url_invalida));
@@ -250,34 +227,4 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
             toast(getString(R.string.msg_carro_sem_video));
         }
     }
-
-    private BaseTask taskDeleteCarro() {
-        return new BaseTask<Response>(){
-            @Override
-            public Response execute() throws Exception {
-                return Retrofit.getCarroREST().delete(carro.id);
-//                return CarroREST.delete(getContext(), carro);
-            }
-
-            @Override
-            public void updateView(Response response) {
-                super.updateView(response);
-                if(response != null && response.isOk()) {
-                    Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_EXCLUIDO);
-                    intent.putExtra("carro", carro);
-                    BroadcastUtil.broadcast(getContext(), intent);
-                    getActivity().finish();
-                } else {
-                    toast("Erro ao excluir o carro " + carro.nome);
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
-    }
-
 }
