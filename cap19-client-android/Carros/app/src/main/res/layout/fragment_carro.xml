@@ -102,8 +102,8 @@
 
                 <ImageView
                     android:id="@+id/img"
-                    android:layout_width="@dimen/img_carro_width_adapter_width"
-                    android:layout_height="@dimen/img_carro_width_adapter_height"
+                    android:layout_width="@dimen/img_carro_adapter_width"
+                    android:layout_height="@dimen/img_carro_adapter_height"
                     android:layout_gravity="center"
                     android:alpha="0.5" />
 

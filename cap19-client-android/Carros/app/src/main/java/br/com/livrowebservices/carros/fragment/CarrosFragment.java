@@ -32,7 +32,8 @@ import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
-import br.com.livrowebservices.carros.domain.Response;
+import br.com.livrowebservices.carros.rest.CarroREST;
+import br.com.livrowebservices.carros.rest.Response;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
 import br.com.livrowebservices.carros.rest.Retrofit;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
@@ -155,11 +156,11 @@ public class CarrosFragment extends BaseFragment {
             // Busca os carros em background
             if (nome != null) {
                 // É uma busca por nome
-                return CarroService.buscaCarros(getContext(), nome);
+                return CarroService.seachByNome(getContext(), nome);
             } else {
                 // É para listar por tipo
-                return Retrofit.getCarroService().getCarros(tipo);
-                //return CarroService.getCarros(getContext(), tipo);
+                //return Retrofit.getCarroREST().getCarros(tipo);
+                return CarroService.getCarrosByTipo(getContext(), tipo);
             }
         }
 
@@ -167,6 +168,10 @@ public class CarrosFragment extends BaseFragment {
         public void updateView(List<Carro> carros) {
             if (carros != null) {
                 CarrosFragment.this.carros = carros;
+
+                // O correto seria validar se excluiu e recarregar a lista.
+//                listaCarros(true);
+
                 // Atualiza a view na UI Thread
                 recyclerView.setAdapter(new CarroAdapter(getContext(), carros, onClickCarro()));
             }
@@ -188,8 +193,8 @@ public class CarrosFragment extends BaseFragment {
         }
     }
 
-    protected CarroAdapter.PlanetaOnClickListener onClickCarro() {
-        return new CarroAdapter.PlanetaOnClickListener() {
+    protected CarroAdapter.CarroOnClickListener onClickCarro() {
+        return new CarroAdapter.CarroOnClickListener() {
             @Override
             public void onClickCarro(CarroAdapter.CarrosViewHolder holder, int idx) {
                 Carro c = carros.get(idx);
@@ -279,7 +284,7 @@ public class CarrosFragment extends BaseFragment {
         if (AndroidUtils.isNetworkAvailable(getContext())) {
             startTask("carros", new GetCarrosTask(null), pullToRefresh ? R.id.swipeToRefresh : R.id.progress);
         } else {
-            alert(R.string.error_conexao_indisponivel);
+            alert(R.string.msg_error_conexao_indisponivel);
         }
     }
 
@@ -288,7 +293,7 @@ public class CarrosFragment extends BaseFragment {
         if (AndroidUtils.isNetworkAvailable(getContext())) {
             startTask("carros", new GetCarrosTask(nome), R.id.progress);
         } else {
-            alert(R.string.error_conexao_indisponivel);
+            alert(R.string.msg_error_conexao_indisponivel);
         }
     }
 
@@ -312,7 +317,7 @@ public class CarrosFragment extends BaseFragment {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 List<Carro> selectedCarros = getSelectedCarros();
                 if (item.getItemId() == R.id.action_remove) {
-                    startTask("deletarCarros",taskDeleteCarros(selectedCarros));
+                    deletarCarrosSelecionados();
                 } else if (item.getItemId() == R.id.action_share) {
                     toast("Compartilhar: " + selectedCarros);
                 }
@@ -334,37 +339,36 @@ public class CarrosFragment extends BaseFragment {
         };
     }
 
-    private BaseTask taskDeleteCarros(final List<Carro> selectedCarros) {
-        return new BaseTask<List<Carro>>(){
-            @Override
-            public List<Carro> execute() throws Exception {
-                Response r = null;
-                // Deleta os carros do banco
-                for (Carro carro : selectedCarros) {
-                    Response response = Retrofit.getCarroService().delete(carro.id);
-//                    Response response = CarroService.delete(getContext(), carro);
-                    if(response == null || !response.isOk()) {
-                        throw new Exception("Não foi possível excluir o carro: " + response.getMsg());
+    // Deletar carros selecionados ao abrir a CAB
+    private void deletarCarrosSelecionados() {
+        final List<Carro> selectedCarros = getSelectedCarros();
+
+        if(selectedCarros.size() > 0) {
+            startTask("deletar",new BaseTask(){
+                @Override
+                public Object execute() throws Exception {
+                    boolean ok = CarroService.delete(getContext(), selectedCarros);
+                    if(ok) {
+                        // Se excluiu do banco, remove da lista da tela.
+                        for (Carro c : selectedCarros) {
+                            carros.remove(c);
+                        }
                     }
+                    return null;
                 }
-                // Busca os carros novamente
-                return CarroService.getCarros(getContext(),tipo);
-            }
 
-            @Override
-            public void updateView(List<Carro> carros) {
-                super.updateView(carros);
-                // Atualiza a lista
-                if (carros != null) {
-                    CarrosFragment.this.carros = carros;
-                    // Atualiza a view na UI Thread
-                    recyclerView.setAdapter(new CarroAdapter(getContext(), carros, onClickCarro()));
+                @Override
+                public void updateView(Object count) {
+                    super.updateView(count);
+                    // Mostra mensagem de sucesso
+                    snack(recyclerView, selectedCarros.size() + " carros excluídos com sucesso");
+                    // Atualiza a lista de carros
+                    //listaCarros(true);
+                    // Atualiza a lista
+                    recyclerView.getAdapter().notifyDataSetChanged();
                 }
-                // Snack
-                snack(recyclerView, selectedCarros.size() + " carros excluídos.");
-
-            }
-        };
+            });
+        }
     }
 
     private List<Carro> getSelectedCarros() {

@@ -5,29 +5,39 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.livrowebservices.carros.rest.Response;
+import br.com.livrowebservices.carros.rest.ResponseWithURL;
 import livroandroid.lib.utils.HttpHelper;
 import livroandroid.lib.utils.IOUtils;
 
 public class CarroService {
     private static final String URL_BASE = "http://livrowebservices.com.br/rest/carros";
     private static final boolean LOG_ON = true;
-    private static final String TAG = "CarroService";
+    private static final String TAG = "CarroREST";
 
-    public static List<Carro> getCarros(Context context, String tipo) throws IOException {
+    public static List<Carro> getCarrosByTipo(Context context, String tipo) throws IOException {
         String url = URL_BASE + "/tipo/" + tipo;
+        HttpHelper http = new HttpHelper();
+        String json = http.doGet(url);
+        List<Carro> carros = parserJSON(context, json);
+        return carros;
+    }
+
+    public static List<Carro> seachByNome(Context context, String nome) throws IOException {
+        String url = URL_BASE + "/nome/" + nome;
         HttpHelper http = new HttpHelper();
         String json = http.doGet(url);
         List<Carro> carros = parserJSON(context, json);
@@ -96,7 +106,7 @@ public class CarroService {
         Log.d(TAG, ">> saveCarro: " + jsonCarro);
         HttpHelper http = new HttpHelper();
         http.setContentType("application/json; charset=utf-8");
-        String json = http.doPost(url,jsonCarro.getBytes(),"UTF-8");
+        String json = http.doPost(url, jsonCarro.getBytes(), "UTF-8");
         Log.d(TAG,"<< saveCarro: " + json);
 
         Response response = new Gson().fromJson(json, Response.class);
@@ -104,66 +114,38 @@ public class CarroService {
         return response;
     }
 
-    public static List<Carro> buscaCarros(Context context, String nome) throws IOException {
-        String url = URL_BASE + "/nome/" + nome;
-        HttpHelper http = new HttpHelper();
-        String json = http.doGet(url);
-        List<Carro> carros = parserJSON(context, json);
-        return carros;
-    }
-
     private static List<Carro> parserJSON(Context context, String json) throws IOException {
-        List<Carro> carros = new ArrayList<Carro>();
-        try {
-//            JSONObject root = new JSONObject(json);
-//            JSONObject obj = root.getJSONObject("carros");
-//            JSONArray jsonCarros = obj.getJSONArray("carro");
-
-            JSONArray jsonCarros = new JSONArray(json);
-
-            // Insere cada carro na lista
-            for (int i = 0; i < jsonCarros.length(); i++) {
-                JSONObject jsonCarro = jsonCarros.getJSONObject(i);
-                Carro c = new Carro();
-                // Lê as informações de cada carro
-                c.id = jsonCarro.optLong("id");
-                c.tipo = jsonCarro.optString("tipo");
-                c.nome = jsonCarro.optString("nome");
-                c.desc = jsonCarro.optString("desc");
-                c.urlFoto = jsonCarro.optString("urlFoto");
-                c.urlVideo = jsonCarro.optString("urlVideo");
-                c.urlInfo = jsonCarro.optString("urlInfo");
-                c.latitude = jsonCarro.optString("latitude");
-                c.longitude = jsonCarro.optString("longitude");
-                if (LOG_ON) {
-                    //Log.d(TAG, "Carro ("+carro.id+") " + carro.nome + " > " + carro.urlFoto);
-                }
-                carros.add(c);
-            }
-            if (LOG_ON) {
-                Log.d(TAG, carros.size() + " encontrados.");
-            }
-        } catch (JSONException e) {
-            Log.e(TAG,"Erro json: " + json,e);
-            Log.e(TAG,e.getMessage(),e);
-            throw new IOException(e.getMessage(), e);
-        } catch (Exception e) {
-            Log.e(TAG,e.getMessage(),e);
-            throw new IOException("Erro ao ler os dados: " + e.getMessage(), e);
-        }
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<Carro>>() {}.getType();
+        List<Carro> carros = new Gson().fromJson(json, listType);
         return carros;
     }
 
-    public static Response delete(Context context, Carro c) throws IOException {
-        String url = URL_BASE + "/"+c.id;
+    /**
+     {
+     "status": "OK",
+     "msg": "Carro deletado com sucesso"
+     }
+     */
+    public static boolean delete(Context context, List<Carro> selectedCarros) throws IOException, JSONException {
         HttpHelper http = new HttpHelper();
         http.setContentType("application/json; charset=utf-8");
-        String json = http.doDelete(url);
-        Log.d(TAG,"Delete json: " + json);
-
-        Gson gson = new Gson();
-        Response response = gson.fromJson(json,Response.class);
-        return response;
+        for (Carro c : selectedCarros) {
+            // URL para excluir o carro
+            String url = URL_BASE + "/" + c.id;
+            Log.d(TAG,"Delete carro: " + url);
+            // Request HTTP
+            String json = http.doDelete(url);
+            Log.d(TAG,"JSON delete: " + json);
+            // Parser do JSON
+            Gson gson = new Gson();
+            Response response = gson.fromJson(json, Response.class);
+            if(response.isOk()) {
+                throw new IOException("Erro ao excluir: " + response.getMsg());
+            }
+        }
+        // A fazer
+        return true;
     }
 
 

@@ -1,17 +1,12 @@
 package br.com.livroandroid;
 
 import android.test.AndroidTestCase;
-import android.util.Base64;
 import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
-import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.domain.CarroService;
-import br.com.livrowebservices.carros.domain.ResponseWithURL;
-import livroandroid.lib.utils.IOUtils;
+import br.com.livrowebservices.carros.rest.ResponseWithURL;
 
 /**
  * Created by ricardo on 30/07/15.

@@ -5,9 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,36 +13,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
-import br.com.livrowebservices.carros.domain.Response;
-import br.com.livrowebservices.carros.domain.ResponseWithURL;
-import br.com.livrowebservices.carros.rest.Retrofit;
+import br.com.livrowebservices.carros.rest.Response;
+import br.com.livrowebservices.carros.rest.ResponseWithURL;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
+import br.com.livrowebservices.carros.utils.CameraUtil;
 import livroandroid.lib.utils.GooglePlayServicesHelper;
-import livroandroid.lib.utils.ImageResizeUtils;
-import livroandroid.lib.utils.SDCardUtils;
 
 /**
  * Fragment com form para editar o carro.
- *
+ * <p>
  * Herda do CarroFragment para aproveitar a lógica de visualização.
  */
 public class CarroEditFragment extends CarroFragment implements CarroActivity.ClickHeaderListener, LocationListener {
     // Camera Foto
-    private File file;
-    private boolean updateFoto;
+    private CameraUtil camera = new CameraUtil();
     private GooglePlayServicesHelper gps;
 
     @Override
@@ -56,16 +48,14 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
 
         if (savedInstanceState != null) {
             // Se girou a tela recupera o estado
-            file = (File) savedInstanceState.getSerializable("file");
-            updateFoto = savedInstanceState.getBoolean("updateFoto");
-            setImage(file);
+            camera.onCreate(savedInstanceState);
         }
 
         CarroActivity activity = (CarroActivity) getActivity();
         activity.setClickHeaderListener(this);
 
         // Ligar o Google Play Services
-        if(carro == null) {
+        if (carro == null) {
             // Se não existe carro, liga GPS
             gps = new GooglePlayServicesHelper(getContext(), true);
         }
@@ -77,7 +67,7 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
     public void onResume() {
         super.onResume();
         // Conecta no Google Play Services
-        if(gps != null) {
+        if (gps != null) {
             gps.onResume(this);
         }
     }
@@ -86,7 +76,7 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
     public void onPause() {
         super.onPause();
         // Desconecta no Google Play Services
-        if(gps != null) {
+        if (gps != null) {
             gps.onPause();
         }
     }
@@ -94,10 +84,7 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(file != null) {
-            outState.putSerializable("file", file);
-            outState.putBoolean("updateFoto", updateFoto);
-        }
+        camera.onSaveInstanceState(outState);
     }
 
     @Override
@@ -110,14 +97,14 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
         int id = item.getItemId();
         if (id == R.id.action_salvar) {
 
-            if(carro == null) {
+            if (carro == null) {
                 // Novo carro
                 carro = new Carro();
-                carro.tipo="esportivos";
+                carro.tipo = "esportivos";
             }
 
-            boolean formOk = validate(tNome,tDesc);
-            if(formOk) {
+            boolean formOk = validate(tNome, tDesc);
+            if (formOk) {
                 // Validação de campos preenchidos
                 carro.nome = tNome.getText().toString();
                 carro.desc = tDesc.getText().toString();
@@ -126,7 +113,7 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
                 carro.urlVideo = tUrlVideo.getText().toString();
                 carro.tipo = getTipo();
 
-                Log.d(TAG,"Salvar carro tipo: " + carro.tipo);
+                Log.d(TAG, "Salvar carro tipo: " + carro.tipo);
 
                 startTask("salvar", taskSaveCarro());
             }
@@ -137,9 +124,9 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
     }
 
     private boolean validate(TextView... array) {
-        for (TextView t: array) {
+        for (TextView t : array) {
             String s = t.getText().toString();
-            if(s == null || s.trim().length() == 0) {
+            if (s == null || s.trim().length() == 0) {
                 t.setError(getString(R.string.msg_error_campo_obrigatorio));
                 return false;
             }
@@ -148,28 +135,29 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
     }
 
     private BaseTask taskSaveCarro() {
-        return new BaseTask<Response>(){
+        return new BaseTask<Response>() {
             @Override
             public Response execute() throws Exception {
-                if(file != null) {
-                    // Faz upload da foto
-                    //ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
+                // Faz upload da foto
+                File file = camera.getFile();
+                if (file != null) {
+                    //ResponseWithURL response = CarroREST.postFotoBase64(getContext(), file);
                     ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
-                    if(response != null && response.isOk()) {
+                    if (response != null && response.isOk()) {
                         // Atualiza a foto do carro
                         carro.urlFoto = response.getUrl();
                     }
                 }
                 // Salva o carro
-//                Response response = CarroService.saveCarro(getContext(), carro);
-                Response response = Retrofit.getCarroService().saveCarro(carro);
+                Response response = CarroService.saveCarro(getContext(), carro);
+                //Response response = Retrofit.getCarroREST().saveCarro(carro);
                 return response;
             }
 
             @Override
             public void updateView(Response response) {
                 super.updateView(response);
-                if(response != null && "OK".equals(response.getStatus())) {
+                if (response != null && "OK".equals(response.getStatus())) {
                     // Retorna resultado para o frag do carro
                     Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_SALVO);
                     intent.putExtra("carro", carro);
@@ -186,72 +174,46 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && file != null) {
-            updateFoto = true;
-            showImage(file);
-        }
-    }
+        if (resultCode == Activity.RESULT_OK) {
+            // Resize da imagem
+            Bitmap bitmap = camera.getBitmap(600, 600);
 
-    // Atualiza a imagem na tela
-    private void showImage(File file) {
-        if (file != null && file.exists()) {
-            this.file = file;
+            if (bitmap != null) {
+                // Salva arquivo neste tamanho
+                camera.save(bitmap);
 
-            Log.d("foto", file.getAbsolutePath());
-
-            int w = 600;
-            int  h = 600;
-
-            Bitmap bitmap = ImageResizeUtils.getResizedImage(Uri.fromFile(file), w, h, false);
-            Log.d("foto", "w/h: " + bitmap.getWidth()+"/"+bitmap.getHeight());
-
-            OutputStream out = null;
-            try {
-                out = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                out.close();
-
-                Log.d("foto", "file compress ok: " + file.getAbsolutePath());
-
-                setImage(file);
-            } catch (Exception e) {
-                e.printStackTrace();
+                // Atualiza imagem do Header
+                CarroActivity activity = (CarroActivity) getActivity();
+                activity.setImage(bitmap);
             }
-
         }
     }
 
     private void setImage(File file) {
         //ImageUtils.setImage(getContext(), file.getAbsolutePath().toString(), imgView);
-        Log.d(TAG,"setImage: " + file);
-        ((CarroActivity)getActivity()).setImage(file);
+        Log.d(TAG, "setImage: " + file);
+        ((CarroActivity) getActivity()).setImage(file);
     }
 
     public void setImage(String url) {
         //ImageUtils.setImage(getContext(),url, imgView);
-        ((CarroActivity)getActivity()).setImage(url);
-    }
-
-    public void onClickCamera() {
-        // Cria o o arquivo no sdcard
-        long ms = System.currentTimeMillis();
-        file = SDCardUtils.getPublicFile(String.format("foto_carro_%s_%s.jpg", carro !=null? carro.id:ms,ms));
-        Log.d(TAG,"onClickCamera: file: " + file);
-        // Chama a intent informando o arquivo para salvar a foto
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(i, 0);
+        ((CarroActivity) getActivity()).setImage(url);
     }
 
     @Override
     public void onHeaderClicked() {
-        // Se clicar na imagem de header, é mesma coisa que clicar no carro
-        onClickCamera();
+        // Se clicar na imagem de header, tira a foto
+        // Cria o o arquivo no sdcard
+        long ms = System.currentTimeMillis();
+        String fileName = String.format("foto_carro_%s_%s.jpg", carro != null ? carro.id : ms, ms);
+        // A classe Camera cria a intent e o arquivo no sdcard.
+        Intent intent = camera.open(fileName);
+        startActivityForResult(intent, 0);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        if(gps != null) {
+        if (gps != null) {
             // Atualiza GPS quando abre o formulário vazio.
             tLat.setText(String.valueOf(location.getLatitude()));
             tLng.setText(String.valueOf(location.getLongitude()));

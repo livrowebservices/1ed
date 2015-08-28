@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/img"
-            android:layout_width="@dimen/img_carro_width_adapter_width"
-            android:layout_height="@dimen/img_carro_width_adapter_height"
+            android:layout_width="@dimen/img_carro_adapter_width"
+            android:layout_height="@dimen/img_carro_adapter_height"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="6dp"
             android:src="@drawable/ferrari_ff" />

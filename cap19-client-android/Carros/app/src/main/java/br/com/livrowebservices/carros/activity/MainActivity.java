@@ -147,9 +147,6 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                openDrawer();
-                return true;
             case R.id.action_about:
                 AboutDialog.showAbout(getSupportFragmentManager());
                 return true;

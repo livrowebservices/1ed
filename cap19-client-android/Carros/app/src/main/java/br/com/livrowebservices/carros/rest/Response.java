@@ -1,4 +1,4 @@
-package br.com.livrowebservices.carros.domain;
+package br.com.livrowebservices.carros.rest;
 
 public class Response {
     private String status;

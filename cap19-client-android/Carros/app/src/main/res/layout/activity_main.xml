@@ -45,7 +45,8 @@
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:src="@android:drawable/ic_input_add"
-            android:tint="#fff000" />
+            android:tint="#fff000"
+            app:layout_behavior="com.support.android.designlibdemo.ScrollAwareFABBehavior"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

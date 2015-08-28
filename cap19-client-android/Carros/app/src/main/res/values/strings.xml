@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- A -->
     <string name="app_name">Carros</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_save">Salvar</string>
 
-    <string name="transition_key">img_transition_key</string>
-
-    <string name="title_activity_planeta">Planeta</string>
-    <string name="classicos">Clássicos</string>
-    <string name="esportivos">Esportivos</string>
-    <string name="luxo">Luxo</string>
-    <string name="error_conexao_indisponivel">Conexão indisponível</string>
     <string name="action_about">Sobre</string>
     <string name="action_site">Site</string>
-
-
-    <!-- Sobre -->
     <string name="about_dialog_text">
 <![CDATA[
         <b>Carros 2015</b><br>
@@ -28,43 +18,70 @@
     ]]>
     </string>
     <string name="about_dialog_title">Livro Android</string>
-    <string name="ok">OK</string>
-
-    <string name="site_livro_webservice">http://www.livrowebservices.com.br/index.html</string>
+    <string name="action_done">Done</string>
+    <string name="action_settings">Settings</string>
     <string name="action_search">Busca</string>
     <string name="action_refresh">Refresh</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="TODO">TODO</string>
-    <string name="action_done">Done</string>
-    <string name="msg_carro_sem_video">Carro sem vídeo cadastrado</string>
-    <string name="msg_url_invalida">URL de vídeo inválida</string>
-    <string name="title_activity_carro_edit">CarroEditActivity</string>
-    <string name="descricao">Descrição</string>
-    <string name="nome">Nome</string>
-    <string name="latitude">Latitude</string>
-    <string name="longitude">Longitude</string>
-    <string name="action_save">Salvar</string>
-    <string name="Foto">Foto</string>
-    <string name="video">Vídeo</string>
-    <string name="mapa">Mapa</string>
-    <string name="latitudeLongitude">Latitude / Longitude</string>
-    <string name="url_video">URL Vídeo</string>
-    <string name="msg_error_io">Ocorreu algum erro ao buscar os dados.</string>
-    <string name="msg_erro_io_timeout">Erro de timeout na consulta.</string>
-    <string name="novo_carro">Novo Carro</string>
-    <string name="tipo">Tipo</string>
-    <string name="esportivo">Esportivo</string>
+    <!-- C -->
     <string name="classico">Clássico</string>
-    <string name="msg_error_campo_obrigatorio">Campo obrigatório.</string>
+    <string name="classicos">Clássicos</string>
     <string name="carros">Carros</string>
     <string name="configuracoes">Configurações</string>
-    <string name="sobre">Sobre</string>
 
-    <!-- Menu Lateral -->
+    <!-- d -->
+    <string name="descricao">Descrição</string>
+
+    <!-- E -->
+    <string name="esportivo">Esportivo</string>
+    <string name="esportivos">Esportivos</string>
+
+    <!-- F -->
+    <string name="favoritos">Favoritos</string>
+    <string name="foto">Foto</string>
+
+    <!-- H -->
+    <string name="hello_world">Hello world!</string>
+
+    <!-- L -->
+    <string name="latitudeLongitude">Latitude / Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="luxo">Luxo</string>
+
+    <!-- M -->
+    <string name="mapa">Mapa</string>
+    <string name="msg_error_conexao_indisponivel">Conexão indisponível</string>
+    <string name="msg_carro_sem_video">Carro sem vídeo cadastrado</string>
+    <string name="msg_url_invalida">URL de vídeo inválida</string>
+    <string name="msg_error_io">Ocorreu algum erro ao buscar os dados.</string>
+    <string name="msg_erro_io_timeout">Erro de timeout na consulta.</string>
+    <string name="msg_error_campo_obrigatorio">Campo obrigatório.</string>
+
+    <!-- N -->
     <string name="nav_drawer_username">Ricardo Lecheta</string>
     <string name="nav_drawer_email">rlecheta@gmail.com</string>
-    <string name="favoritos">Favoritos</string>
+    <string name="novo_carro">Novo Carro</string>
+    <string name="nome">Nome</string>
+
+    <!-- O -->
+    <string name="ok">OK</string>
+
+    <!-- S -->
+    <string name="sobre">Sobre</string>
+    <string name="site_livro_webservice">http://www.livrowebservices.com.br/index.html</string>
+
+    <!-- T -->
+    <string name="todo">TODO</string>
+    <string name="tipo">Tipo</string>
+    <string name="title_activity_carro_edit">CarroEditActivity</string>
+    <string name="title_activity_planeta">Planeta</string>
+    <string name="transition_key">img_transition_key</string>
+
+    <!-- U -->
+    <string name="url_video">URL Vídeo</string>
+
+    <!-- V -->
+    <string name="video">Vídeo</string>
 
 </resources>

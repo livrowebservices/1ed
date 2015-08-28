@@ -11,8 +11,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import br.com.livrowebservices.carros.R;
@@ -25,14 +23,14 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
     protected static final String TAG = "livroandroid";
     private final List<Carro> carros;
     private final Context context;
-    private final PlanetaOnClickListener onClickListener;
+    private final CarroOnClickListener onClickListener;
 
-    public interface PlanetaOnClickListener {
+    public interface CarroOnClickListener {
         public void onClickCarro(CarrosViewHolder holder, int idx);
         public void onLongClickCarro(CarrosViewHolder holder, int idx);
     }
 
-    public CarroAdapter(Context context, List<Carro> carros, PlanetaOnClickListener onClickListener) {
+    public CarroAdapter(Context context, List<Carro> carros, CarroOnClickListener onClickListener) {
         this.context = context;
         this.carros = carros;
         this.onClickListener = onClickListener;

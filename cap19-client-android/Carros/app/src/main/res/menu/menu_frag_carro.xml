@@ -19,11 +19,11 @@
         android:icon="@drawable/ic_action_video"
         android:title="Video"
         app:showAsAction="never" />
-
+<!--
     <item
         android:id="@+id/action_remove"
         android:icon="@drawable/ic_action_remove"
         android:title="Deletar"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
 </menu>

@@ -32,8 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
-import br.com.livrowebservices.carros.domain.CarroService;
-import br.com.livrowebservices.carros.domain.Response;
+import br.com.livrowebservices.carros.rest.Response;
 import br.com.livrowebservices.carros.fragment.dialog.DeletarCarroDialog;
 import br.com.livrowebservices.carros.rest.Retrofit;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
@@ -50,11 +49,14 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
     protected ImageView img;
     protected TextView tNome;
     protected TextView tDesc;
-    protected TextView tUrlVideo;
     protected TextView tLatLng;
+
     protected TextView tLat;
     protected TextView tLng;
     protected RadioGroup tTipo;
+    protected TextView tUrlVideo;
+
+
     private GoogleMap map;
     protected Carro carro;
 
@@ -81,6 +83,8 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
         // Registra receiver para receber broadcasts
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
         setHasOptionsMenu(true);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -101,11 +105,12 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
 
     protected void initViews(View view) {
         img = (ImageView) view.findViewById(R.id.img);
-        tTipo = (RadioGroup) view.findViewById(R.id.radioTipo);
         tNome = (TextView) view.findViewById(R.id.tNome);
         tDesc = (TextView) view.findViewById(R.id.tDesc);
-        tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
         tLatLng = (TextView) view.findViewById(R.id.tLatLng);
+
+        tTipo = (RadioGroup) view.findViewById(R.id.radioTipo);
+        tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
         tLat = (TextView) view.findViewById(R.id.tLat);
         tLng = (TextView) view.findViewById(R.id.tLng);
 
@@ -161,17 +166,9 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
                 });
             }
 
-            /**
-             * Aumenta a descriçao, para fazer scroll :-)
-             */
-            String desc = c.desc;
-//            for (int i=0;i<20;i++){
-//                desc += "\n"+carro.desc;
-//            }
-
             setTipo(c.tipo);
             tNome.setText(c.nome);
-            tDesc.setText(desc);
+            tDesc.setText(c.desc);
             if(tUrlVideo != null) {
                 tUrlVideo.setText(c.urlVideo);
             }
@@ -232,15 +229,6 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
             ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
             ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_SALVAR,opts.toBundle());
             return true;
-        } else if (id == R.id.action_remove) {
-            DeletarCarroDialog.show(getFragmentManager(), new DeletarCarroDialog.Callback() {
-                @Override
-                public void deleteCarro() {
-                    startTask("deletarCarro",taskDeleteCarro());
-                }
-            });
-
-            return true;
         } else if (id == R.id.action_video) {
             showVideo();
 
@@ -267,8 +255,8 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
         return new BaseTask<Response>(){
             @Override
             public Response execute() throws Exception {
-                return Retrofit.getCarroService().delete(carro.id);
-//                return CarroService.delete(getContext(), carro);
+                return Retrofit.getCarroREST().delete(carro.id);
+//                return CarroREST.delete(getContext(), carro);
             }
 
             @Override

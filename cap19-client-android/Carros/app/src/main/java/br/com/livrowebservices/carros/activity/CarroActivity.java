@@ -78,21 +78,12 @@ public class CarroActivity extends BaseActivity {
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(editMode) {
-                    CarroEditFragment frag = (CarroEditFragment) getSupportFragmentManager().findFragmentByTag("frag");
-                    frag.onClickCamera();
-                } else {
-                    toast("Você pode favoritar esse carro...");
-                }
+                toast("Você pode favoritar esse carro...");
             }
         });
 
         // Fragment
         if (savedInstanceState == null) {
-
-            if(editMode) {
-                fabButton.setImageResource(R.drawable.ic_action_camera);
-            }
 
             CarroFragment frag = editMode ? new CarroEditFragment() : new CarroFragment();
             frag.setArguments(getIntent().getExtras());
@@ -123,8 +114,6 @@ public class CarroActivity extends BaseActivity {
         } else {
             // Novo Carro
             collapsingToolbar.setTitle(getString(R.string.novo_carro));
-
-//            setImage("http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png");
         }
     }
 
@@ -134,5 +123,11 @@ public class CarroActivity extends BaseActivity {
 
     public void setImage(File file) {
         ImageUtils.setImage(this,file, appBarImg);
+    }
+
+    public void setImage(Bitmap bitmap) {
+        if(bitmap != null) {
+            appBarImg.setImageBitmap(bitmap);
+        }
     }
 }

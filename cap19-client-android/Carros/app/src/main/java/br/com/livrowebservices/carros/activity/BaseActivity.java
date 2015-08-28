@@ -8,7 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import br.com.livrowebservices.carros.R;
+import br.com.livrowebservices.carros.fragment.AboutDialog;
 import br.com.livrowebservices.carros.utils.NavDrawerUtil;
+import livroandroid.lib.utils.IntentUtils;
 
 /**
  * Created by ricardo on 08/08/15.
@@ -41,14 +43,24 @@ public class BaseActivity extends livroandroid.lib.activity.BaseActivity {
                             menuItem.setChecked(true);
 
 
-   drawerLayout.closeDrawers();
-                            if(navListener != null) {
+                            drawerLayout.closeDrawers();
+                            if (navListener != null) {
                                 navListener.onNavigationItemSelected(menuItem);
                             }
                             return true;
                         }
                     });
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                openDrawer();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // Abre o menu lateral
