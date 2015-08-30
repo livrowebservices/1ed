@@ -140,7 +140,7 @@ public class CarroService {
             // Parser do JSON
             Gson gson = new Gson();
             Response response = gson.fromJson(json, Response.class);
-            if(response.isOk()) {
+            if(!response.isOk()) {
                 throw new IOException("Erro ao excluir: " + response.getMsg());
             }
         }
@@ -148,5 +148,44 @@ public class CarroService {
         return true;
     }
 
+    // Deleta os carros do banco
+    public static boolean deleteFromDb(Context context, List<Carro> selectedCarros) {
+        CarroDB db = new CarroDB(context);
+        try {
+            for (Carro c : selectedCarros) {
+                db.delete(c);
+            }
+        } finally {
+            db.close();
+        }
+        return true;
+    }
 
+    // Retorna os carros favoritados
+    public static List<Carro> getCarrosFromDB(Context context) throws IOException {
+        CarroDB db = new CarroDB(context);
+        try {
+            List<Carro> carros = db.findAll();
+            for (Carro c : carros) {
+                c.favorited = true;
+            }
+            return carros;
+        } finally {
+            db.close();
+        }
+    }
+
+    public static void toogleFavorite(Context context, Carro carro) {
+        CarroDB db  = new CarroDB(context);
+        try {
+            carro.favorited = !carro.favorited;
+            if(carro.favorited) {
+                db.save(carro);
+            } else {
+                db.delete(carro);
+            }
+        } finally {
+            db.close();
+        }
+    }
 }

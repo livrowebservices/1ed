@@ -11,6 +11,8 @@
     <color name="azul">#0000ff</color>
     <color name="verde">#00ff00</color>
     <color name="branco">#ffffff</color>
+    <color name="amarelo">#fff000</color>
+    <color name="cinza">#cccccc</color>
 
     <!-- SwipeRefreshLayout -->
     <color name="refresh_progress_1">#33B5E5</color>

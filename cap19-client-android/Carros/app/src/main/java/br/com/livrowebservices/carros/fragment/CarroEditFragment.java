@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,11 +25,13 @@ import java.io.File;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
+import br.com.livrowebservices.carros.domain.CarroDB;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.rest.Response;
 import br.com.livrowebservices.carros.rest.ResponseWithURL;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.CameraUtil;
+import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.GooglePlayServicesHelper;
 
 /**
@@ -36,7 +39,7 @@ import livroandroid.lib.utils.GooglePlayServicesHelper;
  * <p>
  * Herda do CarroFragment para aproveitar a lógica de visualização.
  */
-public class CarroEditFragment extends CarroFragment implements CarroActivity.ClickHeaderListener, LocationListener {
+public class CarroEditFragment extends CarroFragment implements LocationListener {
     // Camera Foto
     private CameraUtil camera = new CameraUtil();
     private GooglePlayServicesHelper gps;
@@ -52,9 +55,6 @@ public class CarroEditFragment extends CarroFragment implements CarroActivity.Cl
             // Se girou a tela recupera o estado
             camera.onCreate(savedInstanceState);
         }
-
-        CarroActivity activity = (CarroActivity) getActivity();
-        activity.setClickHeaderListener(this);
 
         // Ligar o Google Play Services
         if (carro == null) {

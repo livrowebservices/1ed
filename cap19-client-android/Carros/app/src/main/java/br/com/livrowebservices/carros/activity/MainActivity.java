@@ -22,6 +22,7 @@ import android.widget.Toast;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.fragment.AboutDialog;
 import br.com.livrowebservices.carros.fragment.CarrosFragment;
+import br.com.livrowebservices.carros.fragment.adapter.TabsAdapter;
 import br.com.livrowebservices.carros.utils.NavDrawerUtil;
 import livroandroid.lib.utils.IntentUtils;
 
@@ -44,12 +45,14 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
 
         // ViewPager
         viewPager = (ViewPager) findViewById(R.id.tabanim_viewpager);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        TabsAdapter adapter = new TabsAdapter(this,getSupportFragmentManager());
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(4);
 
         // Tabs
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.setOnTabSelectedListener(this);
 
         // FAB Button
@@ -77,50 +80,6 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         snack(coordinatorLayout, "Clicou em: " + menuItem);
         return true;
-    }
-
-    /**
-     * Tabs e ViewPager
-     */
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            Bundle args = new Bundle();
-            if (position == 0) {
-                args.putString("tipo", "classicos");
-            } else if (position == 1) {
-                args.putString("tipo", "esportivos");
-            } else if (position == 2) {
-                args.putString("tipo", "luxo");
-            }
-            Fragment f = new CarrosFragment();
-            f.setArguments(args);
-            return f;
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.classicos);
-                case 1:
-                    return getString(R.string.esportivos);
-                case 2:
-                    return getString(R.string.luxo);
-                default:
-                    return getString(R.string.luxo);
-            }
-        }
     }
 
     @Override

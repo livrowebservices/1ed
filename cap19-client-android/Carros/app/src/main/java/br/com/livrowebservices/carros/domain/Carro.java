@@ -15,6 +15,8 @@ public class Carro {
 
     // Flag para a action bar de contexto
     public boolean selected;
+    // Está favoritado sem vem do banco de dadosine
+    public boolean favorited;
 
     public double getLatitude() {
         try {

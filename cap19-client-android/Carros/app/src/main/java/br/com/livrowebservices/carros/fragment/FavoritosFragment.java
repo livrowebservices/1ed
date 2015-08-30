@@ -9,13 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +24,6 @@ import android.widget.ImageView;
 
 import org.parceler.Parcels;
 
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,22 +31,17 @@ import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
-import br.com.livrowebservices.carros.rest.CarroREST;
-import br.com.livrowebservices.carros.rest.Response;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
-import br.com.livrowebservices.carros.rest.Retrofit;
 import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import livroandroid.lib.fragment.BaseFragment;
-import livroandroid.lib.utils.AndroidUtils;
 
 /**
  * Created by ricardo on 12/06/15.
  */
-public class CarrosFragment extends BaseFragment {
+public class FavoritosFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
     private List<Carro> carros;
-    private String tipo;
     private SwipeRefreshLayout swipeLayout;
 
     // Action Bar de Contexto
@@ -65,14 +57,9 @@ public class CarrosFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            this.tipo = getArguments().getString("tipo");
-        }
         setHasOptionsMenu(true);
 
-        // Registra receiver para receber broadcasts
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_EXCLUIDO));
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_REFRESH_FAVORITOS));
     }
 
     @Override
@@ -101,52 +88,24 @@ public class CarrosFragment extends BaseFragment {
         listaCarros(false);
     }
 
-    // Task para buscar os carros
-    private class GetCarrosTask implements TaskListener<List<Carro>> {
-        private String nome;
-
-        public GetCarrosTask(String nome) {
-            this.nome = nome;
-        }
+    // Task para buscar os carros favoritados
+    private class GetCarrosTask extends BaseTask<List<Carro>> {
 
         @Override
         public List<Carro> execute() throws Exception {
-            // Busca os carros em background
-            if (nome != null) {
-                // É uma busca por nome
-                return CarroService.seachByNome(getContext(), nome);
-            } else {
-                // É para listar por tipo
-                //return Retrofit.getCarroREST().getCarros(tipo);
-                return CarroService.getCarrosByTipo(getContext(), tipo);
-            }
+            carros = CarroService.getCarrosFromDB(getContext());
+            return carros;
         }
 
         @Override
         public void updateView(List<Carro> carros) {
             if (carros != null) {
-                CarrosFragment.this.carros = carros;
-
                 // O correto seria validar se excluiu e recarregar a lista.
 //                listaCarros(true);
 
                 // Atualiza a view na UI Thread
                 recyclerView.setAdapter(new CarroAdapter(getContext(), carros, onClickCarro()));
             }
-        }
-
-        @Override
-        public void onError(Exception e) {
-            if(e instanceof SocketTimeoutException) {
-                alert(getString(R.string.msg_erro_io_timeout));
-            } else {
-                alert(getString(R.string.msg_error_io));
-            }
-        }
-
-        @Override
-        public void onCancelled(String s) {
-
         }
     }
 
@@ -161,6 +120,7 @@ public class CarrosFragment extends BaseFragment {
 
                     Intent intent = new Intent(getActivity(), CarroActivity.class);
                     intent.putExtra("carro", Parcels.wrap(c));
+                    intent.putExtra("favorited",true);
                     String key = getString(R.string.transition_key);
 
                     // Compat
@@ -192,29 +152,9 @@ public class CarrosFragment extends BaseFragment {
         };
     }
 
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_frag_carros, menu);
-
-        // SearchView
-        MenuItem item = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
-        searchView.setOnQueryTextListener(onSearch());
-    }
-
-    private SearchView.OnQueryTextListener onSearch() {
-        return new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                buscaCarros(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        };
     }
 
     @Override
@@ -225,7 +165,7 @@ public class CarrosFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     private SwipeRefreshLayout.OnRefreshListener OnRefreshListener() {
         return new SwipeRefreshLayout.OnRefreshListener() {
@@ -237,21 +177,7 @@ public class CarrosFragment extends BaseFragment {
     }
 
     private void listaCarros(boolean pullToRefresh) {
-        // Atualiza ao fazer o gesto Swipe To Refresh
-        if (AndroidUtils.isNetworkAvailable(getContext())) {
-            startTask("carros", new GetCarrosTask(null), pullToRefresh ? R.id.swipeToRefresh : R.id.progress);
-        } else {
-            alert(R.string.msg_error_conexao_indisponivel);
-        }
-    }
-
-    private void buscaCarros(String nome) {
-        // Atualiza ao fazer o gesto Swipe To Refresh
-        if (AndroidUtils.isNetworkAvailable(getContext())) {
-            startTask("carros", new GetCarrosTask(nome), R.id.progress);
-        } else {
-            alert(R.string.msg_error_conexao_indisponivel);
-        }
+        startTask("carros", new GetCarrosTask(), pullToRefresh ? R.id.swipeToRefresh : R.id.progress);
     }
 
     private ActionMode.Callback getActionModeCallback() {
@@ -304,7 +230,7 @@ public class CarrosFragment extends BaseFragment {
             startTask("deletar",new BaseTask(){
                 @Override
                 public Object execute() throws Exception {
-                    boolean ok = CarroService.delete(getContext(), selectedCarros);
+                    boolean ok = CarroService.deleteFromDb(getContext(), selectedCarros);
                     if(ok) {
                         // Se excluiu do banco, remove da lista da tela.
                         for (Carro c : selectedCarros) {
@@ -318,7 +244,7 @@ public class CarrosFragment extends BaseFragment {
                 public void updateView(Object count) {
                     super.updateView(count);
                     // Mostra mensagem de sucesso
-                    snack(recyclerView, selectedCarros.size() + " carros excluídos com sucesso");
+                    snack(recyclerView, selectedCarros.size() + " carros desfavoritados com sucesso");
                     // Atualiza a lista de carros
                     //listaCarros(true);
                     // Atualiza a lista

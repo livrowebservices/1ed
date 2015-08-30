@@ -1,7 +1,9 @@
 package br.com.livrowebservices.carros.activity;
 
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +36,8 @@ public class CarroActivity extends BaseActivity {
 
     public interface ClickHeaderListener{
         void onHeaderClicked();
+
+        void onFabButtonClicked(Carro carro);
     }
 
     public void setClickHeaderListener(ClickHeaderListener clickHeaderListener) {
@@ -79,16 +83,27 @@ public class CarroActivity extends BaseActivity {
 
         // FAB
         fabButton = (FloatingActionButton) findViewById(R.id.fab);
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toast("Você pode favoritar esse carro...");
+        if(carro != null) {
+            if(carro.favorited) {
+                int color = ContextCompat.getColor(this,R.color.amarelo);
+                fabButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{color}));
             }
-        });
+            fabButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(clickHeaderListener != null) {
+                        clickHeaderListener.onFabButtonClicked(carro);
+                    }
+                }
+            });
+            fabButton.hide();
+        } else {
+            fabButton.show();
+        }
+
 
         // Fragment
         if (savedInstanceState == null) {
-
             CarroFragment frag = editMode ? new CarroEditFragment() : new CarroFragment();
             frag.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction().replace(R.id.layoutFrag, frag,"frag").commit();
@@ -133,5 +148,12 @@ public class CarroActivity extends BaseActivity {
         if(bitmap != null) {
             appBarImg.setImageBitmap(bitmap);
         }
+    }
+
+    public void toogleFavorite(boolean b) {
+        int c = b ? R.color.amarelo : R.color.cinza;
+        int color = ContextCompat.getColor(this,c);
+        fabButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{color}));
+        snack(appBarImg, "Carro " + carro.nome + ", favorited: " + b);
     }
 }

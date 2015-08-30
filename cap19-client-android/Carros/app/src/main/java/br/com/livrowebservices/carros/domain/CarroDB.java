@@ -25,7 +25,7 @@ public class CarroDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "Criando a Tabela carro...");
-        db.execSQL("create table if not exists carro (_id integer primary key autoincrement,nome text, desc text, url_foto text,url_info text,url_video text, latitude text,longitude text, tipo text);");
+        db.execSQL("create table if not exists carro (_id integer primary key,nome text, desc text, url_foto text,url_info text,url_video text, latitude text,longitude text, tipo text);");
         Log.d(TAG, "Tabela carro criada com sucesso.");
     }
 
@@ -38,12 +38,15 @@ public class CarroDB extends SQLiteOpenHelper {
     }
 
     // Insere um novo carro, ou atualiza se já existe.
+    // O id do carro vem do web service.
+    // Vai salvar ou atualizar no SQLite com o mesmo id.
     public long save(Carro carro) {
-        long id = carro.id;
+        long id = carro.id == null? 0 : carro.id;
         SQLiteDatabase db = getWritableDatabase();
         try {
 
             ContentValues values = new ContentValues();
+            values.put("_id", id);
             values.put("nome", carro.nome);
             values.put("desc", carro.desc);
             values.put("url_foto", carro.urlFoto);
@@ -53,7 +56,11 @@ public class CarroDB extends SQLiteOpenHelper {
             values.put("longitude", carro.longitude);
             values.put("tipo", carro.tipo);
 
-            if (id != 0) {
+            // Verifica se o carro existe
+            Cursor cursorExists = db.query("carro", null, "_id = " + id , null, null, null, null);
+            boolean exists = cursorExists.getCount() > 0;
+
+            if (exists) {
 
                 String _id = String.valueOf(carro.id);
                 String[] whereArgs = new String[]{_id};
@@ -123,6 +130,19 @@ public class CarroDB extends SQLiteOpenHelper {
         }
     }
 
+    public Carro getById(Long id) {
+        SQLiteDatabase db = getReadableDatabase();
+        try {
+            // "select * from carro where tipo=?"
+            Cursor c = db.query("carro", null, "_id = " + id , null, null, null, null);
+            List<Carro> carros = toList(c);
+            Carro carro = carros.size() > 0 ? carros.get(0) : null;
+            return carro;
+        } finally {
+            db.close();
+        }
+    }
+
     // Lê o cursor e cria a lista de carros
     private List<Carro> toList(Cursor c) {
         List<Carro> carros = new ArrayList<Carro>();
@@ -130,7 +150,6 @@ public class CarroDB extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Carro carro = new Carro();
-                carros.add(carro);
 
                 // recupera os atributos de carro
                 carro.id = c.getLong(c.getColumnIndex("_id"));
@@ -142,6 +161,8 @@ public class CarroDB extends SQLiteOpenHelper {
                 carro.latitude = c.getString(c.getColumnIndex("latitude"));
                 carro.longitude = c.getString(c.getColumnIndex("longitude"));
                 carro.tipo = c.getString(c.getColumnIndex("tipo"));
+
+                carros.add(carro);
 
             } while (c.moveToNext());
         }

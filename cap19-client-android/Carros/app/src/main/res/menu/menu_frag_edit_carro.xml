@@ -7,10 +7,4 @@
         android:icon="@drawable/ic_action_save"
         app:showAsAction="always"
         android:title="@string/action_save" />
-
-    <!--<item
-        android:id="@+id/action_foto"
-        android:icon="@drawable/ic_action_camera"
-        android:title="@string/Foto"
-        app:showAsAction="always" />-->
 </menu>

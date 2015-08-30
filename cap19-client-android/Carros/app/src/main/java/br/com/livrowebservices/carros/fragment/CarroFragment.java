@@ -3,6 +3,7 @@ package br.com.livrowebservices.carros.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,8 @@ import org.parceler.Parcels;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
+import br.com.livrowebservices.carros.domain.CarroService;
+import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import br.com.livrowebservices.carros.utils.ImageUtils;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.IntentUtils;
@@ -37,7 +40,7 @@ import livroandroid.lib.utils.IntentUtils;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
+public class CarroFragment extends BaseFragment implements OnMapReadyCallback, CarroActivity.ClickHeaderListener {
 
     private static final int REQUEST_CODE_SALVAR = 1;
     protected ImageView img;
@@ -60,6 +63,9 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
         carro = Parcels.unwrap(getArguments().getParcelable("carro"));
 
         setHasOptionsMenu(true);
+
+        CarroActivity activity = (CarroActivity) getActivity();
+        activity.setClickHeaderListener(this);
     }
 
     @Override
@@ -226,5 +232,38 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback {
         } else {
             toast(getString(R.string.msg_carro_sem_video));
         }
+    }
+
+    @Override
+    public void onHeaderClicked() {
+        toast("Para alterar a foto precisa editar o carro.");
+    }
+
+    @Override
+    public void onFabButtonClicked(final Carro carro) {
+        // Favoritar o carro
+        startTask("favorito", taskFavorite(carro));
+    }
+
+    @NonNull
+    protected BaseTask<Boolean> taskFavorite(final Carro carro) {
+        return new BaseTask<Boolean>(){
+            @Override
+            public Boolean execute() throws Exception {
+                CarroService.toogleFavorite(getContext(),carro);
+                return true;
+            }
+
+            @Override
+            public void updateView(Boolean response) {
+                super.updateView(response);
+                // Atualiza o FAB button
+                CarroActivity activity = (CarroActivity) getActivity();
+                activity.toogleFavorite(carro.favorited);
+
+                // Broadcast
+                BroadcastUtil.broadcast(getContext(), BroadcastUtil.ACTION_REFRESH_FAVORITOS);
+            }
+        };
     }
 }
