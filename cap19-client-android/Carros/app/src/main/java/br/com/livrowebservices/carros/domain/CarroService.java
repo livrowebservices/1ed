@@ -29,7 +29,7 @@ public class CarroService {
     private static final String TAG = "CarroREST";
 
     public static List<Carro> getCarrosByTipo(Context context, String tipo) throws IOException {
-        String url = URL_BASE + "/tipo/" + tipo;
+        String url = tipo != null ? URL_BASE + "/tipo/" + tipo : URL_BASE;
         HttpHelper http = new HttpHelper();
         String json = http.doGet(url);
         List<Carro> carros = parserJSON(context, json);

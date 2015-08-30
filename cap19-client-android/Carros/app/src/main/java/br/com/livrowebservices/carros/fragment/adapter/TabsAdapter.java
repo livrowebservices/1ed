@@ -26,12 +26,15 @@ public class TabsAdapter extends FragmentPagerAdapter {
         Bundle args = new Bundle();
         Fragment f = null;
         if (position == 0) {
+            // todos
+            f = new CarrosFragment();
+        }else if (position == 1) {
             args.putString("tipo", "classicos");
             f = new CarrosFragment();
-        } else if (position == 1) {
+        } else if (position == 2) {
             args.putString("tipo", "esportivos");
             f = new CarrosFragment();
-        } else if (position == 2) {
+        } else if (position == 3) {
             args.putString("tipo", "luxo");
             f = new CarrosFragment();
         } else {
@@ -44,7 +47,7 @@ public class TabsAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 
 
@@ -52,10 +55,12 @@ public class TabsAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return context.getString(R.string.classicos);
+                return context.getString(R.string.todos);
             case 1:
-                return context.getString(R.string.esportivos);
+                return context.getString(R.string.classicos);
             case 2:
+                return context.getString(R.string.esportivos);
+            case 3:
                 return context.getString(R.string.luxo);
             default:
                 return context.getString(R.string.favoritos);

@@ -269,7 +269,9 @@ public class FavoritosFragment extends BaseFragment {
             actionMode.setTitle("Selecione os carros.");
             actionMode.setSubtitle(null);
             List<Carro> selectedCarros = getSelectedCarros();
-            if (selectedCarros.size() == 1) {
+            if (selectedCarros.size() == 0) {
+                actionMode.finish();
+            }else if (selectedCarros.size() == 1) {
                 actionMode.setSubtitle("1 carro selecionado");
             } else if (selectedCarros.size() > 1) {
                 actionMode.setSubtitle(selectedCarros.size() + " carros selecionados");

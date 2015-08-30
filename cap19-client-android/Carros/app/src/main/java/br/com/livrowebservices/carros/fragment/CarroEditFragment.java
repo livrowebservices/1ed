@@ -142,7 +142,7 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
             public Response execute() throws Exception {
                 // Faz upload da foto
                 File file = camera.getFile();
-                if (file != null) {
+                if (file != null && file.exists()) {
                     //ResponseWithURL response = CarroREST.postFotoBase64(getContext(), file);
                     ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
                     if (response != null && response.isOk()) {
