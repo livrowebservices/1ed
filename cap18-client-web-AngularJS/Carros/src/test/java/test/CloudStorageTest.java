@@ -8,14 +8,14 @@ import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.StorageObject;
 
 public class CloudStorageTest {
-	private static final String BUCKET_NAME = "livrolecheta";
+	private static final String BUCKET_NAME = "livrows";
 
 	public static void main(String[] args) throws Exception {
 		CloudStorageUtil c = new CloudStorageUtil("Livro Lecheta");
 		// Campo Email address criado no console.
-		String accountId = "1881627642-iiat9b1c53jgtdpptqjnkb193gp12lk5@developer.gserviceaccount.com";
+		String accountId = "862293491083-du0b3c04d34f2a2hdn78j2cohie12874@developer.gserviceaccount.com";
 		// Arquivo p12 baixado no console no momento de criar a chave.
-		File p12File = new File("Teste-b8c965c676bc.p12");
+		File p12File = new File("Teste-2982d075601d.p12");
 		// Conecta
 		c.connect(accountId, p12File);
 		// Consulta o bucket

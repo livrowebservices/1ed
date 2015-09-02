@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +16,10 @@ import com.google.common.io.Files;
 
 @Component
 public class UploadService {
-	private static final String PROJECT_ID = "1881627642";
-	private static final String ACCOUNT_ID = "1881627642-iiat9b1c53jgtdpptqjnkb193gp12lk5@developer.gserviceaccount.com";
+	private static final String PROJECT_ID = "862293491083";
+	private static final String ACCOUNT_ID = "862293491083-du0b3c04d34f2a2hdn78j2cohie12874@developer.gserviceaccount.com";
 	private static final String APP_NAME = "Livro Lecheta";
-	private static final String BUCKET_NAME = "livrolecheta";
+	private static final String BUCKET_NAME = "livrows";
 
 	public String upload(String fileName, InputStream in) throws Exception {
 		// 1) Salva o arquivo na pasta tempor�ria da JVM
@@ -39,6 +38,7 @@ public class UploadService {
 		}
 		File p12File = new File(s);
 		if (!p12File.exists()) {
+			System.err.println("p12File não existe: " + p12File);
 			throw new IOException("Erro no servidor.");
 		}
 		// Conecta no Cloud Storage
@@ -85,8 +85,11 @@ public class UploadService {
 		}
 		// Cria o arquivo
 		File file = new File(tmpDir, fileName);
+		System.out.println("File: " + file);
 		if(file.exists()) {
-			file.delete();
+			System.out.println("File delete");
+			boolean ok = file.delete();
+			System.out.println("File delete: " + ok);
 		}
 		
 		// Abre a OutputStream para escrever no arquivo
@@ -94,6 +97,7 @@ public class UploadService {
 		// Escreve os dados no arquivo
 		IOUtils.copy(in, out);
 		IOUtils.closeQuietly(out);
+		System.out.println("File write ok: " + file);
 		return file;
 	}
 }

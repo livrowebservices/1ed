@@ -1,6 +1,7 @@
 package br.com.livro.domain;
 
 import java.io.Serializable;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -8,7 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Hibernates DAO Genérico
+ * Hibernates DAO Genï¿½rico
  */
 @SuppressWarnings("unchecked")
 public class HibernateDAO<T> {
