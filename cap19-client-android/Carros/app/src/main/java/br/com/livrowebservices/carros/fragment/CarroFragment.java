@@ -84,6 +84,14 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(carro != null) {
+            startTask("loadFavoritos",taskLoadFavoritos(),R.id.progress);
+        }
+    }
+
     protected void initViews(View view) {
         img = (ImageView) view.findViewById(R.id.img);
         tNome = (TextView) view.findViewById(R.id.tNome);
@@ -242,11 +250,13 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
     @Override
     public void onFabButtonClicked(final Carro carro) {
         // Favoritar o carro
-        startTask("favorito", taskFavorite(carro));
+        if(carro != null) {
+            startTask("favorito", taskFavoritar(carro), R.id.progress);
+        }
     }
 
     @NonNull
-    protected BaseTask<Boolean> taskFavorite(final Carro carro) {
+    protected BaseTask<Boolean> taskFavoritar(final Carro carro) {
         return new BaseTask<Boolean>(){
             @Override
             public Boolean execute() throws Exception {
@@ -263,6 +273,30 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
 
                 // Broadcast
                 BroadcastUtil.broadcast(getContext(), BroadcastUtil.ACTION_REFRESH_FAVORITOS);
+            }
+        };
+    }
+
+    /**
+     * // Atualiza a cor do FAB button, conforme se o carro está favoritado ou não
+     */
+    @NonNull
+    protected BaseTask<Boolean> taskLoadFavoritos() {
+        return new BaseTask<Boolean>(){
+            @Override
+            public Boolean execute() throws Exception {
+                // Verifica se o carro está favoritado.
+                Boolean favorito = CarroService.isFavorito(getContext(),carro);
+                return favorito;
+            }
+
+            @Override
+            public void updateView(Boolean favorito) {
+                super.updateView(favorito);
+
+                // Atualiza a cor do FAB button.
+                CarroActivity activity = (CarroActivity) getActivity();
+                activity.setFavoriteColor(favorito);
             }
         };
     }

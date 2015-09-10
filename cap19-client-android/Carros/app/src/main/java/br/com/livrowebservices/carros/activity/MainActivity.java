@@ -106,13 +106,11 @@ public class MainActivity extends BaseActivity implements TabLayout.OnTabSelecte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.nav_item_about:
             case R.id.action_about:
                 AboutDialog.showAbout(getSupportFragmentManager());
                 return true;
             case R.id.action_site:
-                IntentUtils.openBrowser(this, getString(R.string.site_livro_webservice));
-                return true;
-            case R.id.nav_item_sobre:
                 IntentUtils.openBrowser(this, getString(R.string.site_livro_webservice));
                 return true;
             case R.id.nav_item_config:

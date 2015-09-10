@@ -188,4 +188,15 @@ public class CarroService {
             db.close();
         }
     }
+
+    public static boolean isFavorito(Context context, Carro carro) {
+        CarroDB db  = new CarroDB(context);
+        try {
+            // Se existe na tabela, é porque favoritou.
+            boolean exists = db.count(carro.id) > 0;
+            return exists;
+        } finally {
+            db.close();
+        }
+    }
 }

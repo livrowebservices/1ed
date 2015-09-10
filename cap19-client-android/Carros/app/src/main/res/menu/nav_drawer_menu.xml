@@ -11,7 +11,7 @@
             android:icon="@drawable/ic_drawer_settings"
             android:title="@string/configuracoes" />
         <item
-            android:id="@+id/nav_item_sobre"
+            android:id="@+id/nav_item_about"
             android:icon="@drawable/ic_drawer_site_livro"
             android:title="@string/sobre" />
     </group>

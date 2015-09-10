@@ -85,23 +85,17 @@ public class CarroActivity extends BaseActivity {
         // FAB
         fabButton = (FloatingActionButton) findViewById(R.id.fab);
         if(carro != null) {
-            if(carro.favorited) {
-                int color = ContextCompat.getColor(this,R.color.amarelo);
-                fabButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{color}));
-            }
             fabButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(clickHeaderListener != null) {
+                    if (clickHeaderListener != null) {
                         clickHeaderListener.onFabButtonClicked(carro);
                     }
                 }
             });
-            fabButton.hide();
         } else {
-            fabButton.show();
+            fabButton.setVisibility(View.GONE);
         }
-
 
         // Fragment
         if (savedInstanceState == null) {
@@ -152,14 +146,23 @@ public class CarroActivity extends BaseActivity {
     }
 
     public void toogleFavorite(boolean b) {
-        int c = b ? R.color.amarelo : R.color.cinza;
-        int color = ContextCompat.getColor(this,c);
-        fabButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{color}));
-        if(b) {
-            snack(appBarImg, "Carro " + carro.nome + " marcado nos favoritos.");
+        setFavoriteColor(b);
+
+        if (b) {
+            snack(appBarImg, carro.nome + " adicionado aos favoritos.");
         } else {
-            snack(appBarImg, "Carro " + carro.nome + " desmarcado dos favoritos.");
+            snack(appBarImg, carro.nome + " removido dos favoritos.");
         }
+    }
+
+    // Desenha a cor conforme está favoritado ou não.
+    public void setFavoriteColor(boolean b) {
+        // Troca a cor conforme o status do favoritos
+        int fundo = ContextCompat.getColor(this, b ? R.color.favorito_on : R.color.favorito_off);
+        int cor = ContextCompat.getColor(this,b ? R.color.amarelo : R.color.favorito_on);
+
+        fabButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{fundo}));
+        fabButton.setColorFilter(cor);
     }
 
     @Override

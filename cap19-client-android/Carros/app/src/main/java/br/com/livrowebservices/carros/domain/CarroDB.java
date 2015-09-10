@@ -130,6 +130,18 @@ public class CarroDB extends SQLiteOpenHelper {
         }
     }
 
+    public int count(Long id) {
+        SQLiteDatabase db = getReadableDatabase();
+        try {
+            // "select * from carro where tipo=?"
+            Cursor c = db.query("carro", null, "_id = " + id , null, null, null, null);
+            int count = c.getCount();
+            return count;
+        } finally {
+            db.close();
+        }
+    }
+
     public Carro getById(Long id) {
         SQLiteDatabase db = getReadableDatabase();
         try {
