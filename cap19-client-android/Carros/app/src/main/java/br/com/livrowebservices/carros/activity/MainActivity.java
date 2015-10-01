@@ -1,19 +1,13 @@
 package br.com.livrowebservices.carros.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +15,8 @@ import android.widget.Toast;
 
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.fragment.AboutDialog;
-import br.com.livrowebservices.carros.fragment.CarrosFragment;
 import br.com.livrowebservices.carros.fragment.adapter.TabsAdapter;
-import br.com.livrowebservices.carros.utils.NavDrawerUtil;
+import br.com.livrowebservices.carros.utils.PermissionUtils;
 import livroandroid.lib.utils.IntentUtils;
 
 public class MainActivity extends BaseActivity implements TabLayout.OnTabSelectedListener, NavigationView.OnNavigationItemSelectedListener {

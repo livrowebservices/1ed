@@ -57,6 +57,7 @@
     <string name="msg_error_io">Ocorreu algum erro ao buscar os dados.</string>
     <string name="msg_erro_io_timeout">Erro de timeout na consulta.</string>
     <string name="msg_error_campo_obrigatorio">Campo obrigatório.</string>
+    <string name="msg_alerta_permissao">Para utilizar este aplicativo, você precisa aceitar as permissões.</string>
 
     <!-- N -->
     <string name="nav_drawer_username">Ricardo Lecheta</string>
