@@ -8,7 +8,7 @@
     <string name="action_about">Sobre</string>
     <string name="action_site">Site</string>
     <string name="about_dialog_text">
-<![CDATA[
+    <![CDATA[
         <b>Carros 2015</b><br>
         Versao %s<br><br>
         <a href="http://www.livrowebservices.com.br/index.html">http://livrowebservices.com.br</a><br><br>
