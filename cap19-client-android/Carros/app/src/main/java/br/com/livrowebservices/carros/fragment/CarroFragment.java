@@ -28,11 +28,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.parceler.Parcels;
 
+import br.com.livrowebservices.carros.CarrosApplication;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
-import br.com.livrowebservices.carros.utils.BroadcastUtil;
+import br.com.livrowebservices.carros.domain.event.BusEvent;
 import br.com.livrowebservices.carros.utils.ImageUtils;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.IntentUtils;
@@ -271,8 +272,8 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
                 CarroActivity activity = (CarroActivity) getActivity();
                 activity.toogleFavorite(carro.favorited);
 
-                // Broadcast
-                BroadcastUtil.broadcast(getContext(), BroadcastUtil.ACTION_REFRESH_FAVORITOS);
+                // Envia o evento para o bus
+                CarrosApplication.getInstance().getBus().post(new BusEvent.FavoritosEvent());
             }
         };
     }

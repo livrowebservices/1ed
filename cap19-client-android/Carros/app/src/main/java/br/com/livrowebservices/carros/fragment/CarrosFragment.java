@@ -1,14 +1,10 @@
 package br.com.livrowebservices.carros.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -16,6 +12,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,21 +21,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.otto.Subscribe;
+
 import org.parceler.Parcels;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.livrowebservices.carros.CarrosApplication;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
-import br.com.livrowebservices.carros.rest.CarroREST;
-import br.com.livrowebservices.carros.rest.Response;
+import br.com.livrowebservices.carros.domain.event.BusEvent;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
-import br.com.livrowebservices.carros.rest.Retrofit;
-import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.AndroidUtils;
 
@@ -55,13 +52,6 @@ public class CarrosFragment extends BaseFragment {
     // Action Bar de Contexto
     private ActionMode actionMode;
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, final Intent intent) {
-            listaCarros(false);
-        }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +60,8 @@ public class CarrosFragment extends BaseFragment {
         }
         setHasOptionsMenu(true);
 
-        // Registra receiver para receber broadcasts
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_EXCLUIDO));
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_CARRO_SALVO));
+        // Registra a classe para receber eventos.
+        CarrosApplication.getInstance().getBus().register(this);
     }
 
     @Override
@@ -98,7 +87,7 @@ public class CarrosFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        listaCarros(false);
+        taskCarros(false);
     }
 
     // Task para buscar os carros
@@ -128,7 +117,7 @@ public class CarrosFragment extends BaseFragment {
                 CarrosFragment.this.carros = carros;
 
                 // O correto seria validar se excluiu e recarregar a lista.
-//                listaCarros(true);
+//                taskCarros(true);
 
                 // Atualiza a view na UI Thread
                 recyclerView.setAdapter(new CarroAdapter(getContext(), carros, onClickCarro()));
@@ -227,16 +216,23 @@ public class CarrosFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Subscribe
+    public void onBusAtualizarListaCarros(BusEvent.NovoCarroEvent ev) {
+        Log.d(TAG,"add: " + ev);
+        // Recebeu o evento, atualiza a lista.
+        taskCarros(false);
+    }
+
     private SwipeRefreshLayout.OnRefreshListener OnRefreshListener() {
         return new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                listaCarros(true);
+                taskCarros(true);
             }
         };
     }
 
-    private void listaCarros(boolean pullToRefresh) {
+    private void taskCarros(boolean pullToRefresh) {
         // Atualiza ao fazer o gesto Swipe To Refresh
         if (AndroidUtils.isNetworkAvailable(getContext())) {
             startTask("carros", new GetCarrosTask(null), pullToRefresh ? R.id.swipeToRefresh : R.id.progress);
@@ -320,7 +316,7 @@ public class CarrosFragment extends BaseFragment {
                     // Mostra mensagem de sucesso
                     snack(recyclerView, selectedCarros.size() + " carros excluídos com sucesso");
                     // Atualiza a lista de carros
-                    //listaCarros(true);
+                    //taskCarros(true);
                     // Atualiza a lista
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
@@ -356,6 +352,7 @@ public class CarrosFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+        // Cancela o recebimento de eventos.
+        CarrosApplication.getInstance().getBus().unregister(this);
     }
 }

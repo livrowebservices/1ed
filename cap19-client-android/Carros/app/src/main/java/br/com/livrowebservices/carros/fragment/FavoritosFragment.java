@@ -1,19 +1,16 @@
 package br.com.livrowebservices.carros.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,17 +19,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.otto.Subscribe;
+
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.livrowebservices.carros.CarrosApplication;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
+import br.com.livrowebservices.carros.domain.event.BusEvent;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
-import br.com.livrowebservices.carros.utils.BroadcastUtil;
 import livroandroid.lib.fragment.BaseFragment;
 
 /**
@@ -47,19 +47,12 @@ public class FavoritosFragment extends BaseFragment {
     // Action Bar de Contexto
     private ActionMode actionMode;
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, final Intent intent) {
-            listaCarros(false);
-        }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, new IntentFilter(BroadcastUtil.ACTION_REFRESH_FAVORITOS));
+        // Registra a classe para receber eventos.
+        CarrosApplication.getInstance().getBus().register(this);
     }
 
     @Override
@@ -85,7 +78,7 @@ public class FavoritosFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        listaCarros(false);
+        taskCarros(false);
     }
 
     // Task para buscar os carros favoritados
@@ -101,7 +94,7 @@ public class FavoritosFragment extends BaseFragment {
         public void updateView(List<Carro> carros) {
             if (carros != null) {
                 // O correto seria validar se excluiu e recarregar a lista.
-//                listaCarros(true);
+//                taskCarros(true);
 
                 // Atualiza a view na UI Thread
                 recyclerView.setAdapter(new CarroAdapter(getContext(), carros, onClickCarro()));
@@ -171,12 +164,19 @@ public class FavoritosFragment extends BaseFragment {
         return new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                listaCarros(true);
+                taskCarros(true);
             }
         };
     }
 
-    private void listaCarros(boolean pullToRefresh) {
+    @Subscribe
+    public void onBusAtualizarListaCarros(BusEvent.FavoritosEvent ev) {
+        Log.d(TAG, "fav" + ev);
+        // Recebeu o evento, atualiza a lista.
+        taskCarros(false);
+    }
+
+    private void taskCarros(boolean pullToRefresh) {
         startTask("carros", new GetCarrosTask(), pullToRefresh ? R.id.swipeToRefresh : R.id.progress);
     }
 
@@ -246,7 +246,7 @@ public class FavoritosFragment extends BaseFragment {
                     // Mostra mensagem de sucesso
                     snack(recyclerView, selectedCarros.size() + " carros desfavoritados com sucesso");
                     // Atualiza a lista de carros
-                    //listaCarros(true);
+                    //taskCarros(true);
                     // Atualiza a lista
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
@@ -282,6 +282,7 @@ public class FavoritosFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+        // Cancela o recebimento de eventos.
+        CarrosApplication.getInstance().getBus().unregister(this);
     }
 }

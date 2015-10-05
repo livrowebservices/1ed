@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,20 +17,17 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
 
-import org.parceler.Parcels;
-
 import java.io.File;
 
+import br.com.livrowebservices.carros.CarrosApplication;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
 import br.com.livrowebservices.carros.domain.Carro;
-import br.com.livrowebservices.carros.domain.CarroDB;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.rest.Response;
 import br.com.livrowebservices.carros.rest.ResponseWithURL;
-import br.com.livrowebservices.carros.utils.BroadcastUtil;
+import br.com.livrowebservices.carros.domain.event.BusEvent;
 import br.com.livrowebservices.carros.utils.CameraUtil;
-import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.GooglePlayServicesHelper;
 
 /**
@@ -160,10 +156,9 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
             public void updateView(Response response) {
                 super.updateView(response);
                 if (response != null && "OK".equals(response.getStatus())) {
-                    // Retorna resultado para o frag do carro
-                    Intent intent = new Intent(BroadcastUtil.ACTION_CARRO_SALVO);
-                    //intent.putExtra("carro", Parcels.wrap(carro));
-                    BroadcastUtil.broadcast(getContext(), intent);
+                    // Envia o evento para o bus
+                    CarrosApplication.getInstance().getBus().post(new BusEvent.NovoCarroEvent());
+                    // Fecha a tela
                     getActivity().finish();
                 } else {
                     toast("Erro ao salvar o carro " + carro.nome);
