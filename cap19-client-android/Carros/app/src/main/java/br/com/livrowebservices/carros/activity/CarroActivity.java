@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -167,10 +168,10 @@ public class CarroActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            // up navigation
-            finish();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                ActivityCompat.finishAfterTransition(getActivity());
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

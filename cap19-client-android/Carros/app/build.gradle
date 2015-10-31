@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.android.databinding'
 
 android {
     compileSdkVersion 23
@@ -10,6 +11,11 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true // due to exceeding the 65K methods dex limit
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 
     signingConfigs {
@@ -27,13 +33,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-
 }
+
 
 repositories {
     maven {
-        url "file:///home/ricardo/gradle/rep"
+        url "file:///r:/home/ricardo/gradle/rep"
     }
 }
 
@@ -46,11 +51,11 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.android.support:cardview-v7:23.0.1'
     compile 'com.android.support:palette-v7:23.0.1'
-    compile 'br.com.livroandroid:android-utils:1.0.1'
+    compile 'br.com.livroandroid:android-utils:1.0.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.3.1'
-    compile 'com.google.android.gms:play-services-maps:7.5.0'
-    compile 'com.google.android.gms:play-services-location:7.5.0'
+    compile 'com.google.android.gms:play-services-maps:8.1.0'
+    compile 'com.google.android.gms:play-services-location:8.1.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'org.parceler:parceler:1.0.3'
     compile 'org.parceler:parceler-api:1.0.3'

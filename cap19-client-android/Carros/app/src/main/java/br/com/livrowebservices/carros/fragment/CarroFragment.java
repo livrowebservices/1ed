@@ -1,7 +1,8 @@
 package br.com.livrowebservices.carros.fragment;
 
-
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -31,6 +32,7 @@ import org.parceler.Parcels;
 import br.com.livrowebservices.carros.CarrosApplication;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
+import br.com.livrowebservices.carros.databinding.FragmentCarroBinding;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.event.BusEvent;
@@ -45,16 +47,15 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
 
     private static final int REQUEST_CODE_SALVAR = 1;
     protected ImageView img;
-    protected TextView tNome;
-    protected TextView tDesc;
+    protected TextView tUrlVideo;
     protected TextView tLatLng;
 
     protected TextView tLat;
     protected TextView tLng;
     protected RadioGroup tTipo;
-    protected TextView tUrlVideo;
     private GoogleMap map;
     protected Carro carro;
+    protected FragmentCarroBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,9 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_carro, container, false);
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_carro, container, false);
+
+        View view = binding.getRoot();
 
         initViews(view);
 
@@ -95,12 +98,10 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
 
     protected void initViews(View view) {
         img = (ImageView) view.findViewById(R.id.img);
-        tNome = (TextView) view.findViewById(R.id.tNome);
-        tDesc = (TextView) view.findViewById(R.id.tDesc);
+        tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
         tLatLng = (TextView) view.findViewById(R.id.tLatLng);
 
         tTipo = (RadioGroup) view.findViewById(R.id.radioTipo);
-        tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
         tLat = (TextView) view.findViewById(R.id.tLat);
         tLng = (TextView) view.findViewById(R.id.tLng);
 
@@ -156,12 +157,11 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
                 });
             }
 
+            // Data Binding
+            binding.setCarro(c);
+
             setTipo(c.tipo);
-            tNome.setText(c.nome);
-            tDesc.setText(c.desc);
-            if (tUrlVideo != null) {
-                tUrlVideo.setText(c.urlVideo);
-            }
+
             if (tLatLng != null) {
                 tLatLng.setText(String.format("%s/%s", c.latitude, c.longitude));
             } else {

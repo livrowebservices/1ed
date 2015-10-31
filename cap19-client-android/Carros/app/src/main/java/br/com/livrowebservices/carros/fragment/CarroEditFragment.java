@@ -101,11 +101,11 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
                 carro.tipo = "esportivos";
             }
 
-            boolean formOk = validate(tNome, tDesc);
+            boolean formOk = validate(R.id.tNome, R.id.tDesc);
             if (formOk) {
                 // Validação de campos preenchidos
-                carro.nome = tNome.getText().toString();
-                carro.desc = tDesc.getText().toString();
+                carro.nome = binding.tNome.getText().toString();
+                carro.desc = binding.tDesc.getText().toString();
                 carro.latitude = tLat.getText().toString();
                 carro.longitude = tLng.getText().toString();
                 carro.urlVideo = tUrlVideo.getText().toString();
@@ -121,8 +121,9 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean validate(TextView... array) {
-        for (TextView t : array) {
+    private boolean validate(int... textViewIds) {
+        for (int id : textViewIds) {
+            TextView t = (TextView) getView().findViewById(id);
             String s = t.getText().toString();
             if (s == null || s.trim().length() == 0) {
                 t.setError(getString(R.string.msg_error_campo_obrigatorio));
