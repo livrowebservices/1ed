@@ -26,6 +26,7 @@ import br.com.livrowebservices.carros.fragment.CarroEditFragment;
 import br.com.livrowebservices.carros.fragment.CarroFragment;
 import br.com.livrowebservices.carros.utils.ImageUtils;
 import livroandroid.lib.activity.BaseActivity;
+import livroandroid.lib.fragment.BaseFragment;
 
 
 public class CarroActivity extends BaseActivity {
@@ -85,7 +86,7 @@ public class CarroActivity extends BaseActivity {
 
         // FAB
         fabButton = (FloatingActionButton) findViewById(R.id.fab);
-        if(carro != null) {
+        if(!editMode) {
             fabButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -100,7 +101,7 @@ public class CarroActivity extends BaseActivity {
 
         // Fragment
         if (savedInstanceState == null) {
-            CarroFragment frag = editMode ? new CarroEditFragment() : new CarroFragment();
+            BaseFragment frag = editMode ? new CarroEditFragment() : new CarroFragment();
             frag.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction().replace(R.id.layoutFrag, frag,"frag").commit();
         }

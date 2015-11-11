@@ -4,6 +4,7 @@ package br.com.livrowebservices.carros.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,21 +15,29 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
+
+import org.parceler.Parcels;
 
 import java.io.File;
 
 import br.com.livrowebservices.carros.CarrosApplication;
 import br.com.livrowebservices.carros.R;
 import br.com.livrowebservices.carros.activity.CarroActivity;
+import br.com.livrowebservices.carros.databinding.FragmentCarroBinding;
+import br.com.livrowebservices.carros.databinding.FragmentCarroEditBinding;
 import br.com.livrowebservices.carros.domain.Carro;
 import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.rest.Response;
 import br.com.livrowebservices.carros.rest.ResponseWithURL;
 import br.com.livrowebservices.carros.domain.event.BusEvent;
 import br.com.livrowebservices.carros.utils.CameraUtil;
+import br.com.livrowebservices.carros.utils.ImageUtils;
+import livroandroid.lib.fragment.BaseFragment;
 import livroandroid.lib.utils.GooglePlayServicesHelper;
 
 /**
@@ -36,10 +45,34 @@ import livroandroid.lib.utils.GooglePlayServicesHelper;
  * <p>
  * Herda do CarroFragment para aproveitar a lógica de visualização.
  */
-public class CarroEditFragment extends CarroFragment implements LocationListener {
+public class CarroEditFragment extends BaseFragment implements LocationListener, CarroActivity.ClickHeaderListener {
     // Camera Foto
     private CameraUtil camera = new CameraUtil();
     private GooglePlayServicesHelper gps;
+    private FragmentCarroEditBinding binding;
+
+    protected ImageView img;
+    protected TextView tUrlVideo;
+    protected TextView tLatLng;
+
+    protected TextView tLat;
+    protected TextView tLng;
+    protected RadioGroup tTipo;
+
+    private Carro carro;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Lê os argumentos
+        carro = Parcels.unwrap(getArguments().getParcelable("carro"));
+
+        setHasOptionsMenu(true);
+
+        CarroActivity activity = (CarroActivity) getActivity();
+        activity.setClickHeaderListener(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,9 +80,13 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
 
         View view = binding.getRoot();
 
-        setHasOptionsMenu(true);
+        initViews(view);
 
         initViews(view);
+
+        if (carro != null) {
+            setCarro(carro);
+        }
 
         if (savedInstanceState != null) {
             // Se girou a tela recupera o estado
@@ -63,6 +100,57 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
         }
 
         return view;
+    }
+
+    protected void initViews(View view) {
+        img = (ImageView) view.findViewById(R.id.img);
+        tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
+        tLatLng = (TextView) view.findViewById(R.id.tLatLng);
+
+        tTipo = (RadioGroup) view.findViewById(R.id.radioTipo);
+        tLat = (TextView) view.findViewById(R.id.tLat);
+        tLng = (TextView) view.findViewById(R.id.tLng);
+    }
+
+    private void setCarro(Carro c) {
+        if (c != null) {
+            if (img != null) {
+//                ImageUtils.setImage(getContext(), c.urlFoto, img);
+//                img.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        showVideo();
+//                    }
+//                });
+            }
+
+            // Data Binding
+            binding.setCarro(c);
+
+            setTipo(c.tipo);
+
+            if (tLatLng != null) {
+                tLatLng.setText(String.format("%s/%s", c.latitude, c.longitude));
+            } else {
+                tLat.setText(c.latitude);
+                tLng.setText(c.longitude);
+            }
+        }
+
+        // Imagem do Header na Toolbar
+        CarroActivity activity = (CarroActivity) getActivity();
+        activity.setAppBarInfo(c);
+    }
+
+    // Seta o tipo no RadioGroup
+    protected void setTipo(String tipo) {
+        if ("classicos".equals(tipo)) {
+            tTipo.check(R.id.tipoClassico);
+        } else if ("esportivos".equals(tipo)) {
+            tTipo.check(R.id.tipoEsportivo);
+        } else if ("luxo".equals(tipo)) {
+            tTipo.check(R.id.tipoLuxo);
+        }
     }
 
     @Override
@@ -123,6 +211,22 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Retorna o tipo em string conforme marcado no RadioGroup
+    protected String getTipo() {
+        if (tTipo != null) {
+            int id = tTipo.getCheckedRadioButtonId();
+            switch (id) {
+                case R.id.tipoClassico:
+                    return "classicos";
+                case R.id.tipoEsportivo:
+                    return "esportivos";
+                case R.id.tipoLuxo:
+                    return "luxo";
+            }
+        }
+        return "classicos";
     }
 
     private boolean validate(int... textViewIds) {
@@ -202,6 +306,26 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
         ((CarroActivity) getActivity()).setImage(url);
     }
 
+//    @Override
+//    public void onHeaderClicked() {
+//        // Se clicar na imagem de header, tira a foto
+//        // Cria o o arquivo no sdcard
+//        long ms = System.currentTimeMillis();
+//        String fileName = String.format("foto_carro_%s_%s.jpg", carro != null ? carro.id : ms, ms);
+//        // A classe Camera cria a intent e o arquivo no sdcard.
+//        Intent intent = camera.open(fileName);
+//        startActivityForResult(intent, 0);
+//    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (gps != null) {
+            // Atualiza GPS quando abre o formulário vazio.
+            tLat.setText(String.valueOf(location.getLatitude()));
+            tLng.setText(String.valueOf(location.getLongitude()));
+        }
+    }
+
     @Override
     public void onHeaderClicked() {
         // Se clicar na imagem de header, tira a foto
@@ -214,11 +338,7 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        if (gps != null) {
-            // Atualiza GPS quando abre o formulário vazio.
-            tLat.setText(String.valueOf(location.getLatitude()));
-            tLng.setText(String.valueOf(location.getLongitude()));
-        }
+    public void onFabButtonClicked(Carro carro) {
+
     }
 }

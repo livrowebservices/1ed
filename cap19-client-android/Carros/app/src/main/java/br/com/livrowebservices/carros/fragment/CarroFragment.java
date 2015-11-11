@@ -52,7 +52,6 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
 
     protected TextView tLat;
     protected TextView tLng;
-    protected RadioGroup tTipo;
     private GoogleMap map;
     protected Carro carro;
     protected FragmentCarroBinding binding;
@@ -80,6 +79,10 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
 
         initViews(view);
 
+        if (carro != null) {
+            setCarro(carro);
+        }
+
         // Mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         // Inicia o Google Maps dentro do fragment
@@ -101,13 +104,8 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
         tUrlVideo = (TextView) view.findViewById(R.id.tUrlVideo);
         tLatLng = (TextView) view.findViewById(R.id.tLatLng);
 
-        tTipo = (RadioGroup) view.findViewById(R.id.radioTipo);
         tLat = (TextView) view.findViewById(R.id.tLat);
         tLng = (TextView) view.findViewById(R.id.tLng);
-
-        if (getArguments() != null) {
-            setCarro(carro);
-        }
     }
 
     @Override
@@ -160,8 +158,6 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
             // Data Binding
             binding.setCarro(c);
 
-            setTipo(c.tipo);
-
             if (tLatLng != null) {
                 tLatLng.setText(String.format("%s/%s", c.latitude, c.longitude));
             } else {
@@ -173,35 +169,6 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
         // Imagem do Header na Toolbar
         CarroActivity activity = (CarroActivity) getActivity();
         activity.setAppBarInfo(c);
-    }
-
-    // Retorna o tipo em string conforme marcado no RadioGroup
-    protected String getTipo() {
-        if (tTipo != null) {
-            int id = tTipo.getCheckedRadioButtonId();
-            switch (id) {
-                case R.id.tipoClassico:
-                    return "classicos";
-                case R.id.tipoEsportivo:
-                    return "esportivos";
-                case R.id.tipoLuxo:
-                    return "luxo";
-            }
-        }
-        return "classicos";
-    }
-
-    // Seta o tipo no RadioGroup
-    protected void setTipo(String tipo) {
-        if (tTipo != null) {
-            if ("classicos".equals(tipo)) {
-                tTipo.check(R.id.tipoClassico);
-            } else if ("esportivos".equals(tipo)) {
-                tTipo.check(R.id.tipoEsportivo);
-            } else if ("luxo".equals(tipo)) {
-                tTipo.check(R.id.tipoLuxo);
-            }
-        }
     }
 
     @Override

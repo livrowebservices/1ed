@@ -120,8 +120,8 @@
     <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="parceler-api-1.0.3" level="project" />
-    <orderEntry type="library" exported="" name="parceler-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="compiler-1.0-rc4" level="project" />
+    <orderEntry type="library" exported="" name="parceler-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="baseLibrary-1.0-rc4" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="design-23.0.1" level="project" />
