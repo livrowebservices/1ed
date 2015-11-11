@@ -3,6 +3,7 @@ package br.com.livrowebservices.carros.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -42,7 +43,10 @@ public class CarroEditFragment extends CarroFragment implements LocationListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_carro_edit, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_carro_edit, container, false);
+
+        View view = binding.getRoot();
+
         setHasOptionsMenu(true);
 
         initViews(view);

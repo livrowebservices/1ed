@@ -2,9 +2,10 @@
 <resources>
 
     <!-- Cores do Material Theme -->
-    <color name="primary">#03A9F4</color>
-    <color name="primary_dark">#01579B</color>
-    <color name="accent">#E91E63</color>
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent">#FF4081</color>
+    <color name="control_highlight">#B3E5FC</color>
 
     <!-- Cores -->
     <color name="vermelho">#ff0000</color>
