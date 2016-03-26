@@ -6,11 +6,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import br.com.livrowebservices.carros.R;
-import br.com.livrowebservices.carros.fragment.AboutDialog;
-import br.com.livrowebservices.carros.utils.NavDrawerUtil;
-import livroandroid.lib.utils.IntentUtils;
 
 /**
  * Created by ricardo on 08/08/15.
@@ -35,7 +35,10 @@ public class BaseActivity extends livroandroid.lib.activity.BaseActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
-            NavDrawerUtil.setHeaderValues(navigationView, R.id.containerNavDrawerListViewHeader, R.drawable.nav_drawer_header, R.drawable.ic_logo_user, R.string.nav_drawer_username, R.string.nav_drawer_email);
+            // Atualiza os dados do header do Navigation View
+            setNavViewValues(navigationView, R.string.nav_drawer_username,
+                    R.string.nav_drawer_email, R.mipmap.ic_launcher);
+            // Listenr ao clicar no menu
             navigationView.setNavigationItemSelectedListener(
                     new NavigationView.OnNavigationItemSelectedListener() {
                         @Override
@@ -51,6 +54,17 @@ public class BaseActivity extends livroandroid.lib.activity.BaseActivity {
                         }
                     });
         }
+    }
+
+    // Atualiza os dados do header do Navigation View
+    public static void setNavViewValues(NavigationView navView, int nome,int email, int img) {
+        View headerView = navView.getHeaderView(0);
+        TextView tNome = (TextView) headerView.findViewById(R.id.tNome);
+        TextView tEmail = (TextView) headerView.findViewById(R.id.tEmail);
+        ImageView imgView = (ImageView) headerView.findViewById(R.id.img);
+        tNome.setText(nome);
+        tEmail.setText(email);
+        imgView.setImageResource(img);
     }
 
     @Override

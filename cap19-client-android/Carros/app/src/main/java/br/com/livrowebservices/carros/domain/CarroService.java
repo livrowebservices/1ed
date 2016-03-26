@@ -24,13 +24,14 @@ import livroandroid.lib.utils.HttpHelper;
 import livroandroid.lib.utils.IOUtils;
 
 public class CarroService {
+    private static final String TAG = "CarroService";
     private static final String URL_BASE = "http://livrowebservices.com.br/rest/carros";
     private static final boolean LOG_ON = true;
-    private static final String TAG = "CarroREST";
 
     public static List<Carro> getCarrosByTipo(Context context, String tipo) throws IOException {
         String url = tipo != null ? URL_BASE + "/tipo/" + tipo : URL_BASE;
         HttpHelper http = new HttpHelper();
+        http.LOG_ON = true;
         String json = http.doGet(url);
         List<Carro> carros = parserJSON(context, json);
         return carros;

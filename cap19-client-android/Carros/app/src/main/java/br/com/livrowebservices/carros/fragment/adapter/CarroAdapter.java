@@ -27,8 +27,9 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
     private final CarroOnClickListener onClickListener;
 
     public interface CarroOnClickListener {
-        public void onClickCarro(CarrosViewHolder holder, int idx);
-        public void onLongClickCarro(CarrosViewHolder holder, int idx);
+        void onClickCarro(CarrosViewHolder holder, int idx);
+
+        void onLongClickCarro(CarrosViewHolder holder, int idx);
     }
 
     public CarroAdapter(Context context, List<Carro> carros, CarroOnClickListener onClickListener) {
@@ -79,11 +80,11 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
         }
 
         // Pinta o fundo de azul se a linha estiver selecionada
-        int corFundo = ContextCompat.getColor(context,c.selected ? R.color.primary : R.color.white);
+        int corFundo = ContextCompat.getColor(context, c.selected ? R.color.primary : R.color.white);
         //int corFundo = context.getResources().getColor(c.selected ? R.color.primary : R.color.white);
         holder.cardView.setCardBackgroundColor(corFundo);
         // A cor do texto é branca ou azul, depende da cor do fundo.
-        int corFonte = ContextCompat.getColor(context,c.selected ? R.color.white : R.color.primary);
+        int corFonte = ContextCompat.getColor(context, c.selected ? R.color.white : R.color.primary);
         //int corFonte = context.getResources().getColor(c.selected ? R.color.white : R.color.primary);
         holder.tNome.setTextColor(corFonte);
     }
@@ -113,6 +114,4 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
             cardView = (CardView) view.findViewById(R.id.card_view);
         }
     }
-
-
 }

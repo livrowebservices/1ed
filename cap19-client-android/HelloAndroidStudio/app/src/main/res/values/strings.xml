@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HelloAndroidStudio</string>
+    <string name="usuario">Usuário</string>
+    <string name="senha">Senha</string>
+    <string name="login">Login</string>
+
+</resources>
