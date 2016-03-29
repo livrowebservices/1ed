@@ -2,7 +2,7 @@
 <resources>
 
     <!-- A -->
-    <string name="app_name">Carros</string>
+    <string name="app_name">CarrosWS</string>
     <string name="action_save">Salvar</string>
 
     <string name="action_about">Sobre</string>
