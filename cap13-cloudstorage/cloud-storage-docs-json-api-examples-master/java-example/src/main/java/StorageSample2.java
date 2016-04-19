@@ -44,7 +44,7 @@ public class StorageSample2 {
 	 * true.
 	 */
 	private static final String APPLICATION_NAME = "Livro do Lecheta";
-	private static final String BUCKET_NAME = "livrolecheta";
+	private static final String BUCKET_NAME = Constants.BUCKET_NAME;
 
 	/** Global instance of the JSON factory. */
 	private static final JsonFactory JSON_FACTORY = JacksonFactory
@@ -62,9 +62,9 @@ public class StorageSample2 {
 		scopes.add(StorageScopes.DEVSTORAGE_READ_ONLY);
 		scopes.add(StorageScopes.DEVSTORAGE_READ_WRITE);
 		// Campo Email address criado no console.
-		String accountId = "1881627642-iiat9b1c53jgtdpptqjnkb193gp12lk5@developer.gserviceaccount.com";
+		String accountId = Constants.ACCOUNT_ID;
 		// Arquivo p12 baixado no console no momento de criar a chave.
-		File p12File = new File("Teste-b8c965c676bc.p12");
+		File p12File = new File(Constants.P12_FILE);
 		// Autoriza a aplicação
 		JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 		HttpTransport httpTransport = GoogleNetHttpTransport

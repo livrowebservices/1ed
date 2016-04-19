@@ -51,9 +51,9 @@ public class StorageSample {
 	 * true.
 	 */
 	private static final String APPLICATION_NAME = "Livro do Lecheta";
-	private static final String BUCKET_NAME = "livrolecheta";
+	private static final String BUCKET_NAME = Constants.BUCKET_NAME;
 	private static final String CLIENT_SECRET_FILENAME = "client_secrets.json";
-	private static final boolean AUTH_LOCAL_WEBSERVER = false;
+	private static final boolean AUTH_LOCAL_WEBSERVER = true;
 
 	/** Directory to store user credentials. */
 	private static final java.io.File DATA_STORE_DIR = new java.io.File(
