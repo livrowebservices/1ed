@@ -16,13 +16,13 @@ import com.google.common.io.Files;
 
 @Component
 public class UploadService {
-	private static final String PROJECT_ID = "1881627642";
-	private static final String ACCOUNT_ID = "1881627642-iiat9b1c53jgtdpptqjnkb193gp12lk5@developer.gserviceaccount.com";
+	private static final String PROJECT_ID = "483156701327";
+	private static final String ACCOUNT_ID = "483156701327-compute@developer.gserviceaccount.com";
 	private static final String APP_NAME = "Livro Lecheta";
-	private static final String BUCKET_NAME = "livrolecheta";
+	private static final String BUCKET_NAME = "livrolecheta2";
 
 	public String upload(String fileName, InputStream in) throws Exception {
-		// 1) Salva o arquivo na pasta temporária da JVM
+		// 1) Salva o arquivo na pasta temporï¿½ria da JVM
 		File file = saveToTmpDir(fileName, in);
 		// 2) Faz upload para o Cloud Storage
 		String url = uploadToCloudStorage(file);
@@ -52,13 +52,13 @@ public class UploadService {
 		if (obj == null) {
 			throw new IOException("Erro ao fazer upload.");
 		}
-		// Retorna a URL pública
+		// Retorna a URL pï¿½blica
 		String url = String.format("https://storage.googleapis.com/%s/%s",
 				BUCKET_NAME, obj.getName());
 		return url;
 	}
 
-	// Retorna o content-type para a extensão fornecida
+	// Retorna o content-type para a extensï¿½o fornecida
 	private String getContentType(String fileName) {
 		String ext = Files.getFileExtension(fileName);
 		if ("png".equals(ext)) {
@@ -74,12 +74,12 @@ public class UploadService {
 	private File saveToTmpDir(String fileName, InputStream in)
 			throws FileNotFoundException, IOException {
 		if (fileName == null || in == null) {
-			throw new IllegalArgumentException("Parâmetros inválidos");
+			throw new IllegalArgumentException("Parï¿½metros invï¿½lidos");
 		}
-		// Pasta temporária da JVM
+		// Pasta temporï¿½ria da JVM
 		File tmpDir = new File(System.getProperty("java.io.tmpdir"), "carros");
 		if (!tmpDir.exists()) {
-			// Cria a pasta carros se não existe
+			// Cria a pasta carros se nï¿½o existe
 			tmpDir.mkdir();
 		}
 		// Cria o arquivo
