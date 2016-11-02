@@ -248,15 +248,14 @@ public class CarroEditFragment extends BaseFragment implements LocationListener,
                 // Faz upload da foto
                 File file = camera.getFile();
                 if (file != null && file.exists()) {
-                    //ResponseWithURL response = CarroREST.postFotoBase64(getContext(), file);
-                    ResponseWithURL response = CarroService.postFotoBase64(getContext(), file);
+                    ResponseWithURL response = CarroService.postFotoBase64(file);
                     if (response != null && response.isOk()) {
                         // Atualiza a foto do carro
                         carro.urlFoto = response.getUrl();
                     }
                 }
                 // Salva o carro
-                Response response = CarroService.saveCarro(getContext(), carro);
+                Response response = CarroService.saveCarro(carro);
                 //Response response = Retrofit.getCarroREST().saveCarro(carro);
                 return response;
             }
@@ -333,7 +332,7 @@ public class CarroEditFragment extends BaseFragment implements LocationListener,
         long ms = System.currentTimeMillis();
         String fileName = String.format("foto_carro_%s_%s.jpg", carro != null ? carro.id : ms, ms);
         // A classe Camera cria a intent e o arquivo no sdcard.
-        Intent intent = camera.open(fileName);
+        Intent intent = camera.open(getContext(),fileName);
         startActivityForResult(intent, 0);
     }
 

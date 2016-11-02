@@ -17,7 +17,7 @@ public class CarroServiceTest extends AndroidTestCase {
         String base64 = "xxx";
         //Log.d("test","base64 b > " + base64);
 
-        ResponseWithURL response = CarroService.postFotoBase64(getContext(), "donald.png",base64);
+        ResponseWithURL response = CarroService.postFotoBase64("donald.png",base64);
         Log.d("test","test > " + response);
     }
 }

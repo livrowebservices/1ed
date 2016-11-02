@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.android.databinding'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 25
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "br.com.livrowebservices.carros"
         minSdkVersion 9
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         multiDexEnabled true // due to exceeding the 65K methods dex limit
@@ -39,20 +39,34 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:recyclerview-v7:23.4.0'
-    compile 'com.android.support:cardview-v7:23.4.0'
-    compile 'com.android.support:palette-v7:23.4.0'
+
+    // Google
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:recyclerview-v7:25.0.0'
+    compile 'com.android.support:cardview-v7:25.0.0'
+    compile 'com.android.support:palette-v7:25.0.0'
+    compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.google.android.gms:play-services-location:9.8.0'
+
+    // Android Utils
     compile 'br.com.livroandroid:android-utils:1.0.5'
+
+    // Download imagem
     compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // JSON
     compile 'com.google.code.gson:gson:2.4'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
+
+    // WebServices REST
     compile 'com.squareup.retrofit:retrofit:1.9.0'
+
+    // Parcelable
     compile 'org.parceler:parceler:1.0.3'
     compile 'org.parceler:parceler-api:1.0.3'
+
+    // Bus
     compile 'com.squareup:otto:1.3.8'
 }

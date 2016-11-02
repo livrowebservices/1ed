@@ -103,11 +103,11 @@ public class CarrosFragment extends BaseFragment {
             // Busca os carros em background
             if (nome != null) {
                 // É uma busca por nome
-                return CarroService.seachByNome(getContext(), nome);
+                return CarroService.seachByNome(nome);
             } else {
                 // É para listar por tipo
                 //return Retrofit.getCarroREST().getCarros(tipo);
-                return CarroService.getCarrosByTipo(getContext(), tipo);
+                return CarroService.getCarrosByTipo(tipo);
             }
         }
 
@@ -300,7 +300,7 @@ public class CarrosFragment extends BaseFragment {
             startTask("deletar",new BaseTask(){
                 @Override
                 public Object execute() throws Exception {
-                    boolean ok = CarroService.delete(getContext(), selectedCarros);
+                    boolean ok = CarroService.delete(selectedCarros);
                     if(ok) {
                         // Se excluiu do banco, remove da lista da tela.
                         for (Carro c : selectedCarros) {

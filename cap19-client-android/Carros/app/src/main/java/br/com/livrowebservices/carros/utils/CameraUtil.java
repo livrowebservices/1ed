@@ -1,10 +1,12 @@
 package br.com.livrowebservices.carros.utils;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import java.io.File;
@@ -29,13 +31,14 @@ public class CameraUtil {
         }
     }
 
-    public Intent open(String fileName) {
-        // Cria o o arquivo no sdcard
+    public Intent open(Context context, String fileName) {
+        // Cria o arquivo no sdcard para tirar a foto
         file = SDCardUtils.getPublicFile(fileName);
-        Log.d(TAG, "onClickCamera: file: " + file);
-        // Chama a intent informando o arquivo para salvar a foto
+        // Intent da Camera
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        // Cria a Uri do arquivo.
+        Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+        i.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         return i;
     }
 

@@ -30,6 +30,9 @@ import android.view.animation.Interpolator;
 
 import br.com.livrowebservices.carros.R;
 
+/**
+ * Classe usada para mostrar e esconder o FAB button.
+ */
 public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private boolean mIsAnimatingOut = false;

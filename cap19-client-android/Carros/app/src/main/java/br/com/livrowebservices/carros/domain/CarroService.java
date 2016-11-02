@@ -26,26 +26,31 @@ import livroandroid.lib.utils.IOUtils;
 public class CarroService {
     private static final String TAG = "CarroService";
     private static final String URL_BASE = "http://livrowebservices.com.br/rest/carros";
-    private static final boolean LOG_ON = true;
 
-    public static List<Carro> getCarrosByTipo(Context context, String tipo) throws IOException {
+    public static List<Carro> getCarrosByTipo(String tipo) throws IOException {
         String url = tipo != null ? URL_BASE + "/tipo/" + tipo : URL_BASE;
+
+        // Request HTTP GET
         HttpHelper http = new HttpHelper();
         http.LOG_ON = true;
         String json = http.doGet(url);
-        List<Carro> carros = parserJSON(context, json);
+
+        // Parser JSON
+        Type listType = new TypeToken<ArrayList<Carro>>() {}.getType();
+        List<Carro> carros = new Gson().fromJson(json, listType);
         return carros;
     }
 
-    public static List<Carro> seachByNome(Context context, String nome) throws IOException {
+    public static List<Carro> seachByNome(String nome) throws IOException {
         String url = URL_BASE + "/nome/" + nome;
         HttpHelper http = new HttpHelper();
         String json = http.doGet(url);
-        List<Carro> carros = parserJSON(context, json);
+        Type listType = new TypeToken<ArrayList<Carro>>() {}.getType();
+        List<Carro> carros = new Gson().fromJson(json, listType);
         return carros;
     }
 
-    public static ResponseWithURL postFotoBase64(Context context, File file) throws IOException {
+    public static ResponseWithURL postFotoBase64(File file) throws IOException {
         String url = URL_BASE + "/postFotoBase64";
 
         Log.d(TAG, "postFotoBase64: " + url);
@@ -76,7 +81,7 @@ public class CarroService {
         return response;
     }
 
-    public static ResponseWithURL postFotoBase64(Context context, String fileName, String base64) throws IOException {
+    public static ResponseWithURL postFotoBase64(String fileName, String base64) throws IOException {
         String url = URL_BASE + "/postFotoBase64";
 
         Log.d(TAG, "postFotoBase64: " + url);
@@ -100,13 +105,15 @@ public class CarroService {
         return response;
     }
 
-    public static Response saveCarro(Context context, Carro carro) throws IOException {
+    public static Response saveCarro(Carro carro) throws IOException {
         String url = URL_BASE;
 
         String jsonCarro = new Gson().toJson(carro);
         Log.d(TAG, ">> saveCarro: " + jsonCarro);
         HttpHelper http = new HttpHelper();
         http.setContentType("application/json; charset=utf-8");
+
+        // Envia o JSON do Carro no corpo do POST
         String json = http.doPost(url, jsonCarro.getBytes(), "UTF-8");
         Log.d(TAG, "<< saveCarro: " + json);
 
@@ -115,26 +122,20 @@ public class CarroService {
         return response;
     }
 
-    private static List<Carro> parserJSON(Context context, String json) throws IOException {
-        Type listType = new TypeToken<ArrayList<Carro>>() {}.getType();
-        List<Carro> carros = new Gson().fromJson(json, listType);
-        return carros;
-    }
-
     /**
      * {
      * "status": "OK",
      * "msg": "Carro deletado com sucesso"
      * }
      */
-    public static boolean delete(Context context, List<Carro> selectedCarros) throws IOException, JSONException {
+    public static boolean delete(List<Carro> selectedCarros) throws IOException, JSONException {
         HttpHelper http = new HttpHelper();
         http.setContentType("application/json; charset=utf-8");
         for (Carro c : selectedCarros) {
             // URL para excluir o carro
             String url = URL_BASE + "/" + c.id;
             Log.d(TAG, "Delete carro: " + url);
-            // Request HTTP
+            // Request HTTP DELETE
             String json = http.doDelete(url);
             Log.d(TAG, "JSON delete: " + json);
             // Parser do JSON
