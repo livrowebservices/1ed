@@ -16,8 +16,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 
-import org.parceler.Parcels;
-
 import java.io.File;
 
 import br.com.livrowebservices.carros.R;
@@ -80,7 +78,7 @@ public class CarroActivity extends BaseActivity {
         });
 
         // Args
-        this.carro = Parcels.unwrap(getIntent().getExtras().getParcelable("carro"));
+        this.carro = getIntent().getExtras().getParcelable("carro");
         final boolean editMode = getIntent().getBooleanExtra("editMode", false);
         setAppBarInfo(carro);
 

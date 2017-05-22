@@ -80,11 +80,11 @@ public class CarroAdapter extends RecyclerView.Adapter<CarroAdapter.CarrosViewHo
         }
 
         // Pinta o fundo de azul se a linha estiver selecionada
-        int corFundo = ContextCompat.getColor(context, c.selected ? R.color.primary : R.color.white);
+        int corFundo = ContextCompat.getColor(context, c.selected ? R.color.primary : R.color.branco);
         //int corFundo = context.getResources().getColor(c.selected ? R.color.primary : R.color.white);
         holder.cardView.setCardBackgroundColor(corFundo);
         // A cor do texto é branca ou azul, depende da cor do fundo.
-        int corFonte = ContextCompat.getColor(context, c.selected ? R.color.white : R.color.primary);
+        int corFonte = ContextCompat.getColor(context, c.selected ? R.color.branco : R.color.primary);
         //int corFonte = context.getResources().getColor(c.selected ? R.color.white : R.color.primary);
         holder.tNome.setTextColor(corFonte);
     }

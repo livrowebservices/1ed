@@ -21,8 +21,6 @@ import android.widget.ImageView;
 
 import com.squareup.otto.Subscribe;
 
-import org.parceler.Parcels;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,7 +110,7 @@ public class FavoritosFragment extends BaseFragment {
                     ImageView img = holder.img;
 
                     Intent intent = new Intent(getActivity(), CarroActivity.class);
-                    intent.putExtra("carro", Parcels.wrap(c));
+                    intent.putExtra("carro", c);
                     intent.putExtra("favorited",true);
                     String key = getString(R.string.transition_key);
 

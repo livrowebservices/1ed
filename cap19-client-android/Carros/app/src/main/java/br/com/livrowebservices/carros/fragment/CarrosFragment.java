@@ -23,8 +23,6 @@ import android.widget.ImageView;
 
 import com.squareup.otto.Subscribe;
 
-import org.parceler.Parcels;
-
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +35,7 @@ import br.com.livrowebservices.carros.domain.CarroService;
 import br.com.livrowebservices.carros.domain.event.BusEvent;
 import br.com.livrowebservices.carros.fragment.adapter.CarroAdapter;
 import livroandroid.lib.fragment.BaseFragment;
+import livroandroid.lib.task.TaskListener;
 import livroandroid.lib.utils.AndroidUtils;
 
 /**
@@ -149,7 +148,7 @@ public class CarrosFragment extends BaseFragment {
                     ImageView img = holder.img;
 
                     Intent intent = new Intent(getActivity(), CarroActivity.class);
-                    intent.putExtra("carro", Parcels.wrap(c));
+                    intent.putExtra("carro", c);
                     String key = getString(R.string.transition_key);
 
                     // Compat

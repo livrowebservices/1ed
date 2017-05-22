@@ -1,6 +1,8 @@
 package br.com.livrowebservices.carros.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
@@ -26,8 +28,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.parceler.Parcels;
 
 import br.com.livrowebservices.carros.CarrosApplication;
 import br.com.livrowebservices.carros.R;
@@ -61,7 +61,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
         super.onCreate(savedInstanceState);
 
         // Lê os argumentos
-        carro = Parcels.unwrap(getArguments().getParcelable("carro"));
+        carro = getArguments().getParcelable("carro");
 
         setHasOptionsMenu(true);
 
@@ -73,7 +73,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_carro, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_carro, container, false);
 
         View view = binding.getRoot();
 
@@ -94,8 +94,8 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
     @Override
     public void onResume() {
         super.onResume();
-        if(carro != null) {
-            startTask("loadFavoritos",taskLoadFavoritos(),R.id.progress);
+        if (carro != null) {
+            startTask("loadFavoritos", taskLoadFavoritos(), R.id.progress);
         }
     }
 
@@ -115,6 +115,16 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
         if (carro != null && map != null) {
 
             // Ativa o botão para mostrar minha localização
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             map.setMyLocationEnabled(true);
 
             // Cria o objeto LatLng com a coordenada da fábrica
@@ -181,7 +191,7 @@ public class CarroFragment extends BaseFragment implements OnMapReadyCallback, C
         int id = item.getItemId();
         if (id == R.id.action_edit) {
             Intent intent = new Intent(getActivity(), CarroActivity.class);
-            intent.putExtra("carro", Parcels.wrap(carro));
+            intent.putExtra("carro", carro);
             intent.putExtra("editMode", true);
             ActivityOptionsCompat opts = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
             ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_SALVAR, opts.toBundle());

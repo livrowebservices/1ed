@@ -21,8 +21,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
 
-import org.parceler.Parcels;
-
 import java.io.File;
 
 import br.com.livrowebservices.carros.CarrosApplication;
@@ -66,7 +64,7 @@ public class CarroEditFragment extends BaseFragment implements LocationListener,
         super.onCreate(savedInstanceState);
 
         // Lê os argumentos
-        carro = Parcels.unwrap(getArguments().getParcelable("carro"));
+        carro = getArguments().getParcelable("carro");
 
         setHasOptionsMenu(true);
 
