@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -45,38 +46,53 @@ public class CarroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         try {
 
-            ContentValues values = new ContentValues();
-            values.put("_id", id);
-            values.put("nome", carro.nome);
-            values.put("desc", carro.desc);
-            values.put("url_foto", carro.urlFoto);
-            values.put("url_info", carro.urlInfo);
-            values.put("url_video", carro.urlVideo);
-            values.put("latitude", carro.latitude);
-            values.put("longitude", carro.longitude);
-            values.put("tipo", carro.tipo);
+            ContentValues values = getContentValues(carro, id);
+
+            // insert into carro values (...)
+            id = db.insert("carro", "", values);
+            return id;
+        } finally {
+            db.close();
+        }
+    }
+
+    // Atualiza o carro
+    public long update(Carro carro) {
+        long id = carro.id == null? 0 : carro.id;
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+
+            ContentValues values = getContentValues(carro, id);
 
             // Verifica se o carro existe
             Cursor cursorExists = db.query("carro", null, "_id = " + id , null, null, null, null);
             boolean exists = cursorExists.getCount() > 0;
 
-            if (exists) {
+            String _id = String.valueOf(carro.id);
+            String[] whereArgs = new String[]{_id};
 
-                String _id = String.valueOf(carro.id);
-                String[] whereArgs = new String[]{_id};
+            // update carro set values = ... where _id=?
+            int count = db.update("carro", values, "_id=?", whereArgs);
 
-                // update carro set values = ... where _id=?
-                int count = db.update("carro", values, "_id=?", whereArgs);
-
-                return count;
-            } else {
-                // insert into carro values (...)
-                id = db.insert("carro", "", values);
-                return id;
-            }
+            return count;
         } finally {
             db.close();
         }
+    }
+
+    @NonNull
+    private ContentValues getContentValues(Carro carro, long id) {
+        ContentValues values = new ContentValues();
+        values.put("_id", id);
+        values.put("nome", carro.nome);
+        values.put("desc", carro.desc);
+        values.put("url_foto", carro.urlFoto);
+        values.put("url_info", carro.urlInfo);
+        values.put("url_video", carro.urlVideo);
+        values.put("latitude", carro.latitude);
+        values.put("longitude", carro.longitude);
+        values.put("tipo", carro.tipo);
+        return values;
     }
 
     // Deleta o carro
